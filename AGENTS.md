@@ -7,3 +7,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+# Project instructions
+
+- Use the agreed stack: Next.js App Router, strict TypeScript, Tailwind CSS, TanStack Query, GraphQL via fetch, and Jest with React Testing Library.
+- Keep routes thin. Place anime-specific behavior in src/features/anime and genuinely shared code in src/shared.
+- Inspect the supplied Figma before implementing the final design. Do not claim fidelity without comparison.
+- Keep tests focused on business rules and observable behavior. Do not add Playwright or another end-to-end framework; the candidate explicitly excluded it.
+- Keep DECISIONS.md and AI_LOG.md accurate as work evolves. Preserve genuine iteration in readable commits.
+- Before delivery run tests, type checking, lint, formatting checks, and the production build. Report any check that could not be completed.
