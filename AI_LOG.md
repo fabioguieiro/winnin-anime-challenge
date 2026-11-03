@@ -249,3 +249,9 @@ Final local checks passed: 102 tests across twenty suites, typecheck, lint, form
 ## Details layout and logos — Production verification
 
 Committed the layout as c67a61f and logo support as 5088eee. Deployment dpl_DQHxMXa8CaX5tvmJUtCJpcHSmfxx returned READY at the existing production alias. Public ID 5114 showed Synopsis/Information in adjacent desktop columns and Trailer before Episodes. All five provider logos loaded, with no horizontal document overflow; ArrowRight moved between named logo links. Saved layout and logo screenshots in chat outputs and reset viewport overrides. The synopsis screenshot uses its existing expand control. All 102 tests and required local checks passed before deployment; the cloud build passed as well.
+
+## Information aligned to title
+
+The candidate requested Information begin beside the title immediately below the banner, freeing initial desktop space for a trailer preview. Moved title/cover and synopsis into the left column of the existing responsive grid, aligned the Information panel to the grid top, and reduced metadata row spacing slightly. Updated the loading skeleton to the same hierarchy and compact panel height. Mobile retains title → synopsis → Information → trailer → episodes. Browser viewport measurements and required checks follow.
+
+The first 1366×768 preview aligned Information/title at y=256 but exposed only a thin trailer strip (card y=741). Tightened the panel padding/rows further and rebuilt. Final measurements: Information/title both y=256, trailer card y=701, thumbnail y=714, leaving 54px of imagery in the initial 768px-high viewport. At 390px Information follows the synopsis, with no horizontal document overflow. All 102 tests across twenty suites, typecheck, lint, formatting, whitespace checks, and production build passed after the final spacing change. Stopped the owned production preview.

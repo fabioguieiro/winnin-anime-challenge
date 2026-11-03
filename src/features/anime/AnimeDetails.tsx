@@ -141,68 +141,77 @@ export function AnimeDetails({ id }: { id: number }) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           </div>
           <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-            <div className="-mt-14 flex items-end gap-4 sm:gap-6">
-              <div className="relative aspect-[2/3] w-24 shrink-0 overflow-hidden rounded-lg bg-neutral-800 shadow-lg sm:w-28">
-                <Artwork
-                  src={anime.image}
-                  sizes="(max-width:639px) 96px, 112px"
-                />
-              </div>
-              <div className="min-w-0 flex-1 pt-14">
-                <h1
-                  ref={headingRef}
-                  tabIndex={-1}
-                  className="text-3xl leading-tight font-medium break-words sm:text-3xl"
-                >
-                  {anime.title}
-                </h1>
-                {[
-                  ...new Set(
-                    [anime.englishTitle, anime.nativeTitle].filter(
-                      (title): title is string =>
-                        !!title && title !== anime.title,
-                    ),
-                  ),
-                ].map((title) => (
-                  <p
-                    key={title}
-                    className="mt-1 text-xs break-words text-neutral-600"
-                  >
-                    {title}
-                  </p>
-                ))}
-                {anime.genres.length > 0 && (
-                  <ul aria-label="Genres" className="mt-2 flex flex-wrap gap-2">
-                    {anime.genres.map((genre) => (
-                      <li
-                        key={genre}
-                        className="rounded bg-brand/10 px-3 py-1 text-xs text-brand-dark"
-                      >
-                        {genre}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                <div className="mt-3 flex flex-wrap items-center gap-3">
-                  <ScoreBadge score={anime.score} />
-                  <span className="text-sm text-neutral-600">
-                    Average score
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-10">
+            <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-10">
               <div className="min-w-0">
-                <Synopsis id={anime.id} text={anime.synopsis} key={anime.id} />
+                <div className="-mt-14 flex items-end gap-4 sm:gap-6">
+                  <div className="relative aspect-[2/3] w-24 shrink-0 overflow-hidden rounded-lg bg-neutral-800 shadow-lg sm:w-28">
+                    <Artwork
+                      src={anime.image}
+                      sizes="(max-width:639px) 96px, 112px"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1 pt-14">
+                    <h1
+                      ref={headingRef}
+                      tabIndex={-1}
+                      className="text-3xl leading-tight font-medium break-words sm:text-3xl"
+                    >
+                      {anime.title}
+                    </h1>
+                    {[
+                      ...new Set(
+                        [anime.englishTitle, anime.nativeTitle].filter(
+                          (title): title is string =>
+                            !!title && title !== anime.title,
+                        ),
+                      ),
+                    ].map((title) => (
+                      <p
+                        key={title}
+                        className="mt-1 text-xs break-words text-neutral-600"
+                      >
+                        {title}
+                      </p>
+                    ))}
+                    {anime.genres.length > 0 && (
+                      <ul
+                        aria-label="Genres"
+                        className="mt-2 flex flex-wrap gap-2"
+                      >
+                        {anime.genres.map((genre) => (
+                          <li
+                            key={genre}
+                            className="rounded bg-brand/10 px-3 py-1 text-xs text-brand-dark"
+                          >
+                            {genre}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <div className="mt-3 flex flex-wrap items-center gap-3">
+                      <ScoreBadge score={anime.score} />
+                      <span className="text-sm text-neutral-600">
+                        Average score
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <Synopsis
+                    id={anime.id}
+                    text={anime.synopsis}
+                    key={anime.id}
+                  />
+                </div>
               </div>
               <section
                 aria-labelledby="information-heading"
-                className="self-start rounded-lg border border-neutral-200 bg-neutral-50 p-5"
+                className="self-start rounded-lg border border-neutral-200 bg-neutral-50 p-4"
               >
                 <h2 id="information-heading" className="text-xl font-medium">
                   Information
                 </h2>
-                <dl className="mt-4 divide-y divide-neutral-200 text-sm">
+                <dl className="mt-3 divide-y divide-neutral-200 text-sm">
                   {[
                     [
                       "Format",
@@ -229,7 +238,7 @@ export function AnimeDetails({ id }: { id: number }) {
                   ].map(([label, value]) => (
                     <div
                       key={label}
-                      className="flex justify-between gap-4 py-3"
+                      className="flex justify-between gap-4 py-2"
                     >
                       <dt className="text-neutral-600">{label}</dt>
                       <dd className="max-w-[60%] text-right font-medium break-words">

@@ -122,7 +122,7 @@ Codex assisted with planning, implementation, tests, visual inspection, correcti
 
 ## Episode browsing and trailers
 
-Details follow banner/title/cover → synopsis alongside Information on desktop → trailer (when supplied) → episodes → Where to watch. Information stacks below the synopsis on smaller screens. Long synopses show three lines with an accessible expand/collapse control; the complete text stays available. The information row and trailer take priority over showing episodes in the initial viewport.
+Details follow banner/title/cover → title and synopsis alongside Information on desktop → trailer (when supplied) → episodes → Where to watch. Information stacks below the synopsis on smaller screens. Long synopses show three lines with an accessible expand/collapse control; the complete text stays available. The information row and trailer take priority over showing episodes in the initial viewport.
 
 Episodes appear in one horizontal rail with swipe/trackpad scrolling, keyboard access, and boundary-aware previous/next buttons. All supplied links remain available; thumbnails load lazily. Episode cards open the provider in a labeled new tab. Missing images retain a usable link with a preview fallback. Counts/numbers reflect source data; no seasons, watch progress, or missing episodes are invented.
 
@@ -137,3 +137,5 @@ Added subtle 3.5% catalog-card enlargement on mouse hover and keyboard focus, wi
 Starting a trailer focuses Close rather than moving into YouTube’s cross-origin iframe, keeping the app’s arrow navigation available. The embedded player remains reachable by Tab; keys inside it are controlled by YouTube. This supports browser remotes emitting standard Arrow/Enter events, not a packaged TV-platform application. Physical TV hardware, platform-specific back keys, and on-screen keyboard integration still require device testing.
 
 Viewing providers use AniList’s supplied logo icons on their supplied brand colors. The logo links retain accessible service names, new-tab labels, and remote navigation. Missing/broken icons show a readable service-name fallback. Icon URLs require HTTPS; brand colors require six-digit hex values. These are AniList-provided assets, not independently verified current brand guidelines.
+
+The Information panel starts at the title row, immediately below the banner on desktop, rather than starting at the synopsis. Its rows use compact spacing so the trailer can start appearing within a typical desktop viewport. On smaller screens, the title, synopsis, and Information remain stacked.

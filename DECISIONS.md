@@ -98,7 +98,7 @@ The current hierarchy and rail behavior are described below. Episode cards retai
 
 ## Details hierarchy and horizontal episodes
 
-Following the latest candidate review, place banner/title/cover first, a compact three-line expandable synopsis beside Information on desktop (stacked on smaller screens), then trailer when supplied, episodes, and Where to watch. The information row and trailer now take priority over keeping episode imagery above the fold. Replace the grid/batch-expansion UI with a single native horizontal rail, lazy thumbnails, keyboard-focusable scrolling, and previous/next controls with boundary states and reduced-motion support. All supplied links remain in the rail; this trades a larger DOM for continuous browsing without extra API requests.
+Following the latest candidate review, place banner/title/cover first, title and compact three-line expandable synopsis beside Information on desktop (stacked on smaller screens), then trailer when supplied, episodes, and Where to watch. The information row and trailer now take priority over keeping episode imagery above the fold. Replace the grid/batch-expansion UI with a single native horizontal rail, lazy thumbnails, keyboard-focusable scrolling, and previous/next controls with boundary states and reduced-motion support. All supplied links remain in the rail; this trades a larger DOM for continuous browsing without extra API requests.
 
 ## Inline trailer playback
 
@@ -123,3 +123,5 @@ Starting a trailer focuses Close rather than moving into YouTube’s cross-origi
 ## Provider logo links
 
 Use `externalLinks.icon` and `externalLinks.color` from AniList instead of maintaining hardcoded platform logos or adding a brand-icon dependency. Validate HTTPS URLs and six-digit hex colors. Display each logo in a fixed-size colored tile; keep the anchor’s service name/new-tab hint available to assistive technology and in its title. Fall back to the service name when an icon is absent or fails, so unknown providers remain usable. Keep safe external-link behavior, available-region guidance, and arrow/Enter navigation. Images load lazily without broadening the optimized-image proxy allowlist.
+
+The Information panel starts at the title row, immediately below the banner on desktop, rather than starting at the synopsis. Its rows use compact spacing so the trailer can start appearing within a typical desktop viewport. On smaller screens, the title, synopsis, and Information remain stacked.
