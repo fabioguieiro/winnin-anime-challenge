@@ -67,3 +67,7 @@ Use a banner/cover layout extending the catalog's palette and typography; the su
 ## Step 5 — Navigation
 
 Use Next Link for full-card navigation with an accessible title-based name and a focus ring drawn inside the clipped card. Disable speculative card-route prefetching; details data is requested on navigation and cached by ID. Carry only search/format parameters into detail and return URLs, using URLSearchParams encoding and validating format values. No arbitrary returnTo URL is followed. The global QueryClient remains mounted between routes, retaining catalog pages in memory.
+
+## Step 6 — Request freshness and retention
+
+Treat query data as fresh for five minutes and retain inactive entries for fifteen minutes. A normal details visit or filter round trip reuses loaded catalog pages, while returning after freshness expires still refreshes pages sequentially to keep pagination consistent. This is an in-memory policy, not persistence across reloads; inactive caches are eventually collected and active long sessions can retain many pages. Keep manual error recovery, cancellation signals, and disabled focus refetch/automatic retries. Do not disable stale remount refresh or cap infinite-query pages, which would hide freshness or remove already loaded cards. References: https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults and https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries.
