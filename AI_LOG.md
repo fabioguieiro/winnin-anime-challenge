@@ -205,3 +205,7 @@ Added a fixed-origin privacy-enhanced YouTube iframe loaded only after explicit 
 All 90 tests across nineteen suites passed, plus typecheck, lint, and production build. Tests verify safe embed URLs, no initial iframe, explicit activation, close/unmount/focus recovery, unsupported-provider fallback, section order, synopsis expansion, rail boundaries, and title changes. Browser measurements at 1366×768 placed the first One Piece thumbnail at y=637.5 with its bottom at y=790.5, so roughly 130px was visible in the initial viewport. Synopsis preceded episodes; no document overflow. The horizontal arrow scrolled the rail, synopsis expanded to full text and collapsed, and 390px/320px widths had no horizontal document overflow.
 
 The inline player loaded Attack on Titan's video title inside the page, but YouTube displayed “Sign in to confirm you’re not a bot” in the automated browser. Did not attempt to bypass it and do not claim successful video playback. Closing removed the iframe and restored the play-button focus. Production publication/verification follows below.
+
+## Compact-details loading follow-up
+
+Noticed that the loading skeleton still reserved the old tall banner/heading layout after the hierarchy change. Updated its banner, cover overlap, synopsis reservation, and horizontal placeholders to reflect the compact details view. Kept the existing accessible loading status. This is a separate CSS/layout follow-up rather than rewriting the earlier commits.
