@@ -23,9 +23,10 @@ button {
 button:disabled {
   cursor: default;
 }
-:where(button, input, a):focus-visible {
-  outline: 3px solid #ffb52e;
+:where(button, input, a, [tabindex="-1"]):focus-visible {
+  outline: 3px solid #4b199c;
   outline-offset: 3px;
+  box-shadow: 0 0 0 3px #fff;
 }
 
 @media (pointer: coarse) {

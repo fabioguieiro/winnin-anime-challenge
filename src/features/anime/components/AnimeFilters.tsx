@@ -56,7 +56,7 @@ export function AnimeFilters({
           placeholder="Digite algo aqui..."
           autoComplete="off"
           maxLength={200}
-          className="min-w-0 flex-1 rounded-sm border border-neutral-300 bg-white min-h-11 px-3 text-base placeholder:text-neutral-400 sm:h-[38px] sm:min-h-0 sm:text-sm"
+          className="min-w-0 flex-1 rounded-sm border border-neutral-500 bg-white min-h-11 px-3 text-base placeholder:text-neutral-500 sm:h-[38px] sm:min-h-0 sm:text-sm"
         />
         <button
           type="submit"

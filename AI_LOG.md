@@ -81,3 +81,7 @@ Reviewed the running catalog with keyboard input and DOM/accessibility-tree insp
 ## Step 4 — Responsive reflow and touch controls
 
 At a 1040px browser viewport (1025px content viewport), real AniList genre lists overlapped score badges in four cards. Replaced fixed-aspect card height with a 270px minimum and natural content growth, reserved bottom space for scores, and removed title clamping so full titles can reflow. Updated skeleton minimum height accordingly. Moved the missing-image caption into reserved bottom space. Mobile/coarse-pointer search and buttons now have at least 44px height; mobile/coarse-pointer search text uses 16px to avoid small-text zoom behavior. Desktop control sizes remain as measured in step 3. No new implementation-mirroring tests were added for CSS; browser geometry is used for validation.
+
+## Step 4 — Contrast and visible focus
+
+Calculated contrast using sRGB relative luminance and reviewed the W3C WCAG 2.2 definitions. The old neutral-400 placeholder was approximately 2.52:1 on white and the amber focus ring approximately 1.76:1. Changed placeholder and search border to neutral-500 (approximately 4.74:1 on white), and use a dark-purple focus outline with a white separating ring. Included programmatically focused main/title elements in the focus styling. Score labels remain unchanged: their 24px regular/light text is large text, and the existing red/green backgrounds exceed the applicable 3:1 threshold. No formal WCAG conformance or full assistive-technology audit is claimed.

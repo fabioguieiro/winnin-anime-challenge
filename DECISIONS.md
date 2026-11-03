@@ -51,3 +51,7 @@ Preserve the search input DOM node while synchronizing URL/history changes so En
 ## Step 4 — Reflow over fixed card height
 
 The strict card ratio caused overlap at narrow desktop widths. Keep a 270px minimum matching the desktop reference, but let content grow and reserve 64px below it for score badges. Full titles wrap rather than being clamped. A row can grow for longer titles/genres. Use 44px-tall controls for small screens/coarse pointers as a usability enhancement, while retaining desktop sizing.
+
+## Step 4 — Contrast
+
+Darken the input border and placeholder to neutral-500 for legibility and control identification. Replace low-contrast amber focus outlines on white with a dark-purple outline separated by a white ring, which remains visible against selected purple and amber controls. Reference: https://www.w3.org/TR/WCAG22/ (contrast minimum, non-text contrast, focus visible, target size). The 44px touch size is an enhancement, not the 24px AA minimum. Full screen-reader and device testing remain outside this limited review.
