@@ -25,9 +25,16 @@ export function WatchMedia({
     <section
       id="watch-content"
       tabIndex={-1}
-      aria-labelledby="watch-content-heading"
+      aria-label="Trailers and episodes"
       className="mt-4 rounded-2xl bg-neutral-950 p-4 text-white sm:p-5"
     >
+      {query.isSuccess && query.data.trailer && (
+        <TrailerPlayer
+          trailer={query.data.trailer}
+          title={title}
+          key={`${id}-${query.data.trailer.url}`}
+        />
+      )}
       <h2
         id="watch-content-heading"
         ref={headingRef}
@@ -86,13 +93,6 @@ export function WatchMedia({
             Watch on the provider’s website. Partial catalog; availability and
             subscriptions vary by region.
           </p>
-          {query.data.trailer && (
-            <TrailerPlayer
-              trailer={query.data.trailer}
-              title={title}
-              key={`${id}-${query.data.trailer.url}`}
-            />
-          )}
         </>
       )}
     </section>

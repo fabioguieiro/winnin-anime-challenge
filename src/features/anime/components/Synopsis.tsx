@@ -4,7 +4,7 @@ export function Synopsis({ id, text }: { id: number; text: string }) {
   const [expanded, setExpanded] = useState(false);
   const collapsible = text.length > 240;
   return (
-    <section aria-labelledby="synopsis-heading" className="mt-4">
+    <section aria-labelledby="synopsis-heading">
       <div className="flex min-h-11 items-center justify-between gap-4">
         <h2 id="synopsis-heading" className="text-xl font-medium">
           Synopsis

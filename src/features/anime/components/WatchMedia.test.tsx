@@ -70,6 +70,13 @@ it("shows loading, external episode links and a click-to-load trailer", async ()
     "26 episode links available",
   );
   expect(container.querySelector("iframe,video")).not.toBeInTheDocument();
+  expect(
+    screen
+      .getByRole("heading", { name: "Trailer", level: 2 })
+      .compareDocumentPosition(
+        screen.getByRole("heading", { name: "Episodes", level: 2 }),
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+  ).toBeTruthy();
 });
 it("exposes the full horizontal list and switches cleanly to another title", async () => {
   fetchMedia.mockResolvedValueOnce(media).mockResolvedValueOnce({

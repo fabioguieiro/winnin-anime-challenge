@@ -13,10 +13,22 @@ export function DetailsSkeleton() {
               <div className="h-9 w-24 rounded bg-neutral-200" />
             </div>
           </div>
-          <div className="mt-4 flex h-11 items-center">
-            <div className="h-6 w-24 rounded bg-neutral-200" />
+          <div className="mt-4 grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-10">
+            <div>
+              <div className="flex h-11 items-center">
+                <div className="h-6 w-24 rounded bg-neutral-200" />
+              </div>
+              <div className="mt-2 h-18 rounded bg-neutral-100" />
+            </div>
+            <div className="h-[430px] rounded-lg bg-neutral-100 p-5">
+              <div className="h-7 w-32 rounded bg-neutral-200" />
+              <div className="mt-6 space-y-5">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                  <div key={i} className="h-5 rounded bg-neutral-200" />
+                ))}
+              </div>
+            </div>
           </div>
-          <div className="mt-2 h-18 rounded bg-neutral-100" />
           <div className="mt-4 overflow-hidden rounded-2xl bg-neutral-100 p-4 sm:p-5">
             <div className="h-7 w-28 rounded bg-neutral-200" />
             <div className="my-2 h-11 w-1/3 rounded bg-neutral-200" />

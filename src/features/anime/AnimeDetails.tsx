@@ -191,11 +191,9 @@ export function AnimeDetails({ id }: { id: number }) {
                 </div>
               </div>
             </div>
-            <Synopsis id={anime.id} text={anime.synopsis} key={anime.id} />
-            <WatchMedia id={anime.id} title={anime.title} key={anime.id} />
-            <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px]">
+            <div className="mt-4 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-10">
               <div className="min-w-0">
-                <WhereToWatch providers={anime.providers} id={anime.id} />
+                <Synopsis id={anime.id} text={anime.synopsis} key={anime.id} />
               </div>
               <section
                 aria-labelledby="information-heading"
@@ -242,6 +240,8 @@ export function AnimeDetails({ id }: { id: number }) {
                 </dl>
               </section>
             </div>
+            <WatchMedia id={anime.id} title={anime.title} key={anime.id} />
+            <WhereToWatch providers={anime.providers} id={anime.id} />
           </div>
         </article>
       )}

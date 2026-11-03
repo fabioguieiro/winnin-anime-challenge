@@ -37,8 +37,8 @@ export function TrailerPlayer({
   const cardClass =
     "group mt-3 grid w-full items-center gap-5 rounded-xl border border-white/15 bg-white/5 p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:grid-cols-2";
   return (
-    <div className="mt-5 border-t border-white/15 pt-5">
-      <h3 className="text-xl font-medium">Trailer</h3>
+    <div className="mb-6 border-b border-white/15 pb-6">
+      <h2 className="text-xl font-medium">Trailer</h2>
       {embedUrl ? (
         playing ? (
           <div className={cardClass}>
