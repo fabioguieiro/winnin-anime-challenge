@@ -10,15 +10,15 @@ The details page, keyboard/focus improvements, and server-rendered first page ar
 
 ## Technology choices
 
-| Technology                     | Motivation and cost                                                                                                                                                                   |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Next.js App Router             | Candidate-selected React framework; thin routes, optimized images/fonts, and server rendering. Adds framework/runtime complexity compared with a small Vite SPA.                      |
-| Strict TypeScript              | Makes domain contracts and nullable fields explicit. Handwritten types do not validate upstream JSON at runtime.                                                                      |
-| Tailwind CSS                   | Candidate preference; responsive styling and shared theme values without a component-library visual style. Utilities can make JSX verbose.                                            |
-| TanStack Query                 | Owns remote-data cache, cancellation, infinite pagination, and hydration. Avoids duplicating that behavior in component state; introduces a cache policy to explain.                  |
-| GraphQL through native fetch   | AniList's interface, with explicit operations/variables and a small transport. No Apollo client or code generation is needed for two queries; manual types can drift from the schema. |
-| Jest and React Testing Library | Candidate familiarity and observable behavior tests. No end-to-end framework was requested or required by the brief.                                                                  |
-| npm and its lockfile           | Reproducible installation with a familiar toolchain.                                                                                                                                  |
+| Technology                     | Motivation and cost                                                                                                                                                                           |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Next.js App Router             | Candidate-selected React framework; thin routes, optimized images/fonts, and server rendering. Adds framework/runtime complexity compared with a small Vite SPA.                              |
+| Strict TypeScript              | Makes domain contracts and nullable fields explicit. Handwritten types do not validate upstream JSON at runtime.                                                                              |
+| Tailwind CSS                   | Candidate preference; responsive styling and shared theme values without a component-library visual style. Utilities can make JSX verbose.                                                    |
+| TanStack Query                 | Owns remote-data cache, cancellation, infinite pagination, and hydration. Avoids duplicating that behavior in component state; introduces a cache policy to explain.                          |
+| GraphQL through native fetch   | AniList's interface, with explicit operations/variables and a small transport. No Apollo client or code generation is needed for the small query set; manual types can drift from the schema. |
+| Jest and React Testing Library | Candidate familiarity and observable behavior tests. No end-to-end framework was requested or required by the brief.                                                                          |
+| npm and its lockfile           | Reproducible installation with a familiar toolchain.                                                                                                                                          |
 
 ## Architecture and state ownership
 
