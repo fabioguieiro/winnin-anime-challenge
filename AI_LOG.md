@@ -95,3 +95,7 @@ Final step-4 verification: 24 tests passed across five Jest suites; production b
 ## Step 5.1 — Details data contract
 
 Verified live AniList title metadata and streaming-provider fields. Added a typed details query, nullable-data mapping, partial-date formatting, and plain-text synopsis conversion. Descriptions remain source-language text and are never injected as HTML. Active HTTP(S) streaming links are validated and deduplicated; credentials and non-web schemes are rejected. Preserve AniList's GraphQL error status so missing titles can be distinguished from rate limiting/network failures. Added focused mapping, ID/date, transport-status, synopsis, and URL tests. No details UI or catalog navigation yet.
+
+## Step 5.2 — Shared site shell
+
+Extracted the existing wordmark, header, skip link, and footer into SiteShell. The catalog retains its existing main landmark, styling, and heading. Other routes can use a home link in the header so the detail title remains the page's single h1. This refactor introduces no details route or catalog navigation yet.
