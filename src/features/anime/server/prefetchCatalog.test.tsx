@@ -45,7 +45,7 @@ it("includes the filtered first-page title and cover in server-rendered HTML", a
     expect(html).toContain("SSR Naruto");
     expect(html).toContain("<img");
     expect(html).toContain("example.jpg");
-    expect(html).not.toContain("Carregando animes...");
+    expect(html).not.toContain("Loading anime...");
     expect(fetchPage).toHaveBeenCalledTimes(1);
     expect(fetchPage).toHaveBeenCalledWith(filters, 1, expect.any(AbortSignal));
   } finally {

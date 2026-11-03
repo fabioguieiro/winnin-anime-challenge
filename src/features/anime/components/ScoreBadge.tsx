@@ -12,7 +12,7 @@ export function ScoreBadge({ score }: { score: number | null }) {
     <span
       className={`inline-flex min-h-9 items-center rounded-sm px-2 py-1 text-2xl leading-7 font-light tabular-nums ${tones[getScoreTone(score)]}`}
       aria-label={
-        score === null ? "Nota indisponível" : `Nota média: ${score}%`
+        score === null ? "Score unavailable" : `Average score: ${score}%`
       }
     >
       {score === null ? "—" : `${score}%`}

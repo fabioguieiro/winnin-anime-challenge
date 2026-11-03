@@ -38,22 +38,22 @@ it("renders the title, synopsis, score, and release metadata", async () => {
   fetchMock.mockResolvedValue(detailsFixture);
   setup();
   expect(
-    screen.getByRole("status", { name: "Carregando detalhes" }),
+    screen.getByRole("status", { name: "Loading details" }),
   ).toBeInTheDocument();
   expect(
     await screen.findByRole("heading", { level: 1, name: "Example Anime" }),
   ).toBeInTheDocument();
   expect(screen.getByText("A story about a journey.")).toBeInTheDocument();
-  const synopsis = screen.getByRole("heading", { name: "Sinopse" });
-  const episodes = screen.getByRole("heading", { name: "Episódios", level: 2 });
+  const synopsis = screen.getByRole("heading", { name: "Synopsis" });
+  const episodes = screen.getByRole("heading", { name: "Episodes", level: 2 });
   expect(
     synopsis.compareDocumentPosition(episodes) &
       Node.DOCUMENT_POSITION_FOLLOWING,
   ).toBeTruthy();
-  expect(screen.getByLabelText("Nota média: 80%")).toBeInTheDocument();
+  expect(screen.getByLabelText("Average score: 80%")).toBeInTheDocument();
   expect(screen.getByText("25")).toBeInTheDocument();
   expect(screen.getByText("24 min")).toBeInTheDocument();
-  expect(screen.getByText("07/04/2013")).toBeInTheDocument();
+  expect(screen.getByText("Apr 7, 2013")).toBeInTheDocument();
   expect(screen.getByText("Example Studio")).toBeInTheDocument();
   await waitFor(() =>
     expect(
@@ -72,19 +72,19 @@ it("handles unavailable metadata and renders synopsis as escaped text", async ()
   });
   const { container } = setup();
   await screen.findByRole("heading", { level: 1, name: "Example Anime" });
-  expect(screen.getByText("A definir")).toBeInTheDocument();
-  expect(screen.getByText("Não informada")).toBeInTheDocument();
-  expect(screen.getByLabelText("Nota indisponível")).toBeInTheDocument();
+  expect(screen.getByText("To be announced")).toBeInTheDocument();
+  expect(screen.getAllByText("Not available").length).toBeGreaterThan(0);
+  expect(screen.getByLabelText("Score unavailable")).toBeInTheDocument();
   expect(container.querySelector("img")).toBeNull();
 });
 it("shows not-found state independently of request failures", async () => {
   fetchMock.mockResolvedValue(null);
   setup();
   expect(
-    await screen.findByRole("heading", { name: "Anime não encontrado" }),
+    await screen.findByRole("heading", { name: "Anime not found" }),
   ).toBeInTheDocument();
   expect(
-    screen.queryByRole("button", { name: "Tentar novamente" }),
+    screen.queryByRole("button", { name: "Try again" }),
   ).not.toBeInTheDocument();
 });
 it("recovers from a rate-limit error", async () => {
@@ -92,8 +92,10 @@ it("recovers from a rate-limit error", async () => {
     .mockRejectedValueOnce(new GraphQLRequestError("Limited", 429))
     .mockResolvedValueOnce(detailsFixture);
   const { user } = setup();
-  expect(await screen.findByRole("alert")).toHaveTextContent("Muitas buscas");
-  await user.click(screen.getByRole("button", { name: "Tentar novamente" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Too many requests",
+  );
+  await user.click(screen.getByRole("button", { name: "Try again" }));
   expect(
     await screen.findByRole("heading", { name: "Example Anime" }),
   ).toBeInTheDocument();
@@ -121,19 +123,15 @@ it("returns to the originating filters without accepting arbitrary return URLs",
   setup();
   await screen.findByRole("heading", { level: 1, name: "Example Anime" });
   expect(
-    screen.getByRole("link", { name: "Voltar para os animes" }),
+    screen.getByRole("link", { name: "Back to anime catalog" }),
   ).toHaveAttribute("href", "/?search=Naruto&format=MOVIE");
 });
 it("returns focus to retry after another failed details request", async () => {
   fetchMock.mockRejectedValue(new Error("offline"));
   const { user } = setup();
-  await user.click(
-    await screen.findByRole("button", { name: "Tentar novamente" }),
-  );
+  await user.click(await screen.findByRole("button", { name: "Try again" }));
   await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
   await waitFor(() =>
-    expect(
-      screen.getByRole("button", { name: "Tentar novamente" }),
-    ).toHaveFocus(),
+    expect(screen.getByRole("button", { name: "Try again" })).toHaveFocus(),
   );
 });

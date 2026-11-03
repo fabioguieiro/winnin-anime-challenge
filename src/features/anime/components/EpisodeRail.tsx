@@ -44,12 +44,12 @@ export function EpisodeRail({
     <>
       <div className="mb-2 flex items-center justify-between gap-3">
         <p role="status" className="text-xs text-neutral-300">
-          {episodes.length} links de episódios disponíveis
+          {episodes.length} episode links available
         </p>
         <div className="flex shrink-0 gap-2">
           <button
             type="button"
-            aria-label="Episódios anteriores"
+            aria-label="Previous episodes"
             aria-controls={`episodes-${id}`}
             disabled={!edges.previous}
             onClick={() => scroll(-1)}
@@ -59,7 +59,7 @@ export function EpisodeRail({
           </button>
           <button
             type="button"
-            aria-label="Próximos episódios"
+            aria-label="Next episodes"
             aria-controls={`episodes-${id}`}
             disabled={!edges.next}
             onClick={() => scroll(1)}
@@ -73,7 +73,7 @@ export function EpisodeRail({
         ref={rowRef}
         id={`episodes-${id}`}
         tabIndex={0}
-        aria-label="Episódios disponíveis"
+        aria-label="Available episodes"
         onScroll={updateEdges}
         className="-mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden p-2 pb-4 [scrollbar-width:thin]"
       >
@@ -87,7 +87,7 @@ export function EpisodeRail({
               href={episode.url}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`${episode.title} — assistir em ${episode.provider} (abre em nova aba)`}
+              aria-label={`${episode.title} — watch on ${episode.provider} (opens in a new tab)`}
               className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             >
               <MediaThumbnail src={episode.thumbnail} number={episode.number} />

@@ -30,7 +30,7 @@ export function AnimeFilters({
     <div className="mx-auto mb-6 max-w-[1012px]">
       <div
         role="group"
-        aria-label="Filtrar por formato"
+        aria-label="Filter by format"
         className="mx-auto mb-6 flex max-w-[834px] flex-wrap justify-center gap-3 sm:gap-4 lg:flex-nowrap lg:gap-5"
       >
         {FORMATS.map(({ value, label }) => (
@@ -47,7 +47,7 @@ export function AnimeFilters({
       </div>
       <form role="search" onSubmit={submit} className="flex gap-2">
         <label className="sr-only" htmlFor="anime-search">
-          Buscar anime
+          Search anime
         </label>
         <input
           ref={searchRef}
@@ -55,7 +55,7 @@ export function AnimeFilters({
           name="search"
           type="search"
           defaultValue={filters.search}
-          placeholder="Digite algo aqui..."
+          placeholder="Enter an anime title..."
           autoComplete="off"
           maxLength={200}
           className="min-w-0 flex-1 rounded-sm border border-neutral-500 bg-white min-h-11 px-3 text-base placeholder:text-neutral-500 sm:h-[38px] sm:min-h-0 sm:text-sm"
@@ -65,7 +65,7 @@ export function AnimeFilters({
           aria-busy={pending}
           className="min-h-11 rounded-sm bg-brand px-6 text-sm text-white transition-colors hover:bg-brand-dark sm:h-[38px] sm:min-h-0"
         >
-          {pending ? "Buscando..." : "Buscar"}
+          {pending ? "Searching..." : "Search"}
         </button>
       </form>
     </div>

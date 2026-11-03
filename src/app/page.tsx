@@ -19,7 +19,7 @@ export default async function Home({
         id="catalog"
         tabIndex={-1}
         className="px-4 py-6 sm:px-[25px]"
-        aria-label="Catálogo de animes"
+        aria-label="Anime catalog"
       >
         <CatalogHydration state={state}>
           <Suspense fallback={<CatalogSkeleton />}>

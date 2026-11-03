@@ -64,25 +64,25 @@ it("announces loading, appends results, and hides pagination at the end", async 
     .mockResolvedValueOnce(second);
   const { user } = setup();
   expect(
-    screen.getByRole("status", { name: "Carregando animes" }),
+    screen.getByRole("status", { name: "Loading anime" }),
   ).toBeInTheDocument();
   resolveFirst(first);
   expect(
     await screen.findByRole("heading", { name: "First anime" }),
   ).toBeInTheDocument();
-  expect(screen.getByLabelText("Nota média: 80%")).toHaveClass(
+  expect(screen.getByLabelText("Average score: 80%")).toHaveClass(
     "bg-score-medium",
   );
-  await user.click(screen.getByRole("button", { name: "Ver mais" }));
+  await user.click(screen.getByRole("button", { name: "Load more" }));
   expect(
     await screen.findByRole("heading", { name: "Second anime" }),
   ).toBeInTheDocument();
   expect(
     screen.getByRole("heading", { name: "First anime" }),
   ).toBeInTheDocument();
-  expect(screen.getByLabelText("Nota indisponível")).toBeInTheDocument();
+  expect(screen.getByLabelText("Score unavailable")).toBeInTheDocument();
   expect(
-    screen.queryByRole("button", { name: "Ver mais" }),
+    screen.queryByRole("button", { name: "Load more" }),
   ).not.toBeInTheDocument();
   expect(fetchMock).toHaveBeenLastCalledWith(
     { search: "", format: "" },
@@ -97,7 +97,7 @@ it("submits a trimmed search, preserves it with the format, and restarts paginat
   await screen.findByRole("heading", { name: "First anime" });
   await user.type(screen.getByRole("searchbox"), "  Naruto  ");
   expect(fetchMock).toHaveBeenCalledTimes(1);
-  await user.click(screen.getByRole("button", { name: "Buscar" }));
+  await user.click(screen.getByRole("button", { name: "Search" }));
   expect(mockPush).toHaveBeenLastCalledWith("/?search=Naruto", {
     scroll: false,
   });
@@ -133,9 +133,9 @@ it("offers a reset for empty results", async () => {
   fetchMock.mockResolvedValue({ page: 1, hasNextPage: false, items: [] });
   const { user } = setup();
   expect(
-    await screen.findByRole("heading", { name: "Nenhum anime encontrado" }),
+    await screen.findByRole("heading", { name: "No anime found" }),
   ).toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "Limpar filtros" }));
+  await user.click(screen.getByRole("button", { name: "Clear filters" }));
   expect(mockPush).toHaveBeenCalledWith("/", { scroll: false });
   expect(screen.getByRole("searchbox")).toHaveFocus();
 });
@@ -145,8 +145,10 @@ it("shows rate-limit guidance and recovers on retry", async () => {
     .mockRejectedValueOnce(new GraphQLRequestError("Rate limited", 429))
     .mockResolvedValueOnce({ ...first, hasNextPage: false });
   const { user } = setup();
-  expect(await screen.findByRole("alert")).toHaveTextContent("Muitas buscas");
-  await user.click(screen.getByRole("button", { name: "Tentar novamente" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Too many requests",
+  );
+  await user.click(screen.getByRole("button", { name: "Try again" }));
   expect(
     await screen.findByRole("heading", { name: "First anime" }),
   ).toBeInTheDocument();
@@ -159,14 +161,14 @@ it("preserves loaded cards and retries only the failed next page", async () => {
     .mockResolvedValueOnce(second);
   const { user } = setup();
   await screen.findByRole("heading", { name: "First anime" });
-  await user.click(screen.getByRole("button", { name: "Ver mais" }));
+  await user.click(screen.getByRole("button", { name: "Load more" }));
   expect(await screen.findByRole("alert")).toHaveTextContent(
-    "resultados anteriores",
+    "Previous results",
   );
   expect(
     screen.getByRole("heading", { name: "First anime" }),
   ).toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "Tentar novamente" }));
+  await user.click(screen.getByRole("button", { name: "Try again" }));
   await screen.findByRole("heading", { name: "Second anime" });
   expect(fetchMock.mock.calls.map((call) => call[1])).toEqual([1, 2, 2]);
 });
@@ -176,11 +178,11 @@ it("keeps the same polite status region across result updates", async () => {
   const { user } = setup();
   const status = screen.getByRole("status");
   await screen.findByRole("heading", { name: "First anime" });
-  expect(status).toHaveTextContent("1 animes carregados.");
-  await user.click(screen.getByRole("button", { name: "Ver mais" }));
+  expect(status).toHaveTextContent("1 anime loaded.");
+  await user.click(screen.getByRole("button", { name: "Load more" }));
   await screen.findByRole("heading", { name: "Second anime" });
   expect(screen.getByRole("status")).toBe(status);
-  expect(status).toHaveTextContent("2 animes carregados.");
+  expect(status).toHaveTextContent("2 anime loaded.");
   await waitFor(() =>
     expect(screen.getByRole("heading", { name: "Second anime" })).toHaveFocus(),
   );
@@ -192,24 +194,20 @@ it("moves focus to recovery controls after a pagination failure", async () => {
     .mockRejectedValueOnce(new Error("offline"));
   const { user } = setup();
   await screen.findByRole("heading", { name: "First anime" });
-  await user.click(screen.getByRole("button", { name: "Ver mais" }));
+  await user.click(screen.getByRole("button", { name: "Load more" }));
   await waitFor(() =>
-    expect(
-      screen.getByRole("button", { name: "Tentar novamente" }),
-    ).toHaveFocus(),
+    expect(screen.getByRole("button", { name: "Try again" })).toHaveFocus(),
   );
 });
 
 it("returns focus to retry when another initial request fails", async () => {
   fetchMock.mockRejectedValue(new Error("offline"));
   const { user } = setup();
-  const retry = await screen.findByRole("button", { name: "Tentar novamente" });
+  const retry = await screen.findByRole("button", { name: "Try again" });
   await user.click(retry);
   await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
   await waitFor(() =>
-    expect(
-      screen.getByRole("button", { name: "Tentar novamente" }),
-    ).toHaveFocus(),
+    expect(screen.getByRole("button", { name: "Try again" })).toHaveFocus(),
   );
 });
 
@@ -218,6 +216,6 @@ it("makes cards keyboard links carrying the applied catalog filters", async () =
   fetchMock.mockResolvedValue(first);
   setup();
   expect(
-    await screen.findByRole("link", { name: "Ver detalhes de First anime" }),
+    await screen.findByRole("link", { name: "View details for First anime" }),
   ).toHaveAttribute("href", "/anime/1?search=Naruto&format=MOVIE");
 });

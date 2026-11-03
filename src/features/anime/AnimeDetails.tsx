@@ -16,17 +16,17 @@ import { WatchMedia } from "./components/WatchMedia";
 import { WhereToWatch } from "./components/WhereToWatch";
 
 const statuses: Record<string, string> = {
-  FINISHED: "Finalizado",
-  RELEASING: "Em exibição",
-  NOT_YET_RELEASED: "Em breve",
-  CANCELLED: "Cancelado",
-  HIATUS: "Em pausa",
+  FINISHED: "Finished",
+  RELEASING: "Airing",
+  NOT_YET_RELEASED: "Not yet released",
+  CANCELLED: "Cancelled",
+  HIATUS: "On hiatus",
 };
 const seasons: Record<string, string> = {
-  WINTER: "Inverno",
-  SPRING: "Primavera",
-  SUMMER: "Verão",
-  FALL: "Outono",
+  WINTER: "Winter",
+  SPRING: "Spring",
+  SUMMER: "Summer",
+  FALL: "Fall",
 };
 
 function Artwork({
@@ -42,7 +42,7 @@ function Artwork({
   if (!src || failed === src)
     return (
       <span className="absolute inset-0 flex items-center justify-center text-sm text-neutral-300">
-        Sem imagem
+        No image
       </span>
     );
   return (
@@ -83,14 +83,14 @@ export function AnimeDetails({ id }: { id: number }) {
   return (
     <>
       <nav
-        aria-label="Navegação do anime"
+        aria-label="Anime navigation"
         className="mx-auto max-w-6xl px-4 sm:px-6"
       >
         <Link
           href={backHref}
           className="inline-flex min-h-11 items-center gap-2 text-sm text-brand underline-offset-4 hover:underline"
         >
-          <span aria-hidden="true">←</span> Voltar para os animes
+          <span aria-hidden="true">←</span> Back to anime catalog
         </Link>
       </nav>
       {query.isPending ? (
@@ -100,14 +100,12 @@ export function AnimeDetails({ id }: { id: number }) {
           role="alert"
           className="mx-auto max-w-3xl px-6 py-20 text-center"
         >
-          <h1 className="text-2xl font-medium">
-            Não foi possível carregar os detalhes
-          </h1>
+          <h1 className="text-2xl font-medium">Could not load anime details</h1>
           <p className="mt-3 text-neutral-600">
             {query.error instanceof GraphQLRequestError &&
             query.error.status === 429
-              ? "Muitas buscas em pouco tempo. Aguarde um momento e tente novamente."
-              : "Confira sua conexão e tente novamente."}
+              ? "Too many requests. Please wait a moment and try again."
+              : "Check your connection and try again."}
           </p>
           <button
             type="button"
@@ -116,16 +114,16 @@ export function AnimeDetails({ id }: { id: number }) {
             onClick={() => void retry()}
             className="mt-6 min-h-11 rounded bg-brand px-6 py-2 text-white hover:bg-brand-dark disabled:opacity-60"
           >
-            {query.isFetching ? "Tentando..." : "Tentar novamente"}
+            {query.isFetching ? "Retrying..." : "Try again"}
           </button>
         </section>
       ) : !anime ? (
         <section className="px-6 py-20 text-center">
           <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-medium">
-            Anime não encontrado
+            Anime not found
           </h1>
           <p className="mt-3 text-neutral-600">
-            Este título não está disponível no catálogo.
+            This title is not available in the catalog.
           </p>
         </section>
       ) : (
@@ -174,10 +172,7 @@ export function AnimeDetails({ id }: { id: number }) {
                   </p>
                 ))}
                 {anime.genres.length > 0 && (
-                  <ul
-                    aria-label="Gêneros"
-                    className="mt-2 flex flex-wrap gap-2"
-                  >
+                  <ul aria-label="Genres" className="mt-2 flex flex-wrap gap-2">
                     {anime.genres.map((genre) => (
                       <li
                         key={genre}
@@ -190,7 +185,9 @@ export function AnimeDetails({ id }: { id: number }) {
                 )}
                 <div className="mt-3 flex flex-wrap items-center gap-3">
                   <ScoreBadge score={anime.score} />
-                  <span className="text-sm text-neutral-600">Nota média</span>
+                  <span className="text-sm text-neutral-600">
+                    Average score
+                  </span>
                 </div>
               </div>
             </div>
@@ -205,32 +202,32 @@ export function AnimeDetails({ id }: { id: number }) {
                 className="self-start rounded-lg border border-neutral-200 bg-neutral-50 p-5"
               >
                 <h2 id="information-heading" className="text-xl font-medium">
-                  Informações
+                  Information
                 </h2>
                 <dl className="mt-4 divide-y divide-neutral-200 text-sm">
                   {[
                     [
-                      "Formato",
+                      "Format",
                       FORMATS.find((format) => format.value === anime.format)
-                        ?.label ?? "Não informado",
+                        ?.label ?? "Not available",
                     ],
-                    ["Status", statuses[anime.status ?? ""] ?? "Não informado"],
-                    ["Episódios", anime.episodes ?? "A definir"],
+                    ["Status", statuses[anime.status ?? ""] ?? "Not available"],
+                    ["Episodes", anime.episodes ?? "To be announced"],
                     [
-                      "Duração por episódio",
+                      "Episode duration",
                       anime.duration === null
-                        ? "Não informada"
+                        ? "Not available"
                         : `${anime.duration} min`,
                     ],
-                    ["Início", formatDate(anime.startDate)],
-                    ["Fim", formatDate(anime.endDate)],
+                    ["Start date", formatDate(anime.startDate)],
+                    ["End date", formatDate(anime.endDate)],
                     [
-                      "Temporada (Japão)",
+                      "Season (Japan)",
                       anime.season && seasons[anime.season]
-                        ? `${seasons[anime.season]}${anime.year ? ` de ${anime.year}` : ""}`
-                        : (anime.year ?? "Não informada"),
+                        ? `${seasons[anime.season]}${anime.year ? ` ${anime.year}` : ""}`
+                        : (anime.year ?? "Not available"),
                     ],
-                    ["Estúdios", anime.studios.join(", ") || "Não informado"],
+                    ["Studios", anime.studios.join(", ") || "Not available"],
                   ].map(([label, value]) => (
                     <div
                       key={label}

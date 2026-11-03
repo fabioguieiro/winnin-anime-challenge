@@ -97,7 +97,7 @@ export async function fetchAnimeDetails(
       media.title?.romaji ||
       media.title?.english ||
       media.title?.native ||
-      "Título indisponível",
+      "Title unavailable",
     englishTitle: media.title?.english || null,
     nativeTitle: media.title?.native || null,
     image: media.coverImage?.extraLarge || null,

@@ -66,7 +66,7 @@ export async function fetchAnime(
                 item.title?.romaji ||
                 item.title?.english ||
                 item.title?.native ||
-                "Título indisponível",
+                "Title unavailable",
               image: item.coverImage?.extraLarge || null,
               genres: (item.genres ?? []).filter(
                 (genre): genre is string => genre !== null,

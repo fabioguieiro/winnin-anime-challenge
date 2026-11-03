@@ -75,7 +75,7 @@ it("hydrates filtered results without a browser refetch and requests only page t
     "true",
   );
   expect(fetchPage).not.toHaveBeenCalled();
-  await userEvent.click(screen.getByRole("button", { name: "Ver mais" }));
+  await userEvent.click(screen.getByRole("button", { name: "Load more" }));
   expect(
     await screen.findByRole("heading", { name: "Second anime" }),
   ).toBeInTheDocument();
@@ -96,7 +96,7 @@ it("does not replace browser pagination with a newer server page-one snapshot", 
     ).toBeInTheDocument(),
   );
   expect(
-    screen.queryByRole("button", { name: "Ver mais" }),
+    screen.queryByRole("button", { name: "Load more" }),
   ).not.toBeInTheDocument();
   expect(fetchPage).not.toHaveBeenCalled();
 });
@@ -140,11 +140,9 @@ it("shows a hydrated rate limit without automatically retrying and recovers on e
   fetchPage.mockClear();
   fetchPage.mockResolvedValueOnce({ ...first, hasNextPage: false });
   render(view(state));
-  expect(screen.getByRole("alert")).toHaveTextContent("Muitas buscas");
+  expect(screen.getByRole("alert")).toHaveTextContent("Too many requests");
   expect(fetchPage).not.toHaveBeenCalled();
-  await userEvent.click(
-    screen.getByRole("button", { name: "Tentar novamente" }),
-  );
+  await userEvent.click(screen.getByRole("button", { name: "Try again" }));
   expect(
     await screen.findByRole("heading", { name: "First anime" }),
   ).toBeInTheDocument();

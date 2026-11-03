@@ -56,7 +56,7 @@ it("validates, deduplicates and orders supplied episode numbers without filling 
   expect(result.episodes[0].thumbnail).toBeNull();
   expect(result.episodes[1].thumbnail).toBe("https://images.test/130.jpg");
   expect(result.episodes[2]).toMatchObject({
-    title: "Episódio sem título",
+    title: "Untitled episode",
     provider: "other.test",
   });
   expect(request).toHaveBeenCalledWith(ANIME_MEDIA_QUERY, { id: 21 }, signal);

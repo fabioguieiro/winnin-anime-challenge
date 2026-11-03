@@ -28,7 +28,7 @@ export function MediaThumbnail({
         />
       ) : (
         <span className="absolute inset-x-0 top-4 text-center text-xs text-white/70">
-          Prévia indisponível
+          Preview unavailable
         </span>
       )}
       <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />

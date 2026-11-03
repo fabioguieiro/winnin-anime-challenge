@@ -50,15 +50,15 @@ it("shows loading, external episode links and a click-to-load trailer", async ()
       }),
   );
   const { container } = setup();
-  expect(screen.getByRole("status")).toHaveTextContent("Carregando episódios");
+  expect(screen.getByRole("status")).toHaveTextContent("Loading episodes");
   resolve(media);
   expect(
     await screen.findByRole("button", {
-      name: "Reproduzir trailer de este anime",
+      name: "Play trailer for this anime",
     }),
   ).toBeInTheDocument();
   const episode = screen.getByRole("link", {
-    name: /Episode 1 - Journey — assistir em Provider/,
+    name: /Episode 1 - Journey — watch on Provider/,
   });
   expect(episode).toHaveAttribute("target", "_blank");
   expect(episode).toHaveAttribute("rel", "noopener noreferrer");
@@ -67,7 +67,7 @@ it("shows loading, external episode links and a click-to-load trailer", async ()
     "https://images.test/1.jpg",
   );
   expect(screen.getByRole("status")).toHaveTextContent(
-    "26 links de episódios disponíveis",
+    "26 episode links available",
   );
   expect(container.querySelector("iframe,video")).not.toBeInTheDocument();
 });
@@ -85,10 +85,10 @@ it("exposes the full horizontal list and switches cleanly to another title", asy
   const { changeId } = setup();
   await screen.findByRole("link", { name: /Episode 1 - Journey —/ });
   expect(
-    screen.getAllByRole("link", { name: /Episode .*assistir em Provider/ }),
+    screen.getAllByRole("link", { name: /Episode .*watch on Provider/ }),
   ).toHaveLength(26);
   expect(
-    screen.queryByRole("button", { name: "Mostrar mais episódios" }),
+    screen.queryByRole("button", { name: "Show more episodes" }),
   ).not.toBeInTheDocument();
   changeId(16498);
   expect(
@@ -105,7 +105,7 @@ it("handles absent episodes/trailer and failed image previews", async () => {
     .mockResolvedValueOnce({ ...media, trailer: null });
   const { changeId } = setup();
   expect(
-    await screen.findByText(/ainda não informou links de episódios/),
+    await screen.findByText(/has not provided episode links/),
   ).toBeInTheDocument();
   expect(
     screen.queryByRole("heading", { name: "Trailer" }),
@@ -115,7 +115,7 @@ it("handles absent episodes/trailer and failed image previews", async () => {
     name: /Episode 1 - Journey —/,
   });
   fireEvent.error(link.querySelector("img")!);
-  expect(link).toHaveTextContent("Prévia indisponível");
+  expect(link).toHaveTextContent("Preview unavailable");
   expect(link).toHaveAttribute("href", "https://provider.test/watch/1");
 });
 it("keeps media errors isolated and recovers with keyboard focus on explicit retry", async () => {
@@ -124,13 +124,13 @@ it("keeps media errors isolated and recovers with keyboard focus on explicit ret
     .mockResolvedValueOnce({ episodes: [], trailer: null });
   const { user } = setup();
   expect(await screen.findByRole("alert")).toHaveTextContent(
-    "Muitas solicitações",
+    "Too many requests",
   );
   await user.click(
-    screen.getByRole("button", { name: "Tentar carregar episódios novamente" }),
+    screen.getByRole("button", { name: "Try loading episodes again" }),
   );
   await waitFor(() =>
-    expect(screen.getByRole("heading", { name: "Episódios" })).toHaveFocus(),
+    expect(screen.getByRole("heading", { name: "Episodes" })).toHaveFocus(),
   );
   expect(fetchMedia).toHaveBeenCalledTimes(2);
 });

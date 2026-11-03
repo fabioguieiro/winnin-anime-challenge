@@ -86,21 +86,21 @@ export function AnimeCatalog() {
         aria-live="polite"
         aria-atomic="true"
         aria-label={
-          isNavigating || query.isPending ? "Carregando animes" : undefined
+          isNavigating || query.isPending ? "Loading anime" : undefined
         }
         className="sr-only"
       >
         {isNavigating || query.isPending
-          ? "Carregando animes..."
+          ? "Loading anime..."
           : query.isFetchingNextPage
-            ? "Carregando mais animes..."
+            ? "Loading more anime..."
             : query.isFetching
-              ? "Atualizando animes..."
+              ? "Updating anime..."
               : query.isError
                 ? ""
                 : items.length === 0
-                  ? "Nenhum anime encontrado."
-                  : `${items.length} animes carregados.`}
+                  ? "No anime found."
+                  : `${items.length} anime loaded.`}
       </p>
       {query.isPending ? (
         <CatalogSkeleton announce={false} />
@@ -126,10 +126,10 @@ export function AnimeCatalog() {
               <p className="font-medium">
                 {query.error instanceof GraphQLRequestError &&
                 query.error.status === 429
-                  ? "Muitas buscas em pouco tempo. Aguarde um momento e tente novamente."
+                  ? "Too many requests. Please wait a moment and try again."
                   : query.isFetchNextPageError
-                    ? "Não foi possível carregar mais animes. Os resultados anteriores continuam disponíveis."
-                    : "Não foi possível carregar os animes. Tente novamente."}
+                    ? "Could not load more anime. Previous results are still available."
+                    : "Could not load anime. Please try again."}
               </p>
               <button
                 type="button"
@@ -138,15 +138,15 @@ export function AnimeCatalog() {
                 ref={retryRef}
                 onClick={() => void retry()}
               >
-                {query.isFetching ? "Tentando..." : "Tentar novamente"}
+                {query.isFetching ? "Retrying..." : "Try again"}
               </button>
             </div>
           )}
           {!query.isError && items.length === 0 && (
             <div className="py-20 text-center">
-              <h2 className="text-xl font-medium">Nenhum anime encontrado</h2>
+              <h2 className="text-xl font-medium">No anime found</h2>
               <p className="mt-2 text-neutral-600">
-                Tente outro nome ou selecione um formato diferente.
+                Try another title or select a different format.
               </p>
               <button
                 type="button"
@@ -157,7 +157,7 @@ export function AnimeCatalog() {
                   updateFilters({ search: "", format: "" });
                 }}
               >
-                Limpar filtros
+                Clear filters
               </button>
             </div>
           )}
@@ -174,7 +174,7 @@ export function AnimeCatalog() {
               >
                 +
               </span>
-              {query.isFetchingNextPage ? "Carregando..." : "Ver mais"}
+              {query.isFetchingNextPage ? "Loading..." : "Load more"}
             </button>
           )}
         </>

@@ -1,7 +1,7 @@
 export function DetailsSkeleton() {
   return (
-    <div role="status" aria-label="Carregando detalhes" className="pb-12">
-      <span className="sr-only">Carregando detalhes do anime...</span>
+    <div role="status" aria-label="Loading details" className="pb-12">
+      <span className="sr-only">Loading anime details...</span>
       <div aria-hidden="true" className="motion-safe:animate-pulse">
         <div className="h-36 bg-neutral-200" />
         <div className="mx-auto max-w-6xl px-4 sm:px-6">

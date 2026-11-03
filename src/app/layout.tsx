@@ -15,14 +15,14 @@ const poppins = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "BUSCANIME | Encontre seu próximo anime",
+  title: "BUSCANIME | Find your next anime",
   description:
-    "Explore animes, busque por título e filtre por formato com dados do AniList.",
+    "Explore anime, search by title, and filter by format using AniList data.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR" className={poppins.variable}>
+    <html lang="en" className={poppins.variable}>
       <body className="min-h-screen antialiased">
         <Providers>{children}</Providers>
       </body>

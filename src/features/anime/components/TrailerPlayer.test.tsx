@@ -11,11 +11,11 @@ it("loads a YouTube iframe only after user action and stops/unmounts it when clo
     <TrailerPlayer trailer={trailer} title="Attack on Titan" />,
   );
   const play = screen.getByRole("button", {
-    name: "Reproduzir trailer de Attack on Titan",
+    name: "Play trailer for Attack on Titan",
   });
   expect(container.querySelector("iframe")).not.toBeInTheDocument();
   await userEvent.click(play);
-  const frame = screen.getByTitle("Trailer de Attack on Titan");
+  const frame = screen.getByTitle("Trailer for Attack on Titan");
   expect(frame).toHaveAttribute(
     "src",
     expect.stringContaining(
@@ -27,15 +27,16 @@ it("loads a YouTube iframe only after user action and stops/unmounts it when clo
     "strict-origin-when-cross-origin",
   );
   expect(frame).toHaveFocus();
-  expect(
-    screen.getByRole("link", { name: /Abrir no YouTube/ }),
-  ).toHaveAttribute("href", trailer.url);
-  await userEvent.click(screen.getByRole("button", { name: "Fechar trailer" }));
+  expect(screen.getByRole("link", { name: /Open on YouTube/ })).toHaveAttribute(
+    "href",
+    trailer.url,
+  );
+  await userEvent.click(screen.getByRole("button", { name: "Close trailer" }));
   expect(container.querySelector("iframe")).not.toBeInTheDocument();
   await waitFor(() =>
     expect(
       screen.getByRole("button", {
-        name: "Reproduzir trailer de Attack on Titan",
+        name: "Play trailer for Attack on Titan",
       }),
     ).toHaveFocus(),
   );
@@ -52,7 +53,7 @@ it("keeps unsupported providers as external links instead of embedding arbitrary
     />,
   );
   expect(
-    screen.getByRole("link", { name: /Assistir ao trailer em Dailymotion/ }),
+    screen.getByRole("link", { name: /Watch trailer on Dailymotion/ }),
   ).toHaveAttribute("target", "_blank");
   expect(screen.queryByRole("button")).not.toBeInTheDocument();
   expect(container.querySelector("iframe")).not.toBeInTheDocument();

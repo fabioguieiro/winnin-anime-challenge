@@ -26,10 +26,10 @@ export function TrailerPlayer({
         {trailer.provider}
       </span>
       <span className="mt-2 block text-xl leading-8 font-medium break-words">
-        Trailer de {title}
+        Trailer for {title}
       </span>
       <span className="mt-3 inline-flex min-h-11 items-center gap-3 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-neutral-950">
-        {embedUrl ? "Reproduzir aqui" : "Abrir no provedor"}{" "}
+        {embedUrl ? "Play here" : "Open on provider"}{" "}
         <span aria-hidden="true">▶</span>
       </span>
     </span>
@@ -45,7 +45,7 @@ export function TrailerPlayer({
             <iframe
               ref={frameRef}
               src={embedUrl}
-              title={`Trailer de ${title}`}
+              title={`Trailer for ${title}`}
               className="aspect-video min-h-[200px] w-full rounded-lg border-0"
               allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
               allowFullScreen
@@ -55,13 +55,13 @@ export function TrailerPlayer({
               <p className="text-xs font-medium text-accent">
                 {trailer.provider}
               </p>
-              <p className="mt-2 text-xl font-medium">Trailer de {title}</p>
+              <p className="mt-2 text-xl font-medium">Trailer for {title}</p>
               <button
                 type="button"
                 onClick={close}
                 className="mt-4 min-h-11 rounded-lg border border-white/40 px-4 py-2 text-sm hover:bg-white/10"
               >
-                Fechar trailer
+                Close trailer
               </button>
             </div>
           </div>
@@ -69,7 +69,7 @@ export function TrailerPlayer({
           <button
             type="button"
             ref={playRef}
-            aria-label={`Reproduzir trailer de ${title}`}
+            aria-label={`Play trailer for ${title}`}
             onClick={() => setPlaying(true)}
             className={cardClass}
           >
@@ -82,7 +82,7 @@ export function TrailerPlayer({
           href={trailer.url}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={`Assistir ao trailer em ${trailer.provider} (abre em nova aba)`}
+          aria-label={`Watch trailer on ${trailer.provider} (opens in a new tab)`}
           className={cardClass}
         >
           <MediaThumbnail src={trailer.thumbnail} trailer />
@@ -95,12 +95,12 @@ export function TrailerPlayer({
         rel="noopener noreferrer"
         className="mt-2 inline-flex min-h-11 items-center text-xs text-neutral-300 underline underline-offset-4"
       >
-        Abrir no {trailer.provider}
-        <span className="sr-only"> (abre em nova aba)</span>
+        Open on {trailer.provider}
+        <span className="sr-only"> (opens in a new tab)</span>
       </a>
       {embedUrl && (
         <p className="text-xs leading-5 text-neutral-400">
-          Se o vídeo não carregar no player, abra no YouTube.
+          If the video does not load, open it on YouTube.
         </p>
       )}
     </div>

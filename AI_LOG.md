@@ -213,3 +213,7 @@ Noticed that the loading skeleton still reserved the old tall banner/heading lay
 ## Details hierarchy — Production verification
 
 Deployed source commit dfa63f4 to the existing Vercel production alias; deployment dpl_3LQNaKRGR3AgQZ3vaTDcS3w85Xxx returned READY. Public One Piece verification at 1366×768 showed banner/identity, synopsis, then the horizontal episode rail, with thumbnails partly visible initially and no document overflow. The next arrow moved the rail. Saved a viewport screenshot in chat outputs. Public Attack on Titan had zero initial iframes; Play created the privacy-enhanced YouTube iframe in the page. YouTube again requested sign-in/bot confirmation, so unrestricted playback remains unverified. Close removed the frame and restored focus to Play. Reset the viewport override. All 90 tests and required checks had passed after the final skeleton change; the cloud build also passed.
+
+## English interface
+
+The candidate noticed mixed Portuguese and English throughout the app. Audited catalog, details, invalid-ID pages, shared shell, metadata, accessibility labels, loading/error/empty states, and nullable-data fallbacks. Replaced application-owned Portuguese copy with English, declared the document language as English, and formatted complete/partial dates with English month names in UTC. Preserved original anime/provider names and source descriptions. Updated behavioral test queries to English. The initial run found one leftover Portuguese test assertion for pagination recovery; corrected it before the final checks.

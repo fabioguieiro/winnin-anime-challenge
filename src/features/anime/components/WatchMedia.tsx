@@ -6,7 +6,7 @@ import { EpisodeRail } from "./EpisodeRail";
 import { TrailerPlayer } from "./TrailerPlayer";
 export function WatchMedia({
   id,
-  title = "este anime",
+  title = "this anime",
 }: {
   id: number;
   title?: string;
@@ -34,13 +34,13 @@ export function WatchMedia({
         tabIndex={-1}
         className="text-xl font-medium"
       >
-        Episódios
+        Episodes
       </h2>
 
       {query.isPending ? (
         <div role="status" className="mt-3">
           <p className="text-sm text-neutral-300">
-            Carregando episódios e trailer...
+            Loading episodes and trailer...
           </p>
           <div aria-hidden="true" className="mt-3 flex gap-4 overflow-hidden">
             {[1, 2, 3].map((i) => (
@@ -59,8 +59,8 @@ export function WatchMedia({
           <p>
             {query.error instanceof GraphQLRequestError &&
             query.error.status === 429
-              ? "Muitas solicitações. Aguarde um momento para carregar os episódios."
-              : "Não foi possível carregar episódios e trailer."}
+              ? "Too many requests. Please wait a moment before loading episodes."
+              : "Could not load episodes and trailer."}
           </p>
           <button
             type="button"
@@ -69,9 +69,7 @@ export function WatchMedia({
             className="mt-4 min-h-11 rounded bg-accent px-5 py-2 text-sm font-medium text-neutral-950 disabled:opacity-60"
             onClick={() => void retry()}
           >
-            {query.isFetching
-              ? "Tentando..."
-              : "Tentar carregar episódios novamente"}
+            {query.isFetching ? "Retrying..." : "Try loading episodes again"}
           </button>
         </div>
       ) : (
@@ -80,13 +78,13 @@ export function WatchMedia({
             <EpisodeRail episodes={query.data.episodes} id={id} key={id} />
           ) : (
             <p className="mt-3 text-sm leading-7 text-neutral-300">
-              O AniList ainda não informou links de episódios para este título.
-              Confira as opções em Onde assistir.
+              AniList has not provided episode links for this title yet. Check
+              the options under Where to watch.
             </p>
           )}
           <p className="mt-2 text-xs leading-5 text-neutral-300">
-            Abra no provedor. Catálogo parcial; disponibilidade e assinatura
-            variam por região.
+            Watch on the provider’s website. Partial catalog; availability and
+            subscriptions vary by region.
           </p>
           {query.data.trailer && (
             <TrailerPlayer

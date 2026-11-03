@@ -13,13 +13,13 @@ export function WhereToWatch({
       className="mt-10 border-t border-neutral-200 pt-8"
     >
       <h2 id="watch-heading" className="text-2xl font-medium">
-        Onde assistir
+        Where to watch
       </h2>
       {providers.length ? (
         <>
           <p className="mt-3 text-sm leading-6 text-neutral-600">
-            Links externos informados pelo AniList. A disponibilidade e a
-            assinatura dependem do serviço e da região.
+            External links provided by AniList. Availability and subscriptions
+            depend on the service and region.
           </p>
           <ul className="mt-5 flex flex-wrap gap-3">
             {providers.map((provider) => (
@@ -32,7 +32,7 @@ export function WhereToWatch({
                 >
                   {provider.name}
                   <span aria-hidden="true">↗</span>
-                  <span className="sr-only"> (abre em nova aba)</span>
+                  <span className="sr-only"> (opens in a new tab)</span>
                 </a>
               </li>
             ))}
@@ -40,7 +40,7 @@ export function WhereToWatch({
         </>
       ) : (
         <p className="mt-3 leading-7 text-neutral-600">
-          O AniList não informou links de streaming para este título.
+          AniList has not provided streaming links for this title.
         </p>
       )}
       <a
@@ -49,8 +49,8 @@ export function WhereToWatch({
         rel="noopener noreferrer"
         className="mt-5 inline-flex min-h-11 items-center text-sm text-brand underline underline-offset-4"
       >
-        Ver título no AniList
-        <span className="sr-only"> (abre em nova aba)</span>
+        View title on AniList
+        <span className="sr-only"> (opens in a new tab)</span>
       </a>
     </section>
   );

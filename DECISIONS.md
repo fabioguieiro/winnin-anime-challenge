@@ -24,7 +24,7 @@ The details page, keyboard/focus improvements, and server-rendered first page ar
 
 Routes in `src/app` compose the site shell and feature views. Anime-specific API mapping, server prefetch, hooks, UI, and pure rules stay in `src/features/anime`; the transport, QueryClient factory, and site shell are shared. Tests live beside the behavior they verify. No generic repository/service layer or global client-state store is added for this small application.
 
-Search and format belong to the URL so direct links and browser history work. The input holds the user's unapplied draft until Enter/“Buscar”; applied values synchronize without replacing its DOM node. Format selection applies immediately. Both environments trim search, validate formats, and use the first repeated parameter value. Filter navigation uses a React transition, retains current cards while waiting, shows “Buscando...”, and announces progress.
+Search and format belong to the URL so direct links and browser history work. The input holds the user's unapplied draft until Enter/“Search”; applied values synchronize without replacing its DOM node. Format selection applies immediately. Both environments trim search, validate formats, and use the first repeated parameter value. Filter navigation uses a React transition, retains current cards while waiting, shows “Searching...”, and announces progress.
 
 React Query owns server data. Infinite-query keys include the normalized filter pair; details keys include the ID. Image failures and temporary focus/navigation state remain local UI concerns.
 
@@ -105,3 +105,7 @@ Following candidate review, place banner/title/cover first, a compact three-line
 Use a click-to-load YouTube iframe on the fixed youtube-nocookie.com origin, constructed only from canonical validated YouTube watch links. Request autoplay only after the user's play action. Keep controls/fullscreen available, provide a meaningful frame title, focus it after activation, and unmount on Close to stop playback and restore focus. Do not preload a video SDK or iframe with the details page. The iframe's strict-origin-when-cross-origin policy preserves the Referer required by YouTube; thumbnail images still use no-referrer.
 
 Keep an external fallback visible because video owners, region restrictions, or provider sign-in checks can block embedding. The test browser encountered a YouTube sign-in/bot check: iframe loading was verified, actual playback was not. Do not bypass that gate. Dailymotion retains external playback rather than inventing a Player ID/configuration that AniList does not provide. References: https://developers.google.com/youtube/player_parameters and https://support.google.com/youtube/answer/171780.
+
+## Interface language
+
+The candidate requested a consistently English interface. All application-owned text, including loading/error/empty states, accessibility labels, metadata, status and season labels, and footer copy, is English. The document declares `lang="en"`. Release dates use explicit English month names and UTC to avoid numeric-date ambiguity and timezone shifts, while preserving partial dates. Anime titles and source-provided names/content retain their original forms; no translation service or localization dependency was introduced.

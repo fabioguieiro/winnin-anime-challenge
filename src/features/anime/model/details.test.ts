@@ -12,10 +12,10 @@ it.each(["0", "-1", "1.5", "1e2", "abc", "2147483648"])(
 it("accepts a positive GraphQL Int id", () =>
   expect(parseAnimeId("16498")).toBe(16498));
 it("preserves partial dates without inventing a day or month", () => {
-  expect(formatDate(null)).toBe("Não informado");
+  expect(formatDate(null)).toBe("Not available");
   expect(formatDate({ year: 2013, month: null, day: null })).toBe("2013");
-  expect(formatDate({ year: 2013, month: 4, day: null })).toBe("04/2013");
-  expect(formatDate({ year: 2013, month: 4, day: 7 })).toBe("07/04/2013");
+  expect(formatDate({ year: 2013, month: 4, day: null })).toBe("Apr 2013");
+  expect(formatDate({ year: 2013, month: 4, day: 7 })).toBe("Apr 7, 2013");
 });
 it("converts synopsis markup to readable paragraphs and text entities", () => {
   expect(plainSynopsis("<b>A &amp; B</b><br><br>It&#39;s spring.")).toBe(

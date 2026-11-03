@@ -54,7 +54,7 @@ export async function fetchAnimeMedia(
     const url = safeExternalUrl(entry.url);
     if (!url || seen.has(url)) continue;
     seen.add(url);
-    const title = entry.title?.trim() || "Episódio sem título";
+    const title = entry.title?.trim() || "Untitled episode";
     const number = title.match(/^Episode\s+(\d+)\b/i)?.[1];
     episodes.push({
       title,

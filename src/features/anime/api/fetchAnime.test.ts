@@ -31,7 +31,7 @@ it("maps nullable API fields and uses title fallbacks", async () => {
       { id: 1, title: "Example", image: null, genres: ["Action"], score: null },
       {
         id: 2,
-        title: "Título indisponível",
+        title: "Title unavailable",
         image: null,
         genres: [],
         score: 0,

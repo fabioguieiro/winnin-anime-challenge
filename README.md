@@ -41,7 +41,7 @@ Jest covers score boundaries, nullable API fields, transport/GraphQL errors, URL
 ## Review the application
 
 1. Open `/` and use “Ver mais” to append another page.
-2. Search for “Naruto” with Enter or “Buscar”, then select “Movie”. The URL retains both filters. A direct visit to `/?search=Naruto&format=MOVIE` also works; results can change with AniList data.
+2. Search for “Naruto” with Enter or “Search”, then select “Movie”. The URL retains both filters. A direct visit to `/?search=Naruto&format=MOVIE` also works; results can change with AniList data.
 3. Open a card and use “Voltar para os animes”. Filters and previously loaded browser pages are retained while cached. Reloading starts at page one.
 4. Try a search with no matches and use “Limpar filtros”. Network/rate-limit failures offer an explicit retry; pagination failures keep earlier cards.
 5. Use Tab and the skip link, and inspect phone/tablet/desktop layouts. Titles can grow rather than overlap scores or truncate essential content.

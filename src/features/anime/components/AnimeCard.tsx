@@ -31,7 +31,7 @@ export function AnimeCard({
         />
       ) : (
         <span className="absolute bottom-3 left-3 text-xs text-neutral-300">
-          Sem imagem
+          No image
         </span>
       )}
       <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/35 to-black/5" />
@@ -43,7 +43,7 @@ export function AnimeCard({
         >
           {anime.title}
         </h2>
-        <ul aria-label="Gêneros" className="mt-2 flex flex-wrap gap-2">
+        <ul aria-label="Genres" className="mt-2 flex flex-wrap gap-2">
           {anime.genres.map((genre) => (
             <li
               key={genre}
@@ -60,7 +60,7 @@ export function AnimeCard({
       <Link
         href={detailsHref}
         prefetch={false}
-        aria-label={`Ver detalhes de ${anime.title}`}
+        aria-label={`View details for ${anime.title}`}
         className="anime-card-link absolute inset-0 z-20 rounded-lg hover:bg-white/5"
       />
     </article>

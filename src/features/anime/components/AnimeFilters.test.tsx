@@ -37,7 +37,7 @@ it("shows a pending search without replacing or disabling the focused input", as
   const input = screen.getByRole("searchbox");
   await userEvent.click(input);
   rerender(<AnimeFilters filters={filters} onChange={onChange} pending />);
-  expect(screen.getByRole("button", { name: "Buscando..." })).toHaveAttribute(
+  expect(screen.getByRole("button", { name: "Searching..." })).toHaveAttribute(
     "aria-busy",
     "true",
   );
@@ -45,7 +45,7 @@ it("shows a pending search without replacing or disabling the focused input", as
   expect(input).toHaveFocus();
   expect(input).toBeEnabled();
   rerender(<AnimeFilters filters={filters} onChange={onChange} />);
-  expect(screen.getByRole("button", { name: "Buscar" })).toHaveAttribute(
+  expect(screen.getByRole("button", { name: "Search" })).toHaveAttribute(
     "aria-busy",
     "false",
   );

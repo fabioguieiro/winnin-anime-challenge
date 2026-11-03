@@ -30,12 +30,14 @@ export function parseAnimeId(value: string): number | null {
 }
 
 export function formatDate(date: FuzzyDate): string {
-  if (!date?.year) return "Não informado";
+  if (!date?.year) return "Not available";
   if (!date.month) return String(date.year);
-  const month = String(date.month).padStart(2, "0");
-  return date.day
-    ? `${String(date.day).padStart(2, "0")}/${month}/${date.year}`
-    : `${month}/${date.year}`;
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    ...(date.day ? { day: "numeric" as const } : {}),
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(Date.UTC(date.year, date.month - 1, date.day ?? 1)));
 }
 
 // Render the result as React text, never as HTML. AniList descriptions can
