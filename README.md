@@ -2,6 +2,8 @@
 
 Anime catalog built for the [Winnin frontend challenge](https://github.com/winnin/desafio/blob/master/FRONTEND.md), using live AniList data and the supplied [Figma reference](https://www.figma.com/design/PPvIPPITdlgZo9CeGDVezk/INSTITUCIONAL----DesafioWinnin?node-id=3396-64). Includes text search, format filters, genre tags, average-score badges, load-more pagination, and an additional anime details page.
 
+**Live demo:** [winnin-anime-challenge.vercel.app](https://winnin-anime-challenge.vercel.app)
+
 ## Run locally
 
 Use Node.js 22 LTS and npm. Development was verified with Node.js 22.23.4.
@@ -91,9 +93,9 @@ At the 2026-11-03 submission review, `npm audit --omit=dev` reported zero adviso
 
 ### Deployment with Vercel
 
-Deployment is prepared for Vercel's Next.js preset, preserving server rendering and image optimization. Node is pinned to 22.x in package metadata and `.nvmrc` selects Node 22 locally. `vercel.json` declares `npm ci` / `npm run build`; `.vercelignore` excludes local output, dependencies, environment files, and checkout/account metadata. No API secret is required.
+Deployment uses Vercel's Next.js preset, preserving server rendering and image optimization. Node is pinned to 22.x in package metadata and `.nvmrc` selects Node 22 locally. `vercel.json` declares `npm ci` / `npm run build`; `.vercelignore` excludes local output, dependencies, environment files, and checkout/account metadata. No API secret is required.
 
-Authenticate and create a preview from this repository:
+Authenticate and deploy from this repository (choose the existing challenge project when linking):
 
 ```sh
 npx vercel@65.10.0 login
@@ -110,7 +112,9 @@ npx vercel@65.10.0 deploy --prod
 
 Verify default/filtered catalogs, images, load-more, details, return navigation, and malformed-ID 404. Confirm the production URL is accessible to the hiring reviewer without an account. Measure Lighthouse on the deployment; local results do not establish hosting performance. No static export or custom output-directory override is used.
 
-Preparation is complete; publication and the live URL remain pending account authentication. No successful cloud deployment is claimed.
+Published on 2026-11-03 at [winnin-anime-challenge.vercel.app](https://winnin-anime-challenge.vercel.app). Anonymous access to the production alias was verified. Vercel published the first deployment directly to production; later `deploy` commands create previews unless `--prod` is used.
+
+Deployed smoke checks passed for default/filtered server HTML, optimized covers, 12→24 pagination, details/provider links, cached return navigation, search/format controls, phone reflow, and malformed-ID HTTP 404. The browser warning/error log was empty. One clean mobile Lighthouse 13.6.0 production audit scored 96: 2.7s LCP, 30ms TBT, and zero CLS. It confirmed initial-document cover discovery and no browser GraphQL request during first load. This is one hosted lab run with live API/cache conditions; scores can vary.
 
 ## AI involvement
 

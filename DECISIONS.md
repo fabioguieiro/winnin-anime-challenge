@@ -6,7 +6,7 @@ This document describes the current implementation and its tradeoffs. [AI_LOG.md
 
 The brief asks for a Figma-based anime catalog using React/TypeScript, AniList data, format/text filters, and score colors. The candidate also requested details pages, focused tests, atomic commits, and a performance review. The implementation prioritizes a working catalog, predictable requests, usable recovery, and explainable code within the challenge's limited scope.
 
-The details page, keyboard/focus improvements, and server-rendered first page are additions beyond the explicit brief. No video player, authentication, watchlist, characters/relations, or broad product expansion is included. Deployment remains optional.
+The details page, keyboard/focus improvements, and server-rendered first page are additions beyond the explicit brief. No video player, authentication, watchlist, characters/relations, or broad product expansion is included. Deployment supplies the optional hosting bonus.
 
 ## Technology choices
 
@@ -81,8 +81,9 @@ Production Lighthouse 13.6.0 mobile runs after SSR scored 89–90 (final run: 89
 3. Add per-title server rendering/metadata and an HTTP 404 for valid missing IDs while avoiding duplicate upstream requests.
 4. Resolve development-tool advisories through compatible updates and add CI checks for the documented verification commands.
 5. Add generated GraphQL types/runtime validation if query/schema scope grows; introduce shared server caching/rate-limit protection if deployment traffic justifies it.
-6. Publish a Node-backed Next.js deployment as the optional delivery bonus after configuration review.
 
-## Deployment preparation
+## Deployment
 
-Use native Vercel Next.js hosting for the optional deployment step, preserving request-time rendering and image optimization. Pin Node to the locally verified 22.x major rather than an open-ended >=22 range. Declare the Next.js preset and reproducible install/build commands; avoid static export or framework migration. CLI upload exclusions keep local output/environment/account metadata outside source uploads. Account/project links remain ignored; Git-based publication is separate from direct CLI hosting. Vercel CLI 65.10.0 reported this machine is logged out: authentication and deployed smoke checks remain required. No temporary unclaimed deployment was created.
+Use native Vercel Next.js hosting for the optional deployment step, preserving request-time rendering and image optimization. Pin Node to the locally verified 22.x major rather than an open-ended >=22 range. Declare the Next.js preset and reproducible install/build commands; avoid static export or framework migration. CLI upload exclusions keep local output/environment/account metadata outside source uploads. Account/project links remain ignored; Git-based publication is separate from direct CLI hosting. After the candidate authenticated, Vercel CLI 65.10.0 created the isolated challenge project and published https://winnin-anime-challenge.vercel.app. The first deployment was assigned to production automatically; no separate preview was created. Verified the production alias anonymously without modifying protection settings on other deployment URLs or any existing projects. No temporary unclaimed deployment was used.
+
+The Node 22 cloud install/build succeeded, and deployed catalog/image/filter/pagination/details/return/404 checks passed. A single clean-profile mobile Lighthouse 13.6.0 run scored 96, with 2.7s LCP, 30ms TBT, zero CLS, and no duplicate browser GraphQL fetch. Treat this as dated hosted lab evidence rather than a guaranteed score. Repository publication is still separate; CLI deployment did not create a Git remote.
