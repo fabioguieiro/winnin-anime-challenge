@@ -6,6 +6,7 @@ export function animeQueryOptions(filters: AnimeFilters) {
   return infiniteQueryOptions({
     queryKey: ["anime", filters] as const,
     initialPageParam: 1,
+    retryOnMount: false,
     queryFn: ({ pageParam, signal }) => fetchAnime(filters, pageParam, signal),
     getNextPageParam: (lastPage) =>
       lastPage.hasNextPage ? lastPage.page + 1 : undefined,

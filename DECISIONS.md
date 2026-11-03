@@ -83,3 +83,15 @@ Load only the first catalog cover and details banner eagerly with high fetch pri
 ## Server-rendered catalog — Shared query contract
 
 Share infinite-query options and URL-filter normalization between the upcoming server prefetch and browser hook. Both sides must use the same key, first-page parameter, trimmed search, validated format, and first value for repeated URL parameters. This refactor preserves existing browser behavior.
+
+## Server-rendered catalog — Prefetch and hydration
+
+The measured production first-load waterfall justified revisiting the original client-only data decision. Read the home route's async searchParams, normalize filters, and await page one using a fresh QueryClient for each server request. Render through a feature-level HydrationBoundary with the existing browser provider and five-minute freshness policy. The catalog becomes request-rendered instead of a static skeleton; the first cover is discoverable directly in HTML. No new package, API proxy, server action, or details-rendering change is needed.
+
+Preserve browser query data when it already exists, so a newer server page-one snapshot cannot erase previously appended pages on return navigation. Existing query freshness/refetch rules remain responsible for updating those pages; only a missing browser entry is seeded. Keep server cache lifetimes infinite within their request and explicitly clear the prefetch client after dehydration, avoiding per-request GC timers and cross-request state. There is no shared server data cache: each server navigation may fetch page one, including a navigation where the browser already has that filter cached.
+
+Bound the server API request to eight seconds with a combined cancellation/timeout signal. Include failed queries in the snapshot, serialize a generic plain error with only the public HTTP/GraphQL status, and reconstruct the client error for existing 429 guidance. Disable catalog retryOnMount so hydration does not immediately repeat a failed server request; the existing Retry button still works. This trades some initial response time and server-side AniList traffic for earlier content/image discovery. A deployed server needs outbound AniList access and shares its upstream rate-limit budget across visitors; server caching can be considered if measured traffic warrants it.
+
+References: bundled Next.js page/data-fetching docs and https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr.
+
+Wrap filter route updates in a React transition and show “Buscando...” while the server navigation is pending. Keep the search field editable and focused, retain current cards until the new URL/results commit, and announce loading through the existing polite status region. This preserves feedback after moving the initial request to the server.

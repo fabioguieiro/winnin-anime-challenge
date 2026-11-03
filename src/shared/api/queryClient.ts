@@ -5,7 +5,7 @@ export function createQueryClient() {
     defaultOptions: {
       queries: {
         staleTime: 5 * 60_000,
-        gcTime: 15 * 60_000,
+        gcTime: typeof window === "undefined" ? Infinity : 15 * 60_000,
         retry: false,
         refetchOnWindowFocus: false,
       },

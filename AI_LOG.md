@@ -131,3 +131,17 @@ Final step-6 verification: 57 Jest tests passed across eleven suites; production
 ## Server-rendered catalog — Preparation
 
 Extracted a typed infinite-query options factory and shared URL-filter normalization before adding server prefetch. Added filter normalization cases for omitted, whitespace, repeated, and invalid values. This commit keeps existing request/render behavior and prepares the same query contract for both environments.
+
+## Server-rendered catalog — Implementation and functional validation
+
+Added request-scoped page-one prefetch, awaited URL filters in the async home route, and hydrated the existing infinite query before rendering cards. Added an eight-second server timeout and safe error serialization so server failures use the existing retry UI without an immediate client retry. The hydration wrapper preserves any browser pages already loaded. Kept details and later-page requests client-owned. Updated README and decisions to document server network requirements, latency/rate-limit tradeoffs, and the absence of a shared server cache.
+
+All 69 tests passed across thirteen suites; production build, standalone typecheck, lint, formatting, and whitespace checks passed. New tests verify actual server-rendered card/title/image HTML, request isolation, safe 429 serialization, zero duplicate hydration fetch, next-page-only requests, filter separation, preserved browser pagination, and explicit error recovery. Raw production HTML contained 12 default cards and 11 Naruto/Movie cards before JavaScript execution. Live browser navigation loaded 24 cards, returned from details with all 24 preserved, submitted Naruto search, and applied Movie to show 11 results. A 390px viewport had no horizontal overflow and the warning/error log was empty.
+
+A final navigation check found that server-driven filter changes retained old results while waiting, so added a React transition with a visible “Buscando...” button label and polite loading announcement. Added a focused regression ensuring the pending state preserves the editable, focused input. Rebuilt and reran all 69 tests plus type/lint/format checks. Live Enter submission showed the pending indicator, then four Bleach/Movie cards with input focus retained and no console warnings/errors. Saved the final browser screenshot.
+
+## Server-rendered catalog — Lighthouse verification
+
+Used Lighthouse 13.6.0 with fresh headless Chrome profiles, performance-only mobile audits, default simulated throttling (150ms RTT, approximately 1.6Mbps, 4× CPU), and the production server on port 3100. The earlier client-rendered production baseline scored 84 with 4.3s LCP and 40ms TBT. Three initial SSR runs scored 89/90/90 with 3.7/3.6/3.6s LCP and 20–30ms TBT. After the navigation-feedback refinement, the final build scored 89 with 3.7s LCP, 30ms TBT, 0.7s FCP, and zero CLS. Every SSR audit confirmed initial-document image discovery, zero browser GraphQL requests, no runtime error, and no run warning. Reports are saved in the chat outputs rather than committed as large generated artifacts.
+
+These are local lab results with the image-optimizer cache retained and live AniList latency; the baseline was a single earlier run. They are not a guaranteed deployed score or field Web Vitals measurement. The initial request waterfall is removed, but mobile LCP still has room for improvement. No further image/font changes were bundled into this SSR change.

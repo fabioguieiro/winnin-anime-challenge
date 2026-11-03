@@ -6,8 +6,10 @@ import { FORMATS, type AnimeFilters as Filters } from "../model/anime";
 export function AnimeFilters({
   filters,
   onChange,
+  pending = false,
 }: {
   filters: Filters;
+  pending?: boolean;
   onChange: (filters: Filters) => void;
 }) {
   const searchRef = useRef<HTMLInputElement>(null);
@@ -60,9 +62,10 @@ export function AnimeFilters({
         />
         <button
           type="submit"
+          aria-busy={pending}
           className="min-h-11 rounded-sm bg-brand px-6 text-sm text-white transition-colors hover:bg-brand-dark sm:h-[38px] sm:min-h-0"
         >
-          Buscar
+          {pending ? "Buscando..." : "Buscar"}
         </button>
       </form>
     </div>

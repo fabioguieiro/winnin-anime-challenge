@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AnimeFilters } from "./components/AnimeFilters";
 import { AnimeCard } from "./components/AnimeCard";
@@ -12,6 +12,7 @@ import { GraphQLRequestError } from "@/shared/api/graphql";
 
 export function AnimeCatalog() {
   const router = useRouter();
+  const [isNavigating, startTransition] = useTransition();
   const params = useSearchParams();
   const filters = parseAnimeFilters({
     search: params.get("search"),
@@ -68,20 +69,28 @@ export function AnimeCatalog() {
     if (next.format) nextParams.set("format", next.format);
     else nextParams.delete("format");
     const suffix = nextParams.toString();
-    router.push(suffix ? `/?${suffix}` : "/", { scroll: false });
+    startTransition(() => {
+      router.push(suffix ? `/?${suffix}` : "/", { scroll: false });
+    });
   }
 
   return (
     <>
-      <AnimeFilters filters={filters} onChange={updateFilters} />
+      <AnimeFilters
+        filters={filters}
+        onChange={updateFilters}
+        pending={isNavigating}
+      />
       <p
         role="status"
         aria-live="polite"
         aria-atomic="true"
-        aria-label={query.isPending ? "Carregando animes" : undefined}
+        aria-label={
+          isNavigating || query.isPending ? "Carregando animes" : undefined
+        }
         className="sr-only"
       >
-        {query.isPending
+        {isNavigating || query.isPending
           ? "Carregando animes..."
           : query.isFetchingNextPage
             ? "Carregando mais animes..."

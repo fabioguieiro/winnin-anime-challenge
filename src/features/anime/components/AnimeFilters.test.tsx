@@ -27,3 +27,26 @@ it("preserves input focus while syncing applied search and browser history", asy
   expect(input).toHaveValue("");
   expect(input).toHaveFocus();
 });
+
+it("shows a pending search without replacing or disabling the focused input", async () => {
+  const onChange = jest.fn();
+  const filters = { search: "Naruto", format: "" } as const;
+  const { rerender } = render(
+    <AnimeFilters filters={filters} onChange={onChange} />,
+  );
+  const input = screen.getByRole("searchbox");
+  await userEvent.click(input);
+  rerender(<AnimeFilters filters={filters} onChange={onChange} pending />);
+  expect(screen.getByRole("button", { name: "Buscando..." })).toHaveAttribute(
+    "aria-busy",
+    "true",
+  );
+  expect(screen.getByRole("searchbox")).toBe(input);
+  expect(input).toHaveFocus();
+  expect(input).toBeEnabled();
+  rerender(<AnimeFilters filters={filters} onChange={onChange} />);
+  expect(screen.getByRole("button", { name: "Buscar" })).toHaveAttribute(
+    "aria-busy",
+    "false",
+  );
+});
