@@ -121,3 +121,9 @@ Reproduced the one-minute freshness issue with a two-page catalog: returning aft
 ## Step 6 — Font compression
 
 Converted all three existing Poppins TTF files to full-glyph WOFF2 using temporary fontTools/Brotli tooling outside the application. Total raw font assets decreased from 480,828 to 153,796 bytes (68.0%); these are file sizes, not a measured page-speed score. Verified equal glyph order, Unicode maps, and horizontal metrics after decoding each output. Updated next/font/local paths and retained the original OFL license.
+
+## Step 6 — Images and final validation
+
+Browser inspection confirmed the first visible cover used lazy loading and the declared responsive widths omitted grid gutters/gaps. Corrected the sizes expression and made only the first cover and details banner eager/high-priority. Other images remain lazy, with existing fallbacks. Kept the UI design unchanged. Reviewed initial production script references: ten chunks per route, roughly 199 KB gzip including framework code (local compression estimate, not measured transfer or a speed score).
+
+Final step-6 verification: 57 Jest tests passed across eleven suites; production build, standalone typecheck, lint, formatting, and whitespace checks passed. The cache return regression failed before the policy change and passed afterward; expiry refresh and cancellation also passed. Production browser checks confirmed WOFF2 preloads, all initial covers loaded, first-image/banner priority hints, and 24 catalog cards retained after a details round trip. Checked the phone layout at a 390px viewport without horizontal overflow; fonts reported loaded and the console warning/error log was empty. Saved a production screenshot. No Lighthouse benchmark, field Web Vitals, or total transfer measurement was performed. Step 6 is complete; final submission documentation remains step 7.

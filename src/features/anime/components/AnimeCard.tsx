@@ -8,9 +8,11 @@ import { ScoreBadge } from "./ScoreBadge";
 
 export function AnimeCard({
   anime,
+  prominent = false,
   detailsHref = `/anime/${anime.id}`,
 }: {
   anime: Anime;
+  prominent?: boolean;
   detailsHref?: string;
 }) {
   const [failedImage, setFailedImage] = useState<string | null>(null);
@@ -21,7 +23,9 @@ export function AnimeCard({
           src={anime.image}
           alt=""
           fill
-          sizes="(max-width: 639px) calc(100vw - 32px), (max-width: 1023px) 50vw, (max-width: 1366px) 25vw, 316px"
+          sizes="(max-width: 639px) calc(100vw - 32px), (max-width: 1023px) calc(50vw - 33px), (max-width: 1366px) calc(25vw - 24.5px), 317px"
+          loading={prominent ? "eager" : "lazy"}
+          fetchPriority={prominent ? "high" : "auto"}
           className="object-cover"
           onError={() => setFailedImage(anime.image)}
         />

@@ -99,10 +99,11 @@ export function AnimeCatalog() {
         <>
           {items.length > 0 && (
             <div className="grid grid-cols-1 gap-x-4 gap-y-[21px] sm:grid-cols-2 lg:grid-cols-4">
-              {items.map((anime) => (
+              {items.map((anime, index) => (
                 <AnimeCard
                   key={anime.id}
                   anime={anime}
+                  prominent={index === 0}
                   detailsHref={getDetailsHref(anime.id, filters)}
                 />
               ))}

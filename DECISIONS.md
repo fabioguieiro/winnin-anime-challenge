@@ -75,3 +75,7 @@ Treat query data as fresh for five minutes and retain inactive entries for fifte
 ## Step 6 — Font transfer size
 
 Serve full-glyph WOFF2 versions of the same three local Poppins fonts. Converted the existing official Google Fonts TTF files with fontTools 4.60.2 and Brotli 1.2.1 (`font.flavor = "woff2"; font.save(...)`), keeping the OFL license. This is compression, not subsetting: glyph order, Unicode character maps, and horizontal metrics were verified after round-trip decoding. No application dependency or remote font request is introduced.
+
+## Step 6 — Image loading and bundle review
+
+Load only the first catalog cover and details banner eagerly with high fetch priority; retain lazy loading on other images and disabled speculative card-route prefetch. Cover sizes now reflect the 32px phone gutters, 50px larger-screen gutters, 16px column gaps, and 1366px shell cap. These hints guide responsive source selection; no image-byte or LCP reduction is claimed without controlled measurements. The production route HTML references ten script chunks per route: 638,398 bytes for catalog and 639,108 for details, approximately 198,651 and 198,988 bytes when independently gzip-compressed. These estimates include Next/React, exclude later navigation chunks, and are not total network transfer. No new runtime package or speculative code-splitting layer was warranted by this limited review.

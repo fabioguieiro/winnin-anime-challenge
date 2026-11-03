@@ -27,7 +27,15 @@ const seasons: Record<string, string> = {
   FALL: "Outono",
 };
 
-function Artwork({ src, sizes }: { src: string | null; sizes: string }) {
+function Artwork({
+  src,
+  sizes,
+  prominent = false,
+}: {
+  src: string | null;
+  sizes: string;
+  prominent?: boolean;
+}) {
   const [failed, setFailed] = useState<string | null>(null);
   if (!src || failed === src)
     return (
@@ -41,6 +49,8 @@ function Artwork({ src, sizes }: { src: string | null; sizes: string }) {
       alt=""
       fill
       sizes={sizes}
+      loading={prominent ? "eager" : "lazy"}
+      fetchPriority={prominent ? "high" : "auto"}
       className="object-cover"
       onError={() => setFailed(src)}
     />
@@ -124,6 +134,7 @@ export function AnimeDetails({ id }: { id: number }) {
             {anime.banner && (
               <Artwork
                 src={anime.banner}
+                prominent
                 sizes="(max-width:1366px) 100vw, 1366px"
               />
             )}
