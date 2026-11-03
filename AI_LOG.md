@@ -197,3 +197,11 @@ No provider video playback, subscription access, or regional availability was te
 ## Details hierarchy — Candidate correction
 
 The candidate corrected the hierarchy and requested a horizontal episode list plus embedded trailers. Moved synopsis ahead of episodes, reduced banner/identity spacing, added synopsis expand/collapse, and moved trailers after episodes. Replaced the grid/show-more interaction with one horizontal rail using native scrolling and accessible boundary-aware arrows. Tests cover section order, synopsis expansion/focus, rail boundaries, and title switching. The first desktop measurement showed only a narrow thumbnail strip at 1366×768; tightened spacing and moved supporting provider copy below the rail before final verification.
+
+## Inline trailers and final layout verification
+
+Added a fixed-origin privacy-enhanced YouTube iframe loaded only after explicit play, with fullscreen, a descriptive frame title, required referring-origin policy, an always-visible provider fallback, and Close/unmount/focus restoration. Dailymotion remains an external-link fallback. Followed official YouTube embed/referrer documentation; no third-party player SDK or automatic initial video load was added.
+
+All 90 tests across nineteen suites passed, plus typecheck, lint, and production build. Tests verify safe embed URLs, no initial iframe, explicit activation, close/unmount/focus recovery, unsupported-provider fallback, section order, synopsis expansion, rail boundaries, and title changes. Browser measurements at 1366×768 placed the first One Piece thumbnail at y=637.5 with its bottom at y=790.5, so roughly 130px was visible in the initial viewport. Synopsis preceded episodes; no document overflow. The horizontal arrow scrolled the rail, synopsis expanded to full text and collapsed, and 390px/320px widths had no horizontal document overflow.
+
+The inline player loaded Attack on Titan's video title inside the page, but YouTube displayed “Sign in to confirm you’re not a bot” in the automated browser. Did not attempt to bypass it and do not claim successful video playback. Closing removed the iframe and restored the play-button focus. Production publication/verification follows below.

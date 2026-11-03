@@ -34,7 +34,7 @@ npm run format:check
 npm run build
 ```
 
-`npm run test:watch` runs Jest interactively; `npm run format` formats the project. Tests use mocked requests and do not depend on AniList availability. The latest streaming-experience review passed 84 tests across 16 suites, type checking, lint, formatting, and the production build.
+`npm run test:watch` runs Jest interactively; `npm run format` formats the project. Tests use mocked requests and do not depend on AniList availability. The latest streaming-experience review passed 90 tests across 19 suites, type checking, lint, formatting, and the production build.
 
 Jest covers score boundaries, nullable API fields, transport/GraphQL errors, URL filters, pagination, retry/focus behavior, details/provider links, server-rendered HTML, hydration, cancellation, and cache reuse. Live browser review is separate; there is no automated end-to-end suite, as agreed for this project.
 
@@ -122,8 +122,10 @@ Codex assisted with planning, implementation, tests, visual inspection, correcti
 
 ## Episode browsing and trailers
 
-Details now feature a streaming-style section before the synopsis: episode thumbnails, supplied episode numbers, provider labels, play overlays, and a featured trailer when AniList provides a supported YouTube/Dailymotion ID. Thumbnail cards open the provider in a labeled new tab. Failed/missing images retain a usable link with a preview fallback. No video SDK, autoplay, or embedded player is loaded.
+Details follow banner/title/cover → synopsis → episodes → trailer → supporting information. Long synopses show three lines with an accessible expand/collapse control; the complete text stays available. Compact hero spacing leaves most of the first thumbnails visible at the checked 1366×768 desktop viewport, with title-length/device variation.
 
-Episode/trailer data loads through a separate cancellable query after title metadata resolves. AniList returns the entire streamingEpisodes array without pagination; the UI reveals twelve links at a time from that cached response. “Mostrar mais episódios” focuses the first new link. Lists may be incomplete and preserve missing episode numbers; no seasons, durations, or completion/progress state are invented. One Piece currently supplies 69 links and no trailer; these upstream values can change.
+Episodes appear in one horizontal rail with swipe/trackpad scrolling, keyboard access, and boundary-aware previous/next buttons. All supplied links remain available; thumbnails load lazily. Episode cards open the provider in a labeled new tab. Missing images retain a usable link with a preview fallback. Counts/numbers reflect source data; no seasons, watch progress, or missing episodes are invented.
 
-Provider thumbnails load directly from validated HTTPS source URLs with lazy loading and no referrer, instead of expanding the server image proxy's domain allowlist. The catalog remains unchanged.
+YouTube trailers use a click-to-load inline privacy-enhanced player. No iframe is present before user activation; closing removes it and restores focus. An external provider link is always available because YouTube can restrict embedding or request sign-in. The automated browser loaded the player but encountered YouTube's sign-in/bot check, so unrestricted video playback was not verified. Dailymotion remains an external-link fallback; its current player integration requires provider configuration beyond the supplied AniList metadata.
+
+Episode/trailer data loads through a separate cancellable query after title metadata resolves. AniList returns the entire streamingEpisodes array without pagination. All links are rendered in the horizontal rail, so very large source lists can increase DOM work even though images remain lazy. Thumbnails use validated HTTPS URLs directly with no referrer; the catalog's narrow image-proxy allowlist is unchanged. The YouTube iframe uses strict-origin-when-cross-origin to provide the referring origin required by YouTube.

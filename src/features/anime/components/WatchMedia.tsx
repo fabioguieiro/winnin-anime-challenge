@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { GraphQLRequestError } from "@/shared/api/graphql";
 import { useAnimeMedia } from "../hooks/useAnimeMedia";
 import { EpisodeRail } from "./EpisodeRail";
-import { MediaThumbnail } from "./MediaThumbnail";
+import { TrailerPlayer } from "./TrailerPlayer";
 export function WatchMedia({
   id,
   title = "este anime",
@@ -89,32 +89,11 @@ export function WatchMedia({
             variam por região.
           </p>
           {query.data.trailer && (
-            <div className="mt-8 border-b border-white/15 pb-8">
-              <h3 className="text-xl font-medium">Trailer</h3>
-              <a
-                href={query.data.trailer.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Assistir ao trailer em ${query.data.trailer.provider} (abre em nova aba)`}
-                className="group mt-4 grid items-center gap-6 rounded-xl border border-white/15 bg-white/5 p-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:grid-cols-2"
-              >
-                <MediaThumbnail src={query.data.trailer.thumbnail} trailer />
-                <span className="block py-2 sm:p-4">
-                  <span className="block text-xs font-medium tracking-wide text-accent">
-                    {query.data.trailer.provider}
-                  </span>
-                  <span className="mt-3 block text-xl leading-8 font-medium break-words sm:text-2xl">
-                    Trailer de {title}
-                  </span>
-                  <span className="mt-4 inline-flex min-h-11 items-center gap-3 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-neutral-950">
-                    Assistir ao trailer <span aria-hidden="true">↗</span>
-                  </span>
-                  <span className="mt-3 block text-xs text-neutral-300">
-                    Abre em nova aba no provedor
-                  </span>
-                </span>
-              </a>
-            </div>
+            <TrailerPlayer
+              trailer={query.data.trailer}
+              title={title}
+              key={`${id}-${query.data.trailer.url}`}
+            />
           )}
         </>
       )}

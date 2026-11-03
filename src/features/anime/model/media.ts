@@ -43,3 +43,20 @@ export function mapTrailer(
     };
   return null;
 }
+
+export function youtubeEmbedUrl(value: string): string | null {
+  try {
+    const url = new URL(value);
+    const id = url.searchParams.get("v");
+    if (
+      url.origin !== "https://www.youtube.com" ||
+      url.pathname !== "/watch" ||
+      !id ||
+      !/^[a-zA-Z0-9_-]{11}$/.test(id)
+    )
+      return null;
+    return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0`;
+  } catch {
+    return null;
+  }
+}

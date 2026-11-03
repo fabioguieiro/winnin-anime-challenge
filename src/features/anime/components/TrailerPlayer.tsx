@@ -1,0 +1,108 @@
+"use client";
+import { useEffect, useRef, useState } from "react";
+import { youtubeEmbedUrl, type AnimeTrailer } from "../model/media";
+import { MediaThumbnail } from "./MediaThumbnail";
+export function TrailerPlayer({
+  trailer,
+  title,
+}: {
+  trailer: AnimeTrailer;
+  title: string;
+}) {
+  const [playing, setPlaying] = useState(false);
+  const playRef = useRef<HTMLButtonElement>(null);
+  const frameRef = useRef<HTMLIFrameElement>(null);
+  const embedUrl = youtubeEmbedUrl(trailer.url);
+  useEffect(() => {
+    if (playing) frameRef.current?.focus();
+  }, [playing]);
+  function close() {
+    setPlaying(false);
+    requestAnimationFrame(() => playRef.current?.focus());
+  }
+  const caption = (
+    <span className="block py-2 sm:p-4">
+      <span className="block text-xs font-medium tracking-wide text-accent">
+        {trailer.provider}
+      </span>
+      <span className="mt-2 block text-xl leading-8 font-medium break-words">
+        Trailer de {title}
+      </span>
+      <span className="mt-3 inline-flex min-h-11 items-center gap-3 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-neutral-950">
+        {embedUrl ? "Reproduzir aqui" : "Abrir no provedor"}{" "}
+        <span aria-hidden="true">▶</span>
+      </span>
+    </span>
+  );
+  const cardClass =
+    "group mt-3 grid w-full items-center gap-5 rounded-xl border border-white/15 bg-white/5 p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:grid-cols-2";
+  return (
+    <div className="mt-5 border-t border-white/15 pt-5">
+      <h3 className="text-xl font-medium">Trailer</h3>
+      {embedUrl ? (
+        playing ? (
+          <div className={cardClass}>
+            <iframe
+              ref={frameRef}
+              src={embedUrl}
+              title={`Trailer de ${title}`}
+              className="aspect-video min-h-[200px] w-full rounded-lg border-0"
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
+            <div className="sm:p-4">
+              <p className="text-xs font-medium text-accent">
+                {trailer.provider}
+              </p>
+              <p className="mt-2 text-xl font-medium">Trailer de {title}</p>
+              <button
+                type="button"
+                onClick={close}
+                className="mt-4 min-h-11 rounded-lg border border-white/40 px-4 py-2 text-sm hover:bg-white/10"
+              >
+                Fechar trailer
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            ref={playRef}
+            aria-label={`Reproduzir trailer de ${title}`}
+            onClick={() => setPlaying(true)}
+            className={cardClass}
+          >
+            <MediaThumbnail src={trailer.thumbnail} trailer external={false} />
+            {caption}
+          </button>
+        )
+      ) : (
+        <a
+          href={trailer.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Assistir ao trailer em ${trailer.provider} (abre em nova aba)`}
+          className={cardClass}
+        >
+          <MediaThumbnail src={trailer.thumbnail} trailer />
+          {caption}
+        </a>
+      )}
+      <a
+        href={trailer.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-2 inline-flex min-h-11 items-center text-xs text-neutral-300 underline underline-offset-4"
+      >
+        Abrir no {trailer.provider}
+        <span className="sr-only"> (abre em nova aba)</span>
+      </a>
+      {embedUrl && (
+        <p className="text-xs leading-5 text-neutral-400">
+          Se o vídeo não carregar no player, abra no YouTube.
+        </p>
+      )}
+    </div>
+  );
+}

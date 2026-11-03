@@ -1,4 +1,4 @@
-import { mapTrailer, safeThumbnail } from "./media";
+import { mapTrailer, safeThumbnail, youtubeEmbedUrl } from "./media";
 it("normalizes whitespace in real YouTube IDs and builds canonical URLs", () => {
   expect(
     mapTrailer({
@@ -39,4 +39,17 @@ it("rejects mixed content and unsafe thumbnails", () => {
   expect(safeThumbnail("https://images.test/a.jpg")).toBe(
     "https://images.test/a.jpg",
   );
+});
+
+it("constructs fixed-origin YouTube embeds and rejects unsupported/spoofed destinations", () => {
+  expect(youtubeEmbedUrl("https://www.youtube.com/watch?v=LHtdKWJdif4")).toBe(
+    "https://www.youtube-nocookie.com/embed/LHtdKWJdif4?autoplay=1&playsinline=1&rel=0",
+  );
+  for (const url of [
+    "https://www.youtube.com.evil.test/watch?v=LHtdKWJdif4",
+    "javascript:alert(1)",
+    "https://www.youtube.com/watch?v=../bad",
+    "https://www.dailymotion.com/video/x123abc",
+  ])
+    expect(youtubeEmbedUrl(url)).toBeNull();
 });

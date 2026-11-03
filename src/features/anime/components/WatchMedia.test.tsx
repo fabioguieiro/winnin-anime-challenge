@@ -41,7 +41,7 @@ function setup() {
     user: userEvent.setup(),
   };
 }
-it("shows loading, external thumbnail links and trailer without an embedded player", async () => {
+it("shows loading, external episode links and a click-to-load trailer", async () => {
   let resolve!: (data: AnimeMedia) => void;
   fetchMedia.mockImplementationOnce(
     () =>
@@ -52,10 +52,11 @@ it("shows loading, external thumbnail links and trailer without an embedded play
   const { container } = setup();
   expect(screen.getByRole("status")).toHaveTextContent("Carregando episódios");
   resolve(media);
-  const trailer = await screen.findByRole("link", {
-    name: /Assistir ao trailer em YouTube/,
-  });
-  expect(trailer).toHaveAttribute("href", media.trailer!.url);
+  expect(
+    await screen.findByRole("button", {
+      name: "Reproduzir trailer de este anime",
+    }),
+  ).toBeInTheDocument();
   const episode = screen.getByRole("link", {
     name: /Episode 1 - Journey — assistir em Provider/,
   });
@@ -71,18 +72,16 @@ it("shows loading, external thumbnail links and trailer without an embedded play
   expect(container.querySelector("iframe,video")).not.toBeInTheDocument();
 });
 it("exposes the full horizontal list and switches cleanly to another title", async () => {
-  fetchMedia
-    .mockResolvedValueOnce(media)
-    .mockResolvedValueOnce({
-      episodes: [
-        {
-          ...media.episodes[0],
-          title: "Other title episode",
-          url: "https://provider.test/other",
-        },
-      ],
-      trailer: null,
-    });
+  fetchMedia.mockResolvedValueOnce(media).mockResolvedValueOnce({
+    episodes: [
+      {
+        ...media.episodes[0],
+        title: "Other title episode",
+        url: "https://provider.test/other",
+      },
+    ],
+    trailer: null,
+  });
   const { changeId } = setup();
   await screen.findByRole("link", { name: /Episode 1 - Journey —/ });
   expect(

@@ -6,7 +6,7 @@ This document describes the current implementation and its tradeoffs. [AI_LOG.md
 
 The brief asks for a Figma-based anime catalog using React/TypeScript, AniList data, format/text filters, and score colors. The candidate also requested details pages, focused tests, atomic commits, and a performance review. The implementation prioritizes a working catalog, predictable requests, usable recovery, and explainable code within the challenge's limited scope.
 
-The details page, keyboard/focus improvements, and server-rendered first page are additions beyond the explicit brief. No embedded video player, authentication, watchlist, characters/relations, or broad product expansion is included. Deployment supplies the optional hosting bonus.
+The details page, keyboard/focus improvements, and server-rendered first page are additions beyond the explicit brief. No embedded episode player, authentication, watchlist, characters/relations, or broad product expansion is included. Deployment supplies the optional hosting bonus.
 
 ## Technology choices
 
@@ -94,10 +94,14 @@ Fetch streamingEpisodes/trailer separately after details load. AniList supplies 
 
 ## Streaming-style details presentation
 
-Place the episode/trailer section before the synopsis, with a hero anchor, dark shelf, 16:9 thumbnail cards, provider labels, supplied episode badges, play affordances, and clearly labeled external destinations. Feature the trailer with a provider action rather than loading a third-party iframe/SDK. Do not fabricate watch progress, seasons, missing episodes, durations, or in-app playback.
-
-Render twelve episode links initially and reveal twelve more per action; focus the first new link and announce the count. This bounds DOM/image work but does not paginate AniList's unpaginated response. Separate loading/error/retry/empty states leave the synopsis/metadata available. Reset the list by media ID. Remote preview images use Next Image's unoptimized mode for direct lazy HTTPS loads, a no-referrer policy, and a failure fallback. This avoids turning the server optimizer into a broad third-party image proxy; provider image size/availability remains outside application control.
+The current hierarchy and rail behavior are described below. Episode cards retain provider labels, safe new-tab destinations, 16:9 images, supplied number badges, and image fallbacks. Keep separate loading/error/retry/empty media states so metadata and synopsis remain usable. Direct lazy HTTPS thumbnails avoid a broad server image proxy, at the cost of provider-controlled size/availability.
 
 ## Details hierarchy and horizontal episodes
 
 Following candidate review, place banner/title/cover first, a compact three-line expandable synopsis next, then episodes, then trailer and supporting information. Reduce hero spacing to make the episode imagery visible on a typical desktop viewport without hiding the full synopsis permanently. Replace the grid/batch-expansion UI with a single native horizontal rail, lazy thumbnails, keyboard-focusable scrolling, and previous/next controls with boundary states and reduced-motion support. All supplied links remain in the rail; this trades a larger DOM for continuous browsing without extra API requests.
+
+## Inline trailer playback
+
+Use a click-to-load YouTube iframe on the fixed youtube-nocookie.com origin, constructed only from canonical validated YouTube watch links. Request autoplay only after the user's play action. Keep controls/fullscreen available, provide a meaningful frame title, focus it after activation, and unmount on Close to stop playback and restore focus. Do not preload a video SDK or iframe with the details page. The iframe's strict-origin-when-cross-origin policy preserves the Referer required by YouTube; thumbnail images still use no-referrer.
+
+Keep an external fallback visible because video owners, region restrictions, or provider sign-in checks can block embedding. The test browser encountered a YouTube sign-in/bot check: iframe loading was verified, actual playback was not. Do not bypass that gate. Dailymotion retains external playback rather than inventing a Player ID/configuration that AniList does not provide. References: https://developers.google.com/youtube/player_parameters and https://support.google.com/youtube/answer/171780.

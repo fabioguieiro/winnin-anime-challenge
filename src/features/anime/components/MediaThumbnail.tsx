@@ -5,10 +5,12 @@ export function MediaThumbnail({
   src,
   number,
   trailer = false,
+  external = true,
 }: {
   src: string | null;
   number?: number | null;
   trailer?: boolean;
+  external?: boolean;
 }) {
   const [failed, setFailed] = useState<string | null>(null);
   return (
@@ -38,9 +40,14 @@ export function MediaThumbnail({
           ▶
         </span>
       </span>
-      <span aria-hidden="true" className="absolute right-3 bottom-3 text-white">
-        ↗
-      </span>
+      {external && (
+        <span
+          aria-hidden="true"
+          className="absolute right-3 bottom-3 text-white"
+        >
+          ↗
+        </span>
+      )}
       {trailer ? (
         <span className="absolute bottom-3 left-3 rounded bg-accent px-2 py-1 text-xs font-medium text-neutral-950">
           TRAILER
