@@ -1,21 +1,26 @@
-# Winnin Anime Challenge
+# BUSCANIME — Winnin frontend challenge
 
-Project foundation for the [Winnin frontend challenge](https://github.com/winnin/desafio/blob/master/FRONTEND.md). Live AniList catalog with format filters, submitted text search, genre tags, score badges, load-more pagination, and dedicated anime details pages.
+Anime catalog built for the [Winnin frontend challenge](https://github.com/winnin/desafio/blob/master/FRONTEND.md), using live AniList data and the supplied [Figma reference](https://www.figma.com/design/PPvIPPITdlgZo9CeGDVezk/INSTITUCIONAL----DesafioWinnin?node-id=3396-64). Includes text search, format filters, genre tags, average-score badges, load-more pagination, and an additional anime details page.
 
-## Stack
+## Run locally
 
-Next.js App Router, React, strict TypeScript, Tailwind CSS, TanStack Query, GraphQL via native fetch, Jest, and React Testing Library. No end-to-end framework.
-
-## Run
-
-Use Node.js 22 LTS and npm.
+Use Node.js 22 LTS and npm. Development was verified with Node.js 22.23.4.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open http://localhost:3000. No API keys or environment variables are required. The Next.js server fetches the first catalog page for the current URL, and the browser requests later pages, retries, and details directly from the public AniList GraphQL API. Both environments need network access to graphql.anilist.co; image optimization also needs s4.anilist.co.
+Open [localhost:3000](http://localhost:3000). No API keys or environment variables are required. The Next.js server needs outbound access to `graphql.anilist.co` and `s4.anilist.co`. The browser also needs AniList GraphQL access for later pages, retries, and details. An upstream outage or rate limit can affect results.
+
+For the production build:
+
+```sh
+npm run build
+npm start
+```
+
+To keep an existing development server running on port 3000, use `npm start -- --port 3100` and open [localhost:3100](http://localhost:3100).
 
 ## Checks
 
@@ -27,42 +32,65 @@ npm run format:check
 npm run build
 ```
 
-`npm run test:watch` runs Jest interactively. `npm run format` formats the project. After building, `npm start` serves the production app.
+`npm run test:watch` runs Jest interactively; `npm run format` formats the project. Tests use mocked requests and do not depend on AniList availability. The latest submission review passed 69 tests across 13 suites, type checking, lint, formatting, and the production build.
 
-## Organization
+Jest covers score boundaries, nullable API fields, transport/GraphQL errors, URL filters, pagination, retry/focus behavior, details/provider links, server-rendered HTML, hydration, cancellation, and cache reuse. Live browser review is separate; there is no automated end-to-end suite, as agreed for this project.
 
-- `src/app/`: routes, layout, global styles, and providers.
-- `src/shared/api/`: AniList GraphQL transport and its tests.
-- `src/features/anime/`: catalog UI, typed GraphQL query, pagination hook, and score rules.
+## Review the application
 
-See [DECISIONS.md](./DECISIONS.md) for rationale and deferred work and [AI_LOG.md](./AI_LOG.md) for AI involvement. Jest verifies transport errors, response mapping, score boundaries, search/filter changes, pagination, empty results, and retry behavior using mocked requests. Browser checks against live AniList are separate from this deterministic suite.
+1. Open `/` and use “Ver mais” to append another page.
+2. Search for “Naruto” with Enter or “Buscar”, then select “Movie”. The URL retains both filters. A direct visit to `/?search=Naruto&format=MOVIE` also works; results can change with AniList data.
+3. Open a card and use “Voltar para os animes”. Filters and previously loaded browser pages are retained while cached. Reloading starts at page one.
+4. Try a search with no matches and use “Limpar filtros”. Network/rate-limit failures offer an explicit retry; pagination failures keep earlier cards.
+5. Use Tab and the skip link, and inspect phone/tablet/desktop layouts. Titles can grow rather than overlap scores or truncate essential content.
 
-## First-version behavior
+## Requirements and scope
 
-- Twelve results per page, ordered by popularity; the first page is server-rendered and hydrates React Query without a duplicate browser request. “Ver mais” appends the next page.
-- Search applies through “Buscar” or Enter. Format changes apply immediately. Both are retained in the URL.
-- Cards display AniList romaji titles with English/native fallbacks, cover images, all available genres, and average scores. Missing scores are shown as unavailable.
-- Score colors follow the written requirement: below 50 red, 50–80 inclusive yellow, above 80 green.
-- Initial failures offer retry; failed pagination preserves already loaded cards. HTTP 429 gets a specific wait-and-retry message.
-- The desktop Figma composition is the visual reference. Smaller layouts use two columns on tablets and one on phones. Step 3 aligns measured desktop dimensions and refines card styling. Poppins is self-hosted as a visual font match; exact font metadata and source color tokens remain unverified in the anonymous Figma session.
-- Adult titles are excluded from this general-audience catalog.
+| Requirement                    | Implementation                                                                                               |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| React and TypeScript           | Next.js App Router with strict TypeScript                                                                    |
+| AniList data                   | Typed GraphQL queries through native fetch                                                                   |
+| Text search and format filters | Submitted search and immediate format selection, retained in the URL                                         |
+| `averageScore` colors          | Below 50 red; 50–80 inclusive yellow; above 80 green; missing scores show a dash                             |
+| Figma catalog                  | Measured desktop layout, purple/amber theme, covers, titles, genres, and score badges; responsive extensions |
+| Execution/tests and decisions  | This README and [DECISIONS.md](./DECISIONS.md)                                                               |
+| AI transparency and history    | [AI_LOG.md](./AI_LOG.md), [AGENTS.md](./AGENTS.md), and incremental commits                                  |
 
-## Accessibility and responsive review
+The written score rule takes precedence over the reference's green 80% example. Exact font metadata and source color tokens could not be verified in the read-only Figma session; Poppins and the palette are visual approximations. The project does not claim pixel-perfect or formal accessibility conformance.
 
-Step 4 adds persistent polite result announcements, focus-preserving search/history updates, a working keyboard skip link, focus guidance for pagination/retry/reset, stronger search/focus contrast, and larger small-screen/coarse-pointer controls. Cards can grow to display full titles and keep genre tags clear of scores. Responsive browser checks cover narrow phone through desktop widths. This is a targeted review, not a full screen-reader/device audit or a WCAG conformance certification.
+The details route is additional scope: cover/banner, synopsis, alternate titles, score, genres, studios, dates, episode count/duration, and viewing-provider links when supplied. Provider links do not guarantee regional access; there is no episode player. Details use the existing theme because no details-screen design was supplied.
 
-## Anime details
+## Stack and organization
 
-Open any catalog card to visit `/anime/[id]`. The details view includes cover/banner images, synopsis, score, genres, release information, studios, episode count, and viewing-provider links when AniList supplies them. Search and format travel with the detail URL and its return link; direct detail URLs work too. Descriptions remain in the source language. There is no embedded episode player. Trailers, characters, and related titles are deferred.
+Next.js App Router, React, TypeScript, Tailwind CSS, TanStack Query, GraphQL through native fetch, Jest, and React Testing Library. Motivations and alternatives are in [DECISIONS.md](./DECISIONS.md).
 
-Malformed IDs use the route's not-found page. Valid but unavailable IDs receive an unavailable state after the client-side API request. Detail data is cached by ID; metadata is generic rather than generated from a separate server request.
+- `src/app/`: thin routes, root layout, providers, fonts, and global styles.
+- `src/features/anime/api/`: typed queries, response mapping, and shared query options.
+- `src/features/anime/server/`: request-scoped first-page prefetch.
+- `src/features/anime/hooks/`: browser query subscriptions.
+- `src/features/anime/components/`: catalog, hydration, loading, filter, score, and provider UI.
+- `src/features/anime/model/`: domain types, score/filter rules, safe text/URLs, and navigation helpers.
+- `src/features/anime/AnimeCatalog.tsx` and `AnimeDetails.tsx`: feature views.
+- `src/shared/`: reusable GraphQL transport, QueryClient factory, and site shell.
 
-## Catalog rendering and performance
+## Rendering and performance
 
-The home route reads search/format on the server, fetches only page one with a request-scoped QueryClient, and includes real cards/covers in its HTML. Hydration reuses the same infinite-query key and timestamp. Existing browser pages take precedence over incoming page-one snapshots so returning from details preserves pagination. Server requests have an eight-second timeout; a failed request is serialized safely into the existing error/retry UI without automatically repeating it in the browser. A retry runs on user action.
+The home route fetches page one for the current filters on the server and renders real cards/covers into HTML. React Query hydrates those results without a duplicate browser request. A request-scoped client prevents cross-request state sharing; an eight-second timeout bounds the upstream wait. Failed requests become safe error snapshots and require explicit retry.
 
-The catalog is rendered at request time; this introduces a server dependency on AniList and does not add a shared server data cache. Client freshness remains five minutes with fifteen-minute inactive retention. A new server navigation can request page one even if the browser already holds that filter; hydration preserves its cached pages, and normal client stale-data refresh still applies.
+Existing browser data takes precedence over a new page-one snapshot so a return from details does not erase appended pages. Data stays fresh for five minutes; inactive browser queries are retained for fifteen minutes. Stale remounts can refresh every loaded page in order. Server navigations can still request page one even if the browser has that filter cached; no shared server data cache is implemented.
 
-Measure performance against `npm run build` followed by `npm start`, using a clean browser profile and consistent mobile/desktop settings. Development builds and extensions distort the result. Lighthouse is a lab measurement; live API latency and image-cache warmth can change scores.
+Fonts are self-hosted full-glyph WOFF2 files with the Poppins OFL license in `src/app/fonts/OFL.txt`. Covers use Next image optimization, responsive sizes, and fallbacks; the first catalog cover and details banner load eagerly with high priority, while other images remain lazy.
 
-Local production Lighthouse 13.6.0 mobile checks after server rendering scored 89–90 (final build: 89), versus the earlier client-rendered run's 84. LCP was 3.6–3.7s versus 4.3s; the final run had 30ms blocking time and zero layout shift. All server-rendered runs found the first cover in the initial HTML and made no browser GraphQL request. These are local lab observations with the image-optimizer cache retained, not a guaranteed deployed score.
+Test Lighthouse against the production server with a clean browser profile. Local Lighthouse 13.6.0 mobile runs scored 89–90 (final run: 89), compared with an earlier client-rendered baseline of 84. LCP decreased from 4.3s to 3.6–3.7s; the final run had 30ms blocking time and zero layout shift. These were lab runs with the local image-optimizer cache retained and live upstream data, not guaranteed deployed scores or field Web Vitals. Detailed verification history is in [AI_LOG.md](./AI_LOG.md).
+
+## Known limitations and remaining work
+
+Details remain client-fetched with generic metadata. Malformed IDs receive HTTP 404; valid-but-missing AniList IDs show an unavailable state after fetching. Titles/genres/synopses retain source-language content. Full screen-reader and physical-device testing, verified Figma font/color tokens, shared server caching, and further mobile LCP work remain open.
+
+At the 2026-11-03 submission review, `npm audit --omit=dev` reported zero advisories. The full audit reported 35 development-tool findings (32 moderate, 3 low), including transitive Jest/ESLint chains. Suggested forced major downgrades were not applied. See the dependency tradeoff in [DECISIONS.md](./DECISIONS.md).
+
+Deployment is an optional next step. This is a Node-backed Next.js application rather than a static export. No deployment URL is claimed.
+
+## AI involvement
+
+Codex assisted with planning, implementation, tests, visual inspection, corrections, and documentation. The candidate selected the stack, Jest preference, testing scope, details feature, atomic-commit workflow, and server-rendering follow-up. [AI_LOG.md](./AI_LOG.md) records generated work, checks, and corrections; it does not claim that candidate review has already happened. The candidate remains responsible for reviewing and explaining the delivered code.

@@ -1,97 +1,84 @@
 # Technical decisions
 
-## Initial project foundation — 2026-11-02
+This document describes the current implementation and its tradeoffs. [AI_LOG.md](./AI_LOG.md) preserves the chronological work and verification history.
 
-- Next.js App Router with strict TypeScript: agreed with the candidate; thin route files and feature-oriented application code.
-- Tailwind CSS: agreed preference; design tokens and component styling will follow Figma after inspection.
-- TanStack Query: owns client-side remote data. A stable provider creates one QueryClient per mounted application. Initial defaults: 60-second stale time, no automatic retries or focus refetching to keep external API requests predictable. Revisit retry behavior when implementing API-specific errors.
-- GraphQL through native fetch: a single request helper sends variables separately, supports cancellation, and rejects HTTP errors, GraphQL errors (including partial responses), and missing data. Type parameters do not provide runtime schema validation.
-- Jest and React Testing Library: candidate familiarity takes priority over Vitest integration convenience. No end-to-end test framework, as agreed.
-- npm and its lockfile: reproducible dependency installation.
-- System font and placeholder page: temporary foundation, not the challenge design. No Google font download during builds. Final fonts and layout depend on Figma inspection.
-- No API proxy, server prefetching, GraphQL code generation, or global client state store at this stage. Add only for demonstrated needs.
+## Scope and priorities
 
-## Next work
+The brief asks for a Figma-based anime catalog using React/TypeScript, AniList data, format/text filters, and score colors. The candidate also requested details pages, focused tests, atomic commits, and a performance review. The implementation prioritizes a working catalog, predictable requests, usable recovery, and explainable code within the challenge's limited scope.
 
-Inspect Figma, confirm card fields and pagination, implement the anime feature, and verify live AniList behavior. Add focused tests for score boundaries, filters, and request states, and manually check responsiveness and accessibility. Deployment is optional. No catalog functionality or design-fidelity claim is included in this scaffold.
+The details page, keyboard/focus improvements, and server-rendered first page are additions beyond the explicit brief. No video player, authentication, watchlist, characters/relations, or broad product expansion is included. Deployment remains optional.
 
-## Dependency audit
+## Technology choices
 
-Production dependency audit passed with zero known findings during setup. The full audit flags development-only dependency chains in Jest/ESLint (glob, minimatch, deepmerge). Suggested automatic major-version downgrades were not applied. Review compatible upstream fixes before submission; do not treat the full audit as clean.
+| Technology                     | Motivation and cost                                                                                                                                                                   |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Next.js App Router             | Candidate-selected React framework; thin routes, optimized images/fonts, and server rendering. Adds framework/runtime complexity compared with a small Vite SPA.                      |
+| Strict TypeScript              | Makes domain contracts and nullable fields explicit. Handwritten types do not validate upstream JSON at runtime.                                                                      |
+| Tailwind CSS                   | Candidate preference; responsive styling and shared theme values without a component-library visual style. Utilities can make JSX verbose.                                            |
+| TanStack Query                 | Owns remote-data cache, cancellation, infinite pagination, and hydration. Avoids duplicating that behavior in component state; introduces a cache policy to explain.                  |
+| GraphQL through native fetch   | AniList's interface, with explicit operations/variables and a small transport. No Apollo client or code generation is needed for two queries; manual types can drift from the schema. |
+| Jest and React Testing Library | Candidate familiarity and observable behavior tests. No end-to-end framework was requested or required by the brief.                                                                  |
+| npm and its lockfile           | Reproducible installation with a familiar toolchain.                                                                                                                                  |
 
-## First catalog implementation — 2026-11-02
+## Architecture and state ownership
 
-- Followed the visible Figma desktop composition: purple brand bars, format controls, explicit search button, four-column image cards with genre tags and scores, and full-width amber load-more button. Exact font/spacing remain provisional; the anonymous Figma session shows a sign-up requirement for inspection. System sans-serif remains temporary.
-- Search uses explicit form submission, replacing the initial debounce proposal to match the visible “Buscar” control. Search and format are stored in URL parameters through Next navigation. Each combination owns a separate React Query infinite-query cache, starting at page one.
-- Twelve items per API page match the reference's first grid. “Ver mais” appends pages using hasNextPage, and duplicate IDs are removed during display to tolerate changing upstream rankings. Popularity descending with ID descending is the chosen default ordering; the reference's historical titles are not hardcoded. Adult entries are excluded.
-- Cover images use next/image with a narrow AniList hostname/path allowlist, lazy loading, responsive sizes, and an image-error fallback. No detail route or unrelated card interaction is added.
-- All available genres are displayed. Romaji titles are preferred to match the design, falling back to English/native and then an explicit unavailable label. Missing scores display a dash and accessible unavailable label rather than zero.
-- Written score rules take priority over the sample's green 80% badge: 80 is yellow. Badge shades and dark text on amber favor readability over exact screenshot colors.
-- Added skeletons, empty-state reset, keyboard focus indicators, status announcements, and retry controls. Failed pagination retains existing cards. No automatic retry loop; HTTP 429 receives specific guidance.
-- Responsive one/two/four-column layouts are an inferred extension of the supplied desktop frame, subject to further visual review. No end-to-end framework or new dependency was introduced.
+Routes in `src/app` compose the site shell and feature views. Anime-specific API mapping, server prefetch, hooks, UI, and pure rules stay in `src/features/anime`; the transport, QueryClient factory, and site shell are shared. Tests live beside the behavior they verify. No generic repository/service layer or global client-state store is added for this small application.
 
-Live API finding: omit unused search/format variables instead of sending null. The actual AniList response differed for null variables during verification. A request-construction test now guards this behavior.
+Search and format belong to the URL so direct links and browser history work. The input holds the user's unapplied draft until Enter/“Buscar”; applied values synchronize without replacing its DOM node. Format selection applies immediately. Both environments trim search, validate formats, and use the first repeated parameter value. Filter navigation uses a React transition, retains current cards while waiting, shows “Buscando...”, and announces progress.
 
-## Step 3 — Typography
+React Query owns server data. Infinite-query keys include the normalized filter pair; details keys include the ID. Image failures and temporary focus/navigation state remain local UI concerns.
 
-Use self-hosted Poppins light/regular/medium via next/font/local as a visual match to the reference. Exact Figma font metadata was unavailable in the anonymous session; this choice remains explicitly provisional. Font files and their OFL license are included from https://github.com/google/fonts/tree/main/ofl/poppins.
+## Data and pagination rules
 
-## Step 3 — Measured layout
+- Request twelve items per page, ordered by popularity descending and then ID descending. Follow AniList's `hasNextPage`; append on explicit “Ver mais”. Deduplicate displayed IDs because live rankings can change.
+- Omit inactive optional GraphQL variables rather than sending null. Live verification produced different default responses with null; a regression guards the chosen request shape.
+- Prefer romaji title, then English/native, then an unavailable label. Preserve all available genres and null scores; zero is a real score, not missing data.
+- Follow the written score thresholds, including yellow at 80, despite the sample's green badge. Adult entries are excluded consistently from catalog and details.
+- Reject non-success HTTP responses, GraphQL errors even with HTTP 200/partial data, and missing response data. Forward AbortSignals; avoid automatic retry loops and window-focus refetch. A 429 receives specific guidance, and failed pagination keeps loaded cards.
 
-Selected Figma layers show a 1366×68 header, 834.05×32 format group, 1011.88×38 search group, 1316×852 card grid, and 317×270 cards. Use rounded whole-pixel dimensions for implementation. Desktop gutters are 25px, grid columns are separated by 16px, and rows by 21px. Preserve responsive control wrapping instead of enforcing the desktop frame on smaller screens.
+## Server rendering and cache policy
 
-## Step 3 — Card treatment and palette
+The first implementation fetched catalog data in the browser. Lighthouse exposed the HTML → JavaScript → API → cover discovery sequence, justifying server prefetch after measurement rather than adding it during initial scaffolding.
 
-Use the measured 317:270 ratio and an 8px score-badge inset. Regular Poppins titles at 24px/28px, lighter genre pills, and a less opaque image gradient are visual matches to the reference. Brand purple/amber remain visual approximations because source color properties could not be copied; do not describe them as exact Figma values. Retain readable semantic score colors and dark text on yellow rather than reproducing the reference's low-contrast white/yellow combination.
+The home route awaits URL parameters and fetches page one with a fresh request-scoped QueryClient. The same infinite-query options seed a HydrationBoundary before rendering the catalog; HTML contains real cards and cover URLs. The browser reuses that data/timestamp and requests later pages through the existing hook. No server action, API proxy, experimental streaming integration, or extra dependency is needed.
 
-## Step 4 — Focus and asynchronous results
+Preserve any existing browser query data when a new server page-one snapshot arrives: a newer snapshot must not erase appended pages after details navigation. Existing freshness rules remain responsible for refetching that browser data. Query data is fresh for five minutes and inactive browser entries survive fifteen minutes; no persistence across reloads is provided. Stale infinite queries can refetch all loaded pages sequentially. No page cap removes cards the user already loaded, so active long sessions can retain many pages.
 
-Preserve the search input DOM node while synchronizing URL/history changes so Enter submission retains focus. Keep result announcements in one persistent polite live region. After explicitly loading more, focus the first new title (programmatic tabindex -1; not an extra Tab stop), or the retry control on failure. Make the skip-link target programmatically focusable. These changes address observed keyboard failures; they do not constitute a full screen-reader conformance audit.
+Server requests have an eight-second combined cancellation/timeout signal. Failed states include only a generic serializable error and public status, reconstructed for the current recovery UI. Catalog `retryOnMount` is disabled so hydration does not immediately repeat a failed server request. Explicit Retry remains available. Server prefetch clients are cleared after dehydration; server GC timers are disabled within their isolated lifetime.
 
-## Step 4 — Reflow over fixed card height
+The tradeoff is a request-time dependency on AniList and more server-side upstream traffic. A server navigation may fetch page one even when the browser already has that filter. No shared server data cache is implemented; production traffic would warrant measuring cache requirements and the shared upstream rate-limit budget before expanding this design.
 
-The strict card ratio caused overlap at narrow desktop widths. Keep a 270px minimum matching the desktop reference, but let content grow and reserve 64px below it for score badges. Full titles wrap rather than being clamped. A row can grow for longer titles/genres. Use 44px-tall controls for small screens/coarse pointers as a usability enhancement, while retaining desktop sizing.
+## Design and accessibility
 
-## Step 4 — Contrast
+The Figma layer inspection exposed a 1366px-wide frame, 68px header, 1316px grid, 317×270 cards, 16px column gaps, 21px row gaps, and 54px footer. Use those measured desktop dimensions, with one/two/four-column responsive layouts. Cards retain a 270px minimum and grow for long content; a strict fixed ratio caused genre/score overlap at narrower desktop widths.
 
-Darken the input border and placeholder to neutral-500 for legibility and control identification. Replace low-contrast amber focus outlines on white with a dark-purple outline separated by a white ring, which remains visible against selected purple and amber controls. Reference: https://www.w3.org/TR/WCAG22/ (contrast minimum, non-text contrast, focus visible, target size). The 44px touch size is an enhancement, not the 24px AA minimum. Full screen-reader and device testing remain outside this limited review.
+Exact font metadata and source palette tokens were unavailable in the read-only session. Self-hosted Poppins 300/400/500 and the purple/amber palette are visual matches, not verified exact values. Full-glyph WOFF2 conversion reduced the three font assets from 480,828 to 153,796 bytes while preserving glyph order, Unicode maps, and horizontal metrics. The original OFL license is retained.
 
-## Step 5 — Details data
+Use readable score labels, darker search borders/placeholders, visible separated focus outlines, a focusable skip-link target, full title reflow, and larger small-screen/coarse-pointer controls. Persistent polite announcements and focus recovery cover search, pagination, errors, and empty-result reset. These are targeted improvements rather than a formal WCAG or full assistive-technology certification.
 
-Fetch details by positive GraphQL Int ID with type ANIME and isAdult false, matching catalog scope. Preserve null metadata and partial dates instead of inventing values. Render normalized synopsis as escaped React text, retaining paragraph breaks; rich markup is deliberately discarded. Streaming-provider links come from active externalLinks of type STREAMING, deduplicated by URL. Preserve supplied HTTP(S) URLs because AniList still returns HTTP links for established services. Invalid schemes and credential-bearing links are omitted. No player or episode-video hosting is introduced.
+## Details-page additions
 
-## Step 5 — Details presentation
+Use a banner/cover composition extending the catalog theme because the supplied design has no details screen. Fetch by positive GraphQL Int ID, preserving nullable metadata and partial dates. The synopsis becomes escaped plain text with paragraph breaks; source markup is not injected as HTML.
 
-Use a banner/cover layout extending the catalog's palette and typography; the supplied Figma only defines the catalog. Details remain client-fetched through React Query with a cache key per ID, consistent with existing remote-data ownership. Validate malformed IDs on the server. A valid-but-missing AniList ID is shown as unavailable after client fetch (not a server-generated HTTP 404). Route metadata is generic; per-title server-rendered SEO is deferred. No trailer, related titles, characters, or video player is added in this step.
+Validate/deduplicate active STREAMING links from AniList external links. Accept HTTP(S) without embedded credentials; preserve upstream HTTP links rather than invent replacements. Provider availability, regional rights, subscription access, and video hosting are outside the application. No episode playback request is made.
 
-## Step 5 — Navigation
+Cards are full-card accessible Next links with visible focus, and speculative card-route prefetch is disabled. Only validated search/format values travel to details and back; no arbitrary return URL is followed. Malformed IDs use Next's HTTP 404. A syntactically valid missing ID is detected client-side and shows an unavailable view with HTTP 200; per-title SSR metadata and semantic server-side missing-title responses are deferred.
 
-Use Next Link for full-card navigation with an accessible title-based name and a focus ring drawn inside the clipped card. Disable speculative card-route prefetching; details data is requested on navigation and cached by ID. Carry only search/format parameters into detail and return URLs, using URLSearchParams encoding and validating format values. No arbitrary returnTo URL is followed. The global QueryClient remains mounted between routes, retaining catalog pages in memory.
+## Verification and performance evidence
 
-## Step 6 — Request freshness and retention
+Jest/Testing Library verifies business rules and observable request/UI behavior, including server HTML, safe error snapshots, request isolation, no duplicate hydration fetch, next-page requests, cancellation, filter separation, cached pagination, and focus/recovery. Live browser checks cover keyboard flows, direct/filtered routes, responsive reflow, images, and browser warnings. No automated end-to-end framework or external-service-dependent unit tests are added.
 
-Treat query data as fresh for five minutes and retain inactive entries for fifteen minutes. A normal details visit or filter round trip reuses loaded catalog pages, while returning after freshness expires still refreshes pages sequentially to keep pagination consistent. This is an in-memory policy, not persistence across reloads; inactive caches are eventually collected and active long sessions can retain many pages. Keep manual error recovery, cancellation signals, and disabled focus refetch/automatic retries. Do not disable stale remount refresh or cap infinite-query pages, which would hide freshness or remove already loaded cards. References: https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults and https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries.
+Production Lighthouse 13.6.0 mobile runs after SSR scored 89–90 (final run: 89), versus an earlier single baseline of 84. LCP was 3.6–3.7s versus 4.3s; final TBT was 30ms and CLS zero. Audits confirmed that the first image was discoverable in initial HTML and no browser GraphQL request occurred during first load. These are local lab observations with retained server image-optimizer cache and live API latency. They do not establish field Web Vitals or a guaranteed deployed score; mobile LCP remains an improvement opportunity.
 
-## Step 6 — Font transfer size
+## Dependency review — 2026-11-03
 
-Serve full-glyph WOFF2 versions of the same three local Poppins fonts. Converted the existing official Google Fonts TTF files with fontTools 4.60.2 and Brotli 1.2.1 (`font.flavor = "woff2"; font.save(...)`), keeping the OFL license. This is compression, not subsetting: glyph order, Unicode character maps, and horizontal metrics were verified after round-trip decoding. No application dependency or remote font request is introduced.
+`npm audit --omit=dev` reports zero findings. The full audit reports 35 findings in development tooling: 32 moderate and 3 low, including transitive Jest/ESLint chains involving glob/minimatch/deepmerge. This is not an entirely clean audit. npm proposes major downgrades of Jest, ESLint, and eslint-config-next for several findings; forced downgrade fixes were not applied because they would replace the supported tooling contract. Review compatible upstream resolutions before release, and keep development tooling away from untrusted repositories/input. Audit results are a dated observation, not a permanent security guarantee.
 
-## Step 6 — Image loading and bundle review
+## What I would do with more time
 
-Load only the first catalog cover and details banner eagerly with high fetch priority; retain lazy loading on other images and disabled speculative card-route prefetch. Cover sizes now reflect the 32px phone gutters, 50px larger-screen gutters, 16px column gaps, and 1366px shell cap. These hints guide responsive source selection; no image-byte or LCP reduction is claimed without controlled measurements. The production route HTML references ten script chunks per route: 638,398 bytes for catalog and 639,108 for details, approximately 198,651 and 198,988 bytes when independently gzip-compressed. These estimates include Next/React, exclude later navigation chunks, and are not total network transfer. No new runtime package or speculative code-splitting layer was warranted by this limited review.
-
-## Server-rendered catalog — Shared query contract
-
-Share infinite-query options and URL-filter normalization between the upcoming server prefetch and browser hook. Both sides must use the same key, first-page parameter, trimmed search, validated format, and first value for repeated URL parameters. This refactor preserves existing browser behavior.
-
-## Server-rendered catalog — Prefetch and hydration
-
-The measured production first-load waterfall justified revisiting the original client-only data decision. Read the home route's async searchParams, normalize filters, and await page one using a fresh QueryClient for each server request. Render through a feature-level HydrationBoundary with the existing browser provider and five-minute freshness policy. The catalog becomes request-rendered instead of a static skeleton; the first cover is discoverable directly in HTML. No new package, API proxy, server action, or details-rendering change is needed.
-
-Preserve browser query data when it already exists, so a newer server page-one snapshot cannot erase previously appended pages on return navigation. Existing query freshness/refetch rules remain responsible for updating those pages; only a missing browser entry is seeded. Keep server cache lifetimes infinite within their request and explicitly clear the prefetch client after dehydration, avoiding per-request GC timers and cross-request state. There is no shared server data cache: each server navigation may fetch page one, including a navigation where the browser already has that filter cached.
-
-Bound the server API request to eight seconds with a combined cancellation/timeout signal. Include failed queries in the snapshot, serialize a generic plain error with only the public HTTP/GraphQL status, and reconstruct the client error for existing 429 guidance. Disable catalog retryOnMount so hydration does not immediately repeat a failed server request; the existing Retry button still works. This trades some initial response time and server-side AniList traffic for earlier content/image discovery. A deployed server needs outbound AniList access and shares its upstream rate-limit budget across visitors; server caching can be considered if measured traffic warrants it.
-
-References: bundled Next.js page/data-fetching docs and https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr.
-
-Wrap filter route updates in a React transition and show “Buscando...” while the server navigation is pending. Keep the search field editable and focused, retain current cards until the new URL/results commit, and announce loading through the existing polite status region. This preserves feedback after moving the initial request to the server.
+1. Verify exact Figma typography/color tokens and conduct physical-device and screen-reader testing.
+2. Continue mobile LCP profiling with repeatable cold/warm runs, then evaluate font subsets, critical resource contention, and server cache needs using measured evidence.
+3. Add per-title server rendering/metadata and an HTTP 404 for valid missing IDs while avoiding duplicate upstream requests.
+4. Resolve development-tool advisories through compatible updates and add CI checks for the documented verification commands.
+5. Add generated GraphQL types/runtime validation if query/schema scope grows; introduce shared server caching/rate-limit protection if deployment traffic justifies it.
+6. Publish a Node-backed Next.js deployment as the optional delivery bonus after configuration review.

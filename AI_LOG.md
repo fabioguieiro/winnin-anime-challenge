@@ -1,5 +1,7 @@
 # AI usage log
 
+This is a chronological record: early scaffold descriptions and verification counts describe that stage, not the current application. See README.md and DECISIONS.md for the current implementation. Candidate review and interview readiness are not claimed by this log.
+
 ## 2026-11-02 — Planning and project creation
 
 Tool: Codex desktop (OpenAI), using documentation browsing and local development tools.
@@ -145,3 +147,13 @@ A final navigation check found that server-driven filter changes retained old re
 Used Lighthouse 13.6.0 with fresh headless Chrome profiles, performance-only mobile audits, default simulated throttling (150ms RTT, approximately 1.6Mbps, 4× CPU), and the production server on port 3100. The earlier client-rendered production baseline scored 84 with 4.3s LCP and 40ms TBT. Three initial SSR runs scored 89/90/90 with 3.7/3.6/3.6s LCP and 20–30ms TBT. After the navigation-feedback refinement, the final build scored 89 with 3.7s LCP, 30ms TBT, 0.7s FCP, and zero CLS. Every SSR audit confirmed initial-document image discovery, zero browser GraphQL requests, no runtime error, and no run warning. Reports are saved in the chat outputs rather than committed as large generated artifacts.
 
 These are local lab results with the image-optimizer cache retained and live AniList latency; the baseline was a single earlier run. They are not a guaranteed deployed score or field Web Vitals measurement. The initial request waterfall is removed, but mobile LCP still has room for improvement. No further image/font changes were bundled into this SSR change.
+
+## 2026-11-03 — Step 7: Submission documentation and review
+
+The candidate requested the planned final documentation/submission review. Re-read the current public challenge brief and checked the catalog, filter/score behavior, required documentation, included instruction file, and real incremental history against it. No end-to-end suite or deployment is mandatory in the brief; deployment is a bonus. Exact typography/color fidelity remains explicitly unverified.
+
+Rewrote README.md as an evaluator-facing guide with development/production commands, network requirements, verification commands, requirement mapping, manual review flows, architecture, AI involvement, and known limitations. Reorganized DECISIONS.md around the current technology choices and tradeoffs instead of leaving outdated scaffold/“next work” instructions. Preserved this log's chronological account, including rejected/revised approaches, rather than inventing candidate review or rewriting history.
+
+Final application checks passed: 69 Jest tests across 13 suites, standalone typecheck, lint, formatting, whitespace checks, and production build. Refreshed dependency audits: zero production findings; full audit reports 35 development-tool findings (32 moderate, 3 low). Recorded those findings and the decision not to apply suggested forced major downgrades. No new Lighthouse or device-testing claim is added; existing SSR measurements remain dated local evidence. No application behavior or dependency versions changed in this documentation step.
+
+The candidate still needs to review and understand the code before submission and the technical interview. No deployment, remote repository publication, or candidate ownership/review action was performed on their behalf.
