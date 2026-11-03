@@ -39,3 +39,7 @@ Use self-hosted Poppins light/regular/medium via next/font/local as a visual mat
 ## Step 3 — Measured layout
 
 Selected Figma layers show a 1366×68 header, 834.05×32 format group, 1011.88×38 search group, 1316×852 card grid, and 317×270 cards. Use rounded whole-pixel dimensions for implementation. Desktop gutters are 25px, grid columns are separated by 16px, and rows by 21px. Preserve responsive control wrapping instead of enforcing the desktop frame on smaller screens.
+
+## Step 3 — Card treatment and palette
+
+Use the measured 317:270 ratio and an 8px score-badge inset. Regular Poppins titles at 24px/28px, lighter genre pills, and a less opaque image gradient are visual matches to the reference. Brand purple/amber remain visual approximations because source color properties could not be copied; do not describe them as exact Figma values. Retain readable semantic score colors and dark text on yellow rather than reproducing the reference's low-contrast white/yellow combination.

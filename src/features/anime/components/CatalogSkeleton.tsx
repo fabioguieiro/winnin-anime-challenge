@@ -9,7 +9,7 @@ export function CatalogSkeleton() {
         {Array.from({ length: 12 }, (_, index) => (
           <div
             key={index}
-            className="aspect-[316/270] rounded-lg bg-neutral-200 motion-safe:animate-pulse"
+            className="aspect-[317/270] rounded-lg bg-neutral-200 motion-safe:animate-pulse"
           />
         ))}
       </div>

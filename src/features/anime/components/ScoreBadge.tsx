@@ -10,7 +10,7 @@ const tones = {
 export function ScoreBadge({ score }: { score: number | null }) {
   return (
     <span
-      className={`rounded-tl-md px-2 py-1 text-2xl leading-tight tabular-nums ${tones[getScoreTone(score)]}`}
+      className={`inline-flex min-h-9 items-center rounded-sm px-2 py-1 text-2xl leading-7 font-light tabular-nums ${tones[getScoreTone(score)]}`}
       aria-label={
         score === null ? "Nota indisponível" : `Nota média: ${score}%`
       }

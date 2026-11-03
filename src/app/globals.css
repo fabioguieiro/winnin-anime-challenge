@@ -2,9 +2,10 @@
 
 @theme inline {
   --font-sans: var(--font-poppins), Arial, Helvetica, sans-serif;
-  --color-brand: #5724b7;
-  --color-brand-dark: #40178e;
-  --color-accent: #ffb52e;
+  --color-brand: #6324c8;
+  --color-brand-dark: #4b199c;
+  --color-accent: #ffb21c;
+  --color-genre: #7540bc;
   --color-score-low: #dc3654;
   --color-score-medium: #ffb52e;
   --color-score-high: #128b73;

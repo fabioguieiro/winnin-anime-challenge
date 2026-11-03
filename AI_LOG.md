@@ -59,3 +59,9 @@ Replaced Arial with locally hosted Poppins (300/400/500), chosen as a closer vis
 ## Step 3 — Layout and controls
 
 Aligned the desktop content gutters to the measured 1316px grid inside the 1366px frame (25px each), grid row gaps to 21px, filter row to 32px on desktop, search row to 38px, load-more control to 48px, and footer to 54px. Preserved wrapping controls on smaller screens. Updated skeleton grid gaps alongside loaded results. No request or filter behavior changed.
+
+## Step 3 — Card and color refinement
+
+Matched the measured 317×270 card ratio, reduced title weight to regular with 28px line height, tightened title-to-genre spacing, lightened genre pills and the image gradient, and inset score badges by 8px with rounded corners and light typography. Rebalanced the brand purple and amber by visual comparison; these are approximate rendered-color matches, not copied Figma tokens. Existing semantic score thresholds and readable score text colors are preserved. Skeletons use the same updated aspect ratio.
+
+The candidate's existing development server on port 3000 was reused for browser comparison. An attempted separate dev server exited because Next detected the existing server; no user-owned process was stopped.

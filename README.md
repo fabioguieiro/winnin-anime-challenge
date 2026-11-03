@@ -44,5 +44,5 @@ See [DECISIONS.md](./DECISIONS.md) for rationale and deferred work and [AI_LOG.m
 - Cards display AniList romaji titles with English/native fallbacks, cover images, all available genres, and average scores. Missing scores are shown as unavailable.
 - Score colors follow the written requirement: below 50 red, 50–80 inclusive yellow, above 80 green.
 - Initial failures offer retry; failed pagination preserves already loaded cards. HTTP 429 gets a specific wait-and-retry message.
-- The desktop Figma composition is the visual reference. Smaller layouts use two columns on tablets and one on phones. Exact font and spacing values remain provisional because the current anonymous Figma session does not expose inspection.
+- The desktop Figma composition is the visual reference. Smaller layouts use two columns on tablets and one on phones. Step 3 aligns measured desktop dimensions and refines card styling. Poppins is self-hosted as a visual font match; exact font metadata and source color tokens remain unverified in the anonymous Figma session.
 - Adult titles are excluded from this general-audience catalog.
