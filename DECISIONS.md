@@ -59,3 +59,7 @@ Darken the input border and placeholder to neutral-500 for legibility and contro
 ## Step 5 — Details data
 
 Fetch details by positive GraphQL Int ID with type ANIME and isAdult false, matching catalog scope. Preserve null metadata and partial dates instead of inventing values. Render normalized synopsis as escaped React text, retaining paragraph breaks; rich markup is deliberately discarded. Streaming-provider links come from active externalLinks of type STREAMING, deduplicated by URL. Preserve supplied HTTP(S) URLs because AniList still returns HTTP links for established services. Invalid schemes and credential-bearing links are omitted. No player or episode-video hosting is introduced.
+
+## Step 5 — Details presentation
+
+Use a banner/cover layout extending the catalog's palette and typography; the supplied Figma only defines the catalog. Details remain client-fetched through React Query with a cache key per ID, consistent with existing remote-data ownership. Validate malformed IDs on the server. A valid-but-missing AniList ID is shown as unavailable after client fetch (not a server-generated HTTP 404). Route metadata is generic; per-title server-rendered SEO is deferred. No trailer, related titles, characters, or video player is added in this step.

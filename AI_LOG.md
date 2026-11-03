@@ -99,3 +99,7 @@ Verified live AniList title metadata and streaming-provider fields. Added a type
 ## Step 5.2 — Shared site shell
 
 Extracted the existing wordmark, header, skip link, and footer into SiteShell. The catalog retains its existing main landmark, styling, and heading. Other routes can use a home link in the header so the detail title remains the page's single h1. This refactor introduces no details route or catalog navigation yet.
+
+## Step 5.3 — Details route and view
+
+Added /anime/[id] with server-side ID validation and a client-side React Query details view. Includes cover/banner with fallbacks, full title and alternate names, synopsis, score, genres, studios, dates, season, episode count, duration, loading, rate-limit/retry, and unavailable-title states. The design extends the existing purple/amber theme; no Figma details screen was supplied. Metadata remains a generic route title; missing valid IDs are detected by the client API request and shown as an unavailable state, while syntactically invalid IDs use Next's route not-found response. Added tests for populated/missing metadata, safe text rendering, missing titles, retry, and distinct title queries. Viewing-provider UI and card links are still pending.

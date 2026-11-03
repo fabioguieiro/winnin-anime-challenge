@@ -1,0 +1,22 @@
+import type { AnimeDetailsData } from "../model/details";
+export const detailsFixture: AnimeDetailsData = {
+  id: 1,
+  title: "Example Anime",
+  englishTitle: "Example English Title",
+  nativeTitle: null,
+  image: null,
+  banner: null,
+  genres: ["Action"],
+  score: 80,
+  synopsis: "A story about a journey.",
+  format: "TV",
+  status: "FINISHED",
+  season: "SPRING",
+  year: 2013,
+  episodes: 25,
+  duration: 24,
+  startDate: { year: 2013, month: 4, day: 7 },
+  endDate: null,
+  studios: ["Example Studio"],
+  providers: [],
+};
