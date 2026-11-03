@@ -179,3 +179,11 @@ Added the verified public URL and deployed validation to README/DECISIONS. Step 
 ## Streaming experience — Data contract
 
 The candidate requested episode thumbnails/provider redirects and exploration of additional media. Live checks found 69 One Piece episode links with no trailer, and 25 Attack on Titan links plus a YouTube trailer. Sample thumbnails returned HTTP 200. The trailer ID contained a trailing tab; normalized it and built canonical URLs. Added an isolated media query, safe mapping, deduplication, ordering, and focused tests. The first script attempt used a missing work directory and wrote no application files; corrected the path and reran.
+
+## Streaming experience — UI and local verification
+
+Added a streaming-style details shelf before the synopsis, a hero entry link, external episode thumbnail cards, supplied episode numbers/provider labels, batches of twelve, and a featured external trailer. Keep initial title metadata separate and preserve it during media loading/errors. Added image fallbacks, safe new-tab behavior, count announcements, focus on newly revealed episodes, retry focus recovery, and per-title list reset. No player, autoplay, video SDK, or invented progress/season data was added.
+
+All 84 Jest tests passed across sixteen suites, including new media mapping, trailer normalization, link safety, loading/empty/error recovery, image failure, batch expansion, and ID-switch behavior. Local production checks showed all twelve initial One Piece thumbnails loaded, 12→24 expansion focusing episode 74, and the Attack on Titan trailer thumbnail/link loaded. Reworked the trailer into a full featured card after visual review. Existing details tests mock the new media request to stay deterministic. Final production checks/deployment verification follow below.
+
+Final local verification: 84 tests, typecheck, lint, formatting, whitespace checks, and production build passed. The final featured trailer/episode section reflowed at a 390px viewport without horizontal overflow; trailer and provider thumbnails loaded, and the browser warning/error log was empty. No catalog query/layout changes were made.

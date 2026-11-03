@@ -9,6 +9,9 @@ import { GraphQLRequestError } from "@/shared/api/graphql";
 let mockParams = new URLSearchParams();
 jest.mock("next/navigation", () => ({ useSearchParams: () => mockParams }));
 
+jest.mock("./api/fetchAnimeMedia", () => ({
+  fetchAnimeMedia: jest.fn().mockResolvedValue({ episodes: [], trailer: null }),
+}));
 jest.mock("./api/fetchAnimeDetails", () => ({ fetchAnimeDetails: jest.fn() }));
 const fetchMock = jest.mocked(fetchAnimeDetails);
 beforeEach(() => {

@@ -34,7 +34,7 @@ npm run format:check
 npm run build
 ```
 
-`npm run test:watch` runs Jest interactively; `npm run format` formats the project. Tests use mocked requests and do not depend on AniList availability. The latest submission review passed 69 tests across 13 suites, type checking, lint, formatting, and the production build.
+`npm run test:watch` runs Jest interactively; `npm run format` formats the project. Tests use mocked requests and do not depend on AniList availability. The latest streaming-experience review passed 84 tests across 16 suites, type checking, lint, formatting, and the production build.
 
 Jest covers score boundaries, nullable API fields, transport/GraphQL errors, URL filters, pagination, retry/focus behavior, details/provider links, server-rendered HTML, hydration, cancellation, and cache reuse. Live browser review is separate; there is no automated end-to-end suite, as agreed for this project.
 
@@ -60,7 +60,7 @@ Jest covers score boundaries, nullable API fields, transport/GraphQL errors, URL
 
 The written score rule takes precedence over the reference's green 80% example. Exact font metadata and source color tokens could not be verified in the read-only Figma session; Poppins and the palette are visual approximations. The project does not claim pixel-perfect or formal accessibility conformance.
 
-The details route is additional scope: cover/banner, synopsis, alternate titles, score, genres, studios, dates, episode count/duration, and viewing-provider links when supplied. Provider links do not guarantee regional access; there is no episode player. Details use the existing theme because no details-screen design was supplied.
+The details route is additional scope: cover/banner, synopsis, alternate titles, score, genres, studios, dates, episode count/duration, and viewing-provider links when supplied. Provider links do not guarantee regional access; there is no embedded episode player. Details use the existing theme because no details-screen design was supplied.
 
 ## Stack and organization
 
@@ -119,3 +119,11 @@ Deployed smoke checks passed for default/filtered server HTML, optimized covers,
 ## AI involvement
 
 Codex assisted with planning, implementation, tests, visual inspection, corrections, and documentation. The candidate selected the stack, Jest preference, testing scope, details feature, atomic-commit workflow, and server-rendering follow-up. [AI_LOG.md](./AI_LOG.md) records generated work, checks, and corrections; it does not claim that candidate review has already happened. The candidate remains responsible for reviewing and explaining the delivered code.
+
+## Episode browsing and trailers
+
+Details now feature a streaming-style section before the synopsis: episode thumbnails, supplied episode numbers, provider labels, play overlays, and a featured trailer when AniList provides a supported YouTube/Dailymotion ID. Thumbnail cards open the provider in a labeled new tab. Failed/missing images retain a usable link with a preview fallback. No video SDK, autoplay, or embedded player is loaded.
+
+Episode/trailer data loads through a separate cancellable query after title metadata resolves. AniList returns the entire streamingEpisodes array without pagination; the UI reveals twelve links at a time from that cached response. “Mostrar mais episódios” focuses the first new link. Lists may be incomplete and preserve missing episode numbers; no seasons, durations, or completion/progress state are invented. One Piece currently supplies 69 links and no trailer; these upstream values can change.
+
+Provider thumbnails load directly from validated HTTPS source URLs with lazy loading and no referrer, instead of expanding the server image proxy's domain allowlist. The catalog remains unchanged.

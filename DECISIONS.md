@@ -6,7 +6,7 @@ This document describes the current implementation and its tradeoffs. [AI_LOG.md
 
 The brief asks for a Figma-based anime catalog using React/TypeScript, AniList data, format/text filters, and score colors. The candidate also requested details pages, focused tests, atomic commits, and a performance review. The implementation prioritizes a working catalog, predictable requests, usable recovery, and explainable code within the challenge's limited scope.
 
-The details page, keyboard/focus improvements, and server-rendered first page are additions beyond the explicit brief. No video player, authentication, watchlist, characters/relations, or broad product expansion is included. Deployment supplies the optional hosting bonus.
+The details page, keyboard/focus improvements, and server-rendered first page are additions beyond the explicit brief. No embedded video player, authentication, watchlist, characters/relations, or broad product expansion is included. Deployment supplies the optional hosting bonus.
 
 ## Technology choices
 
@@ -60,7 +60,7 @@ Use readable score labels, darker search borders/placeholders, visible separated
 
 Use a banner/cover composition extending the catalog theme because the supplied design has no details screen. Fetch by positive GraphQL Int ID, preserving nullable metadata and partial dates. The synopsis becomes escaped plain text with paragraph breaks; source markup is not injected as HTML.
 
-Validate/deduplicate active STREAMING links from AniList external links. Accept HTTP(S) without embedded credentials; preserve upstream HTTP links rather than invent replacements. Provider availability, regional rights, subscription access, and video hosting are outside the application. No episode playback request is made.
+Validate/deduplicate active STREAMING links from AniList external links. Accept HTTP(S) without embedded credentials; preserve upstream HTTP links rather than invent replacements. Provider availability, regional rights, subscription access, and video hosting are outside the application. No episode playback request is made. Episode-link browsing and external trailer cards are added below; provider availability is still determined externally.
 
 Cards are full-card accessible Next links with visible focus, and speculative card-route prefetch is disabled. Only validated search/format values travel to details and back; no arbitrary return URL is followed. Malformed IDs use Next's HTTP 404. A syntactically valid missing ID is detected client-side and shows an unavailable view with HTTP 200; per-title SSR metadata and semantic server-side missing-title responses are deferred.
 
@@ -91,3 +91,9 @@ The Node 22 cloud install/build succeeded, and deployed catalog/image/filter/pag
 ## Episode and trailer data
 
 Fetch streamingEpisodes/trailer separately after details load. AniList supplies the entire episode array without pagination. Validate provider links, deduplicate URLs, sort only supplied episode numbers, and preserve gaps/unknown titles. Require HTTPS thumbnails. Validate trailer IDs on fixed YouTube/Dailymotion origins; trim upstream whitespace and build canonical YouTube thumbnails. No episode video is fetched.
+
+## Streaming-style details presentation
+
+Place the episode/trailer section before the synopsis, with a hero anchor, dark shelf, 16:9 thumbnail cards, provider labels, supplied episode badges, play affordances, and clearly labeled external destinations. Feature the trailer with a provider action rather than loading a third-party iframe/SDK. Do not fabricate watch progress, seasons, missing episodes, durations, or in-app playback.
+
+Render twelve episode links initially and reveal twelve more per action; focus the first new link and announce the count. This bounds DOM/image work but does not paginate AniList's unpaginated response. Separate loading/error/retry/empty states leave the synopsis/metadata available. Reset the list by media ID. Remote preview images use Next Image's unoptimized mode for direct lazy HTTPS loads, a no-referrer policy, and a failure fallback. This avoids turning the server optimizer into a broad third-party image proxy; provider image size/availability remains outside application control.

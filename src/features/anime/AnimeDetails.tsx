@@ -11,6 +11,7 @@ import { FORMATS, parseFormat } from "./model/anime";
 import { formatDate } from "./model/details";
 import { ScoreBadge } from "./components/ScoreBadge";
 import { DetailsSkeleton } from "./components/DetailsSkeleton";
+import { WatchMedia } from "./components/WatchMedia";
 import { WhereToWatch } from "./components/WhereToWatch";
 
 const statuses: Record<string, string> = {
@@ -190,8 +191,15 @@ export function AnimeDetails({ id }: { id: number }) {
                   <ScoreBadge score={anime.score} />
                   <span className="text-sm text-neutral-600">Nota média</span>
                 </div>
+                <a
+                  href="#watch-content"
+                  className="mt-5 inline-flex min-h-11 items-center gap-3 rounded-lg bg-accent px-5 py-3 text-sm font-medium text-neutral-950 hover:bg-amber-400"
+                >
+                  <span aria-hidden="true">▶</span> Explorar episódios e trailer
+                </a>
               </div>
             </div>
+            <WatchMedia id={anime.id} title={anime.title} key={anime.id} />
             <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px]">
               <div className="min-w-0">
                 <section aria-labelledby="synopsis-heading">
