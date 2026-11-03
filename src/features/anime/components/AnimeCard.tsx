@@ -8,7 +8,7 @@ import { ScoreBadge } from "./ScoreBadge";
 export function AnimeCard({ anime }: { anime: Anime }) {
   const [failedImage, setFailedImage] = useState<string | null>(null);
   return (
-    <article className="relative isolate aspect-[317/270] overflow-hidden rounded-lg bg-neutral-800 text-white">
+    <article className="relative isolate min-h-[270px] min-w-0 overflow-hidden rounded-lg bg-neutral-800 text-white">
       {anime.image && failedImage !== anime.image ? (
         <Image
           src={anime.image}
@@ -19,16 +19,16 @@ export function AnimeCard({ anime }: { anime: Anime }) {
           onError={() => setFailedImage(anime.image)}
         />
       ) : (
-        <span className="absolute inset-x-0 bottom-16 text-center text-sm text-neutral-300">
-          Imagem indisponível
+        <span className="absolute bottom-3 left-3 text-xs text-neutral-300">
+          Sem imagem
         </span>
       )}
       <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/35 to-black/5" />
-      <div className="relative p-6 sm:p-5 lg:p-7">
+      <div className="relative p-6 pb-16 sm:p-5 sm:pb-16 lg:p-7 lg:pb-16">
         <h2
           id={`anime-title-${anime.id}`}
           tabIndex={-1}
-          className="line-clamp-3 text-2xl leading-7 font-normal [text-shadow:0_1px_3px_#000]"
+          className="text-2xl break-words leading-7 font-normal [text-shadow:0_1px_3px_#000]"
         >
           {anime.title}
         </h2>

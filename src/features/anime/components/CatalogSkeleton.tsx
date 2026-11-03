@@ -12,7 +12,7 @@ export function CatalogSkeleton({ announce = true }: { announce?: boolean }) {
         {Array.from({ length: 12 }, (_, index) => (
           <div
             key={index}
-            className="aspect-[317/270] rounded-lg bg-neutral-200 motion-safe:animate-pulse"
+            className="min-h-[270px] rounded-lg bg-neutral-200 motion-safe:animate-pulse"
           />
         ))}
       </div>

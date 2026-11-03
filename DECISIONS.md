@@ -47,3 +47,7 @@ Use the measured 317:270 ratio and an 8px score-badge inset. Regular Poppins tit
 ## Step 4 — Focus and asynchronous results
 
 Preserve the search input DOM node while synchronizing URL/history changes so Enter submission retains focus. Keep result announcements in one persistent polite live region. After explicitly loading more, focus the first new title (programmatic tabindex -1; not an extra Tab stop), or the retry control on failure. Make the skip-link target programmatically focusable. These changes address observed keyboard failures; they do not constitute a full screen-reader conformance audit.
+
+## Step 4 — Reflow over fixed card height
+
+The strict card ratio caused overlap at narrow desktop widths. Keep a 270px minimum matching the desktop reference, but let content grow and reserve 64px below it for score badges. Full titles wrap rather than being clamped. A row can grow for longer titles/genres. Use 44px-tall controls for small screens/coarse pointers as a usability enhancement, while retaining desktop sizing.

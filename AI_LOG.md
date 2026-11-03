@@ -77,3 +77,7 @@ Final wordmark dimensions were 236.73×28px against the reference's 237×28px. P
 ## Step 4 — Keyboard focus and announcements
 
 Reviewed the running catalog with keyboard input and DOM/accessibility-tree inspection. Verified that the skip link left focus on the body and that submitting a changed search replaced the input and lost focus after navigation. Replaced the keyed input with an uncontrolled input synchronized through a ref on URL changes; made the skip-link destination focusable. Added a persistent polite result-status region, avoiding a second loading announcement from the skeleton. Loading another page focuses the first new title, and failed pagination focuses the retry control. Added Jest regressions for retained search focus, persistent status, pagination focus, and recovery focus.
+
+## Step 4 — Responsive reflow and touch controls
+
+At a 1040px browser viewport (1025px content viewport), real AniList genre lists overlapped score badges in four cards. Replaced fixed-aspect card height with a 270px minimum and natural content growth, reserved bottom space for scores, and removed title clamping so full titles can reflow. Updated skeleton minimum height accordingly. Moved the missing-image caption into reserved bottom space. Mobile/coarse-pointer search and buttons now have at least 44px height; mobile/coarse-pointer search text uses 16px to avoid small-text zoom behavior. Desktop control sizes remain as measured in step 3. No new implementation-mirroring tests were added for CSS; browser geometry is used for validation.

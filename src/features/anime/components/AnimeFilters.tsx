@@ -37,7 +37,7 @@ export function AnimeFilters({
             type="button"
             aria-pressed={filters.format === value}
             onClick={() => onChange({ ...filters, format: value })}
-            className={`min-h-9 min-w-16 whitespace-nowrap rounded-sm border border-brand px-5 py-1.5 text-sm transition-colors hover:bg-brand/10 sm:h-8 sm:min-h-8 sm:py-0 ${filters.format === value ? "bg-brand text-white hover:bg-brand-dark" : "bg-white text-brand"}`}
+            className={`min-h-11 min-w-16 whitespace-nowrap rounded-sm border border-brand px-5 py-1.5 text-sm transition-colors hover:bg-brand/10 sm:h-8 sm:min-h-8 sm:py-0 ${filters.format === value ? "bg-brand text-white hover:bg-brand-dark" : "bg-white text-brand"}`}
           >
             {label}
           </button>
@@ -56,11 +56,11 @@ export function AnimeFilters({
           placeholder="Digite algo aqui..."
           autoComplete="off"
           maxLength={200}
-          className="min-w-0 flex-1 rounded-sm border border-neutral-300 bg-white h-[38px] px-3 text-sm placeholder:text-neutral-400"
+          className="min-w-0 flex-1 rounded-sm border border-neutral-300 bg-white min-h-11 px-3 text-base placeholder:text-neutral-400 sm:h-[38px] sm:min-h-0 sm:text-sm"
         />
         <button
           type="submit"
-          className="h-[38px] rounded-sm bg-brand px-6 text-sm text-white transition-colors hover:bg-brand-dark"
+          className="min-h-11 rounded-sm bg-brand px-6 text-sm text-white transition-colors hover:bg-brand-dark sm:h-[38px] sm:min-h-0"
         >
           Buscar
         </button>

@@ -27,3 +27,12 @@ button:disabled {
   outline: 3px solid #ffb52e;
   outline-offset: 3px;
 }
+
+@media (pointer: coarse) {
+  :where(button, input[type="search"]) {
+    min-height: 44px;
+  }
+  input[type="search"] {
+    font-size: 16px;
+  }
+}
