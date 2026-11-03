@@ -30,3 +30,18 @@ export function getScoreTone(score: number | null) {
   if (score <= 80) return "medium";
   return "high";
 }
+
+type SearchParamValue = string | string[] | null | undefined;
+
+export function parseAnimeFilters(params: {
+  search?: SearchParamValue;
+  format?: SearchParamValue;
+}): AnimeFilters {
+  const search = Array.isArray(params.search)
+    ? params.search[0]
+    : params.search;
+  const format = Array.isArray(params.format)
+    ? params.format[0]
+    : params.format;
+  return { search: (search ?? "").trim(), format: parseFormat(format ?? null) };
+}

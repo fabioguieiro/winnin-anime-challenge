@@ -79,3 +79,7 @@ Serve full-glyph WOFF2 versions of the same three local Poppins fonts. Converted
 ## Step 6 — Image loading and bundle review
 
 Load only the first catalog cover and details banner eagerly with high fetch priority; retain lazy loading on other images and disabled speculative card-route prefetch. Cover sizes now reflect the 32px phone gutters, 50px larger-screen gutters, 16px column gaps, and 1366px shell cap. These hints guide responsive source selection; no image-byte or LCP reduction is claimed without controlled measurements. The production route HTML references ten script chunks per route: 638,398 bytes for catalog and 639,108 for details, approximately 198,651 and 198,988 bytes when independently gzip-compressed. These estimates include Next/React, exclude later navigation chunks, and are not total network transfer. No new runtime package or speculative code-splitting layer was warranted by this limited review.
+
+## Server-rendered catalog — Shared query contract
+
+Share infinite-query options and URL-filter normalization between the upcoming server prefetch and browser hook. Both sides must use the same key, first-page parameter, trimmed search, validated format, and first value for repeated URL parameters. This refactor preserves existing browser behavior.

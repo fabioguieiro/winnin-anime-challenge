@@ -6,17 +6,17 @@ import { AnimeFilters } from "./components/AnimeFilters";
 import { AnimeCard } from "./components/AnimeCard";
 import { CatalogSkeleton } from "./components/CatalogSkeleton";
 import { useAnimeQuery } from "./hooks/useAnimeQuery";
-import { parseFormat, type AnimeFilters as Filters } from "./model/anime";
+import { parseAnimeFilters, type AnimeFilters as Filters } from "./model/anime";
 import { getDetailsHref } from "./model/navigation";
 import { GraphQLRequestError } from "@/shared/api/graphql";
 
 export function AnimeCatalog() {
   const router = useRouter();
   const params = useSearchParams();
-  const filters: Filters = {
-    search: (params.get("search") ?? "").trim(),
-    format: parseFormat(params.get("format")),
-  };
+  const filters = parseAnimeFilters({
+    search: params.get("search"),
+    format: params.get("format"),
+  });
   const query = useAnimeQuery(filters);
   const items = [
     ...new Map(

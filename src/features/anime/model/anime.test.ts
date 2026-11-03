@@ -1,4 +1,4 @@
-import { getScoreTone, parseFormat } from "./anime";
+import { getScoreTone, parseFormat, parseAnimeFilters } from "./anime";
 
 it.each([
   [0, "low"],
@@ -16,4 +16,22 @@ it("accepts known formats and falls back for invalid URL values", () => {
   expect(parseFormat("TV_SHORT")).toBe("TV_SHORT");
   expect(parseFormat("unknown")).toBe("");
   expect(parseFormat(null)).toBe("");
+});
+
+it.each([
+  [{}, { search: "", format: "" }],
+  [
+    { search: "  Naruto  ", format: "MOVIE" },
+    { search: "Naruto", format: "MOVIE" },
+  ],
+  [
+    { search: ["  Naruto ", "Bleach"], format: ["TV", "MOVIE"] },
+    { search: "Naruto", format: "TV" },
+  ],
+  [
+    { search: null, format: "unknown" },
+    { search: "", format: "" },
+  ],
+])("normalizes catalog URL parameters %j", (params, expected) => {
+  expect(parseAnimeFilters(params)).toEqual(expected);
 });
