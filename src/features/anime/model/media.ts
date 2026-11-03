@@ -55,7 +55,7 @@ export function youtubeEmbedUrl(value: string): string | null {
       !/^[a-zA-Z0-9_-]{11}$/.test(id)
     )
       return null;
-    return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0`;
+    return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0&hl=en`;
   } catch {
     return null;
   }

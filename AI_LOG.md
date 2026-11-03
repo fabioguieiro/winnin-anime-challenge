@@ -217,3 +217,7 @@ Deployed source commit dfa63f4 to the existing Vercel production alias; deployme
 ## English interface
 
 The candidate noticed mixed Portuguese and English throughout the app. Audited catalog, details, invalid-ID pages, shared shell, metadata, accessibility labels, loading/error/empty states, and nullable-data fallbacks. Replaced application-owned Portuguese copy with English, declared the document language as English, and formatted complete/partial dates with English month names in UTC. Preserved original anime/provider names and source descriptions. Updated behavioral test queries to English. The initial run found one leftover Portuguese test assertion for pagination recovery; corrected it before the final checks.
+
+## YouTube verification fallback
+
+The candidate reproduced YouTube’s sign-in/bot check in a normal browser and reported that signing in through the popup did not unlock the embed. This is a provider-controlled verification screen; the exact browser/session cause is not diagnosed. Keep the supported privacy-enhanced embed and required referrer policy. Promote the direct trailer link to a visible button and explain that separate-window sign-in may not unlock embedded playback. Do not claim this resolves YouTube’s verification. Request the player interface in English with the documented `hl=en` parameter. No authentication workarounds, cookie changes, or account access were attempted. References: https://support.google.com/youtube/answer/171780?hl=en and https://developers.google.com/youtube/player_parameters#hl.

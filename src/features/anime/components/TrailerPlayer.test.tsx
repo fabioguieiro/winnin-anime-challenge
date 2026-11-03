@@ -27,6 +27,10 @@ it("loads a YouTube iframe only after user action and stops/unmounts it when clo
     "strict-origin-when-cross-origin",
   );
   expect(frame).toHaveFocus();
+  expect(new URL(frame.getAttribute("src")!).searchParams.get("hl")).toBe("en");
+  expect(
+    screen.getByText(/Signing in in a separate window may not unlock/),
+  ).toBeInTheDocument();
   expect(screen.getByRole("link", { name: /Open on YouTube/ })).toHaveAttribute(
     "href",
     trailer.url,

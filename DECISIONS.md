@@ -109,3 +109,7 @@ Keep an external fallback visible because video owners, region restrictions, or 
 ## Interface language
 
 The candidate requested a consistently English interface. All application-owned text, including loading/error/empty states, accessibility labels, metadata, status and season labels, and footer copy, is English. The document declares `lang="en"`. Release dates use explicit English month names and UTC to avoid numeric-date ambiguity and timezone shifts, while preserving partial dates. Anime titles and source-provided names/content retain their original forms; no translation service or localization dependency was introduced.
+
+## YouTube verification fallback
+
+The candidate reproduced YouTube’s sign-in/bot check in a normal browser and reported that signing in through the popup did not unlock the embed. This is a provider-controlled verification screen; the exact browser/session cause is not diagnosed. Keep the supported privacy-enhanced embed and required referrer policy. Promote the direct trailer link to a visible button and explain that separate-window sign-in may not unlock embedded playback. Do not claim this resolves YouTube’s verification. Request the player interface in English with the documented `hl=en` parameter. No authentication workarounds, cookie changes, or account access were attempted. References: https://support.google.com/youtube/answer/171780?hl=en and https://developers.google.com/youtube/player_parameters#hl.

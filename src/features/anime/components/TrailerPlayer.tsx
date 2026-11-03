@@ -93,14 +93,16 @@ export function TrailerPlayer({
         href={trailer.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-2 inline-flex min-h-11 items-center text-xs text-neutral-300 underline underline-offset-4"
+        className="mt-3 inline-flex min-h-11 items-center rounded-lg border border-white/40 px-4 py-2 text-sm font-medium text-white hover:bg-white/10"
       >
         Open on {trailer.provider}
         <span className="sr-only"> (opens in a new tab)</span>
       </a>
       {embedUrl && (
         <p className="text-xs leading-5 text-neutral-400">
-          If the video does not load, open it on YouTube.
+          YouTube may block playback or ask you to verify your account. If this
+          happens, use Open on YouTube to watch the trailer directly. Signing in
+          in a separate window may not unlock this embedded player.
         </p>
       )}
     </div>

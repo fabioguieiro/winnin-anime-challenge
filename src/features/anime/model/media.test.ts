@@ -43,7 +43,7 @@ it("rejects mixed content and unsafe thumbnails", () => {
 
 it("constructs fixed-origin YouTube embeds and rejects unsupported/spoofed destinations", () => {
   expect(youtubeEmbedUrl("https://www.youtube.com/watch?v=LHtdKWJdif4")).toBe(
-    "https://www.youtube-nocookie.com/embed/LHtdKWJdif4?autoplay=1&playsinline=1&rel=0",
+    "https://www.youtube-nocookie.com/embed/LHtdKWJdif4?autoplay=1&playsinline=1&rel=0&hl=en",
   );
   for (const url of [
     "https://www.youtube.com.evil.test/watch?v=LHtdKWJdif4",
