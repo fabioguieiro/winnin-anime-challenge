@@ -40,10 +40,10 @@ Jest covers score boundaries, nullable API fields, transport/GraphQL errors, URL
 
 ## Review the application
 
-1. Open `/` and use “Ver mais” to append another page.
+1. Open `/` and use “Load more” to append another page.
 2. Search for “Naruto” with Enter or “Search”, then select “Movie”. The URL retains both filters. A direct visit to `/?search=Naruto&format=MOVIE` also works; results can change with AniList data.
-3. Open a card and use “Voltar para os animes”. Filters and previously loaded browser pages are retained while cached. Reloading starts at page one.
-4. Try a search with no matches and use “Limpar filtros”. Network/rate-limit failures offer an explicit retry; pagination failures keep earlier cards.
+3. Open a card and use “Back to anime catalog”. Filters and previously loaded browser pages are retained while cached. Reloading starts at page one.
+4. Try a search with no matches and use “Clear filters”. Network/rate-limit failures offer an explicit retry; pagination failures keep earlier cards.
 5. Use Tab and the skip link, and inspect phone/tablet/desktop layouts. Titles can grow rather than overlap scores or truncate essential content.
 
 ## Requirements and scope
@@ -55,8 +55,8 @@ Jest covers score boundaries, nullable API fields, transport/GraphQL errors, URL
 | Text search and format filters | Submitted search and immediate format selection, retained in the URL                                         |
 | `averageScore` colors          | Below 50 red; 50–80 inclusive yellow; above 80 green; missing scores show a dash                             |
 | Figma catalog                  | Measured desktop layout, purple/amber theme, covers, titles, genres, and score badges; responsive extensions |
-| Execution/tests and decisions  | This README and [DECISIONS.md](./DECISIONS.md)                                                               |
-| AI transparency and history    | [AI_LOG.md](./AI_LOG.md), [AGENTS.md](./AGENTS.md), and incremental commits                                  |
+| Execution/tests and decisions  | This README                                                                                                  |
+| AI transparency and history    | [AI_LOG.md](./AI_LOG.md) and incremental commits                                                             |
 
 The written score rule takes precedence over the reference's green 80% example. Exact font metadata and source color tokens could not be verified in the read-only Figma session; Poppins and the palette are visual approximations. The project does not claim pixel-perfect or formal accessibility conformance.
 
@@ -64,7 +64,7 @@ The details route is additional scope: cover/banner, synopsis, alternate titles,
 
 ## Stack and organization
 
-Next.js App Router, React, TypeScript, Tailwind CSS, TanStack Query, GraphQL through native fetch, Jest, and React Testing Library. Motivations and alternatives are in [DECISIONS.md](./DECISIONS.md).
+Next.js App Router, React, TypeScript, Tailwind CSS, TanStack Query, GraphQL through native fetch, Jest, and React Testing Library. The technology choices and AI-assisted development process are described in [AI_LOG.md](./AI_LOG.md).
 
 - `src/app/`: thin routes, root layout, providers, fonts, and global styles.
 - `src/features/anime/api/`: typed queries, response mapping, and shared query options.
@@ -83,13 +83,13 @@ Existing browser data takes precedence over a new page-one snapshot so a return 
 
 Fonts are self-hosted full-glyph WOFF2 files with the Poppins OFL license in `src/app/fonts/OFL.txt`. Covers use Next image optimization, responsive sizes, and fallbacks; the first catalog cover and details banner load eagerly with high priority, while other images remain lazy.
 
-Test Lighthouse against the production server with a clean browser profile. Local Lighthouse 13.6.0 mobile runs scored 89–90 (final run: 89), compared with an earlier client-rendered baseline of 84. LCP decreased from 4.3s to 3.6–3.7s; the final run had 30ms blocking time and zero layout shift. These were lab runs with the local image-optimizer cache retained and live upstream data, not guaranteed deployed scores or field Web Vitals. Detailed verification history is in [AI_LOG.md](./AI_LOG.md).
+Test Lighthouse against the production server with a clean browser profile. Local Lighthouse 13.6.0 mobile runs scored 89–90 (final run: 89), compared with an earlier client-rendered baseline of 84. LCP decreased from 4.3s to 3.6–3.7s; the final run had 30ms blocking time and zero layout shift. These were lab runs with the local image-optimizer cache retained and live upstream data, not guaranteed deployed scores or field Web Vitals. The development process is described in [AI_LOG.md](./AI_LOG.md).
 
 ## Known limitations and remaining work
 
 Details remain client-fetched with generic metadata. Malformed IDs receive HTTP 404; valid-but-missing AniList IDs show an unavailable state after fetching. Titles/genres/synopses retain source-language content. Full screen-reader and physical-device testing, verified Figma font/color tokens, shared server caching, and further mobile LCP work remain open.
 
-At the 2026-11-03 submission review, `npm audit --omit=dev` reported zero advisories. The full audit reported 35 development-tool findings (32 moderate, 3 low), including transitive Jest/ESLint chains. Suggested forced major downgrades were not applied. See the dependency tradeoff in [DECISIONS.md](./DECISIONS.md).
+At the 2026-11-03 submission review, `npm audit --omit=dev` reported zero advisories. The full audit reported 35 development-tool findings (32 moderate, 3 low), including transitive Jest/ESLint chains. Suggested forced major downgrades were not applied.
 
 ### Deployment with Vercel
 
@@ -118,7 +118,7 @@ Deployed smoke checks passed for default/filtered server HTML, optimized covers,
 
 ## AI involvement
 
-Codex assisted with planning, implementation, tests, visual inspection, corrections, and documentation. The candidate selected the stack, Jest preference, testing scope, details feature, atomic-commit workflow, and server-rendering follow-up. [AI_LOG.md](./AI_LOG.md) records generated work, checks, and corrections; it does not claim that candidate review has already happened. The candidate remains responsible for reviewing and explaining the delivered code.
+Codex assisted with planning, implementation, tests, visual inspection, corrections, and documentation. The candidate selected the stack, Jest preference, testing scope, details feature, atomic-commit workflow, and server-rendering follow-up. [AI_LOG.md](./AI_LOG.md) contains the candidate’s account of how AI was used during development, in Portuguese and English. The candidate remains responsible for reviewing and explaining the delivered code.
 
 ## Episode browsing and trailers
 
