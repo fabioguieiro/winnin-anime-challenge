@@ -209,3 +209,7 @@ The inline player loaded Attack on Titan's video title inside the page, but YouT
 ## Compact-details loading follow-up
 
 Noticed that the loading skeleton still reserved the old tall banner/heading layout after the hierarchy change. Updated its banner, cover overlap, synopsis reservation, and horizontal placeholders to reflect the compact details view. Kept the existing accessible loading status. This is a separate CSS/layout follow-up rather than rewriting the earlier commits.
+
+## Details hierarchy — Production verification
+
+Deployed source commit dfa63f4 to the existing Vercel production alias; deployment dpl_3LQNaKRGR3AgQZ3vaTDcS3w85Xxx returned READY. Public One Piece verification at 1366×768 showed banner/identity, synopsis, then the horizontal episode rail, with thumbnails partly visible initially and no document overflow. The next arrow moved the rail. Saved a viewport screenshot in chat outputs. Public Attack on Titan had zero initial iframes; Play created the privacy-enhanced YouTube iframe in the page. YouTube again requested sign-in/bot confirmation, so unrestricted playback remains unverified. Close removed the frame and restored focus to Play. Reset the viewport override. All 90 tests and required checks had passed after the final skeleton change; the cloud build also passed.
