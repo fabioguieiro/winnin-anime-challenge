@@ -32,6 +32,7 @@ export default function Home() {
       </header>
       <main
         id="catalog"
+        tabIndex={-1}
         className="px-4 py-6 sm:px-[25px]"
         aria-label="Catálogo de animes"
       >

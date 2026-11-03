@@ -43,3 +43,7 @@ Selected Figma layers show a 1366×68 header, 834.05×32 format group, 1011.88×
 ## Step 3 — Card treatment and palette
 
 Use the measured 317:270 ratio and an 8px score-badge inset. Regular Poppins titles at 24px/28px, lighter genre pills, and a less opaque image gradient are visual matches to the reference. Brand purple/amber remain visual approximations because source color properties could not be copied; do not describe them as exact Figma values. Retain readable semantic score colors and dark text on yellow rather than reproducing the reference's low-contrast white/yellow combination.
+
+## Step 4 — Focus and asynchronous results
+
+Preserve the search input DOM node while synchronizing URL/history changes so Enter submission retains focus. Keep result announcements in one persistent polite live region. After explicitly loading more, focus the first new title (programmatic tabindex -1; not an extra Tab stop), or the retry control on failure. Make the skip-link target programmatically focusable. These changes address observed keyboard failures; they do not constitute a full screen-reader conformance audit.

@@ -169,3 +169,32 @@ it("preserves loaded cards and retries only the failed next page", async () => {
   await screen.findByRole("heading", { name: "Second anime" });
   expect(fetchMock.mock.calls.map((call) => call[1])).toEqual([1, 2, 2]);
 });
+
+it("keeps the same polite status region across result updates", async () => {
+  fetchMock.mockResolvedValueOnce(first).mockResolvedValueOnce(second);
+  const { user } = setup();
+  const status = screen.getByRole("status");
+  await screen.findByRole("heading", { name: "First anime" });
+  expect(status).toHaveTextContent("1 animes carregados.");
+  await user.click(screen.getByRole("button", { name: "Ver mais" }));
+  await screen.findByRole("heading", { name: "Second anime" });
+  expect(screen.getByRole("status")).toBe(status);
+  expect(status).toHaveTextContent("2 animes carregados.");
+  await waitFor(() =>
+    expect(screen.getByRole("heading", { name: "Second anime" })).toHaveFocus(),
+  );
+});
+
+it("moves focus to recovery controls after a pagination failure", async () => {
+  fetchMock
+    .mockResolvedValueOnce(first)
+    .mockRejectedValueOnce(new Error("offline"));
+  const { user } = setup();
+  await screen.findByRole("heading", { name: "First anime" });
+  await user.click(screen.getByRole("button", { name: "Ver mais" }));
+  await waitFor(() =>
+    expect(
+      screen.getByRole("button", { name: "Tentar novamente" }),
+    ).toHaveFocus(),
+  );
+});

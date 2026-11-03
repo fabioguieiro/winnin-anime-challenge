@@ -25,7 +25,11 @@ export function AnimeCard({ anime }: { anime: Anime }) {
       )}
       <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/35 to-black/5" />
       <div className="relative p-6 sm:p-5 lg:p-7">
-        <h2 className="line-clamp-3 text-2xl leading-7 font-normal [text-shadow:0_1px_3px_#000]">
+        <h2
+          id={`anime-title-${anime.id}`}
+          tabIndex={-1}
+          className="line-clamp-3 text-2xl leading-7 font-normal [text-shadow:0_1px_3px_#000]"
+        >
           {anime.title}
         </h2>
         <ul aria-label="Gêneros" className="mt-2 flex flex-wrap gap-2">

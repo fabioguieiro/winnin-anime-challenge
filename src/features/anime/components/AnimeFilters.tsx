@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent } from "react";
+import { useEffect, useRef, type FormEvent } from "react";
 import { FORMATS, type AnimeFilters as Filters } from "../model/anime";
 
 export function AnimeFilters({
@@ -10,6 +10,13 @@ export function AnimeFilters({
   filters: Filters;
   onChange: (filters: Filters) => void;
 }) {
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Synchronize URL/history changes without replacing the focused input.
+    if (searchRef.current) searchRef.current.value = filters.search;
+  }, [filters.search]);
+
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const search = String(
@@ -41,7 +48,7 @@ export function AnimeFilters({
           Buscar anime
         </label>
         <input
-          key={filters.search}
+          ref={searchRef}
           id="anime-search"
           name="search"
           type="search"

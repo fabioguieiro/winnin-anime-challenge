@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AnimeFilters } from "./components/AnimeFilters";
 import { AnimeCard } from "./components/AnimeCard";
@@ -24,6 +25,40 @@ export function AnimeCatalog() {
     ).values(),
   ];
 
+  const retryRef = useRef<HTMLButtonElement>(null);
+  const resetRef = useRef<HTMLButtonElement>(null);
+
+  function focusResult(id?: number) {
+    requestAnimationFrame(() => {
+      if (id !== undefined)
+        document.getElementById(`anime-title-${id}`)?.focus();
+      else resetRef.current?.focus();
+    });
+  }
+
+  async function loadMore() {
+    const existingIds = new Set(items.map((item) => item.id));
+    const result = await query.fetchNextPage();
+    if (result.isError) {
+      requestAnimationFrame(() => retryRef.current?.focus());
+      return;
+    }
+    const nextItems = result.data?.pages.flatMap((page) => page.items) ?? [];
+    focusResult(
+      nextItems.find((item) => !existingIds.has(item.id))?.id ??
+        nextItems[0]?.id,
+    );
+  }
+
+  async function retry() {
+    if (query.isFetchNextPageError) {
+      await loadMore();
+      return;
+    }
+    const result = await query.refetch();
+    if (result.isSuccess) focusResult(result.data.pages[0]?.items[0]?.id);
+  }
+
   function updateFilters(next: Filters) {
     const nextParams = new URLSearchParams(params.toString());
     if (next.search) nextParams.set("search", next.search);
@@ -37,13 +72,29 @@ export function AnimeCatalog() {
   return (
     <>
       <AnimeFilters filters={filters} onChange={updateFilters} />
+      <p
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        aria-label={query.isPending ? "Carregando animes" : undefined}
+        className="sr-only"
+      >
+        {query.isPending
+          ? "Carregando animes..."
+          : query.isFetchingNextPage
+            ? "Carregando mais animes..."
+            : query.isFetching
+              ? "Atualizando animes..."
+              : query.isError
+                ? ""
+                : items.length === 0
+                  ? "Nenhum anime encontrado."
+                  : `${items.length} animes carregados.`}
+      </p>
       {query.isPending ? (
-        <CatalogSkeleton />
+        <CatalogSkeleton announce={false} />
       ) : (
         <>
-          <p role="status" className="sr-only">
-            {items.length} animes carregados.
-          </p>
           {items.length > 0 && (
             <div className="grid grid-cols-1 gap-x-4 gap-y-[21px] sm:grid-cols-2 lg:grid-cols-4">
               {items.map((anime) => (
@@ -68,10 +119,8 @@ export function AnimeCatalog() {
                 type="button"
                 className="mt-4 rounded-sm bg-brand px-5 py-2 text-sm text-white hover:bg-brand-dark disabled:opacity-60"
                 disabled={query.isFetching}
-                onClick={() => {
-                  if (query.isFetchNextPageError) void query.fetchNextPage();
-                  else void query.refetch();
-                }}
+                ref={retryRef}
+                onClick={() => void retry()}
               >
                 {query.isFetching ? "Tentando..." : "Tentar novamente"}
               </button>
@@ -86,6 +135,7 @@ export function AnimeCatalog() {
               <button
                 type="button"
                 className="mt-5 text-brand underline underline-offset-4"
+                ref={resetRef}
                 onClick={() => updateFilters({ search: "", format: "" })}
               >
                 Limpar filtros
@@ -96,7 +146,7 @@ export function AnimeCatalog() {
             <button
               type="button"
               disabled={query.isFetching}
-              onClick={() => void query.fetchNextPage()}
+              onClick={() => void loadMore()}
               className="mt-6 flex h-12 w-full items-center justify-center gap-6 rounded-lg bg-accent px-5 text-lg text-neutral-950 transition-colors hover:bg-amber-400 disabled:cursor-wait disabled:opacity-60"
             >
               <span
