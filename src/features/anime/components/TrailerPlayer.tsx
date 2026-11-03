@@ -11,10 +11,10 @@ export function TrailerPlayer({
 }) {
   const [playing, setPlaying] = useState(false);
   const playRef = useRef<HTMLButtonElement>(null);
-  const frameRef = useRef<HTMLIFrameElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   const embedUrl = youtubeEmbedUrl(trailer.url);
   useEffect(() => {
-    if (playing) frameRef.current?.focus();
+    if (playing) closeRef.current?.focus();
   }, [playing]);
   function close() {
     setPlaying(false);
@@ -43,7 +43,6 @@ export function TrailerPlayer({
         playing ? (
           <div className={cardClass}>
             <iframe
-              ref={frameRef}
               src={embedUrl}
               title={`Trailer for ${title}`}
               className="aspect-video min-h-[200px] w-full rounded-lg border-0"
@@ -58,6 +57,7 @@ export function TrailerPlayer({
               <p className="mt-2 text-xl font-medium">Trailer for {title}</p>
               <button
                 type="button"
+                ref={closeRef}
                 onClick={close}
                 className="mt-4 min-h-11 rounded-lg border border-white/40 px-4 py-2 text-sm hover:bg-white/10"
               >

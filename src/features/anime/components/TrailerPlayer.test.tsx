@@ -26,7 +26,7 @@ it("loads a YouTube iframe only after user action and stops/unmounts it when clo
     "referrerpolicy",
     "strict-origin-when-cross-origin",
   );
-  expect(frame).toHaveFocus();
+  expect(screen.getByRole("button", { name: "Close trailer" })).toHaveFocus();
   expect(new URL(frame.getAttribute("src")!).searchParams.get("hl")).toBe("en");
   expect(
     screen.getByText(/Signing in in a separate window may not unlock/),

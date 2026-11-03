@@ -43,3 +43,31 @@ button:disabled {
   outline-offset: -6px;
   box-shadow: inset 0 0 0 9px #4b199c;
 }
+
+.anime-card {
+  transition:
+    transform 160ms ease-out,
+    box-shadow 160ms ease-out;
+  scroll-margin: 16px;
+}
+.anime-card:focus-within {
+  transform: scale(1.035);
+  z-index: 30;
+  box-shadow: 0 8px 24px #0003;
+}
+@media (hover: hover) and (pointer: fine) {
+  .anime-card:hover {
+    transform: scale(1.035);
+    z-index: 30;
+    box-shadow: 0 8px 24px #0003;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .anime-card {
+    transition: none;
+  }
+  .anime-card:hover,
+  .anime-card:focus-within {
+    transform: none;
+  }
+}

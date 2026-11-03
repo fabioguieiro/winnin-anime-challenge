@@ -34,7 +34,7 @@ npm run format:check
 npm run build
 ```
 
-`npm run test:watch` runs Jest interactively; `npm run format` formats the project. Tests use mocked requests and do not depend on AniList availability. The latest streaming-experience review passed 90 tests across 19 suites, type checking, lint, formatting, and the production build.
+`npm run test:watch` runs Jest interactively; `npm run format` formats the project. Tests use mocked requests and do not depend on AniList availability. The latest interaction review passed 97 tests across 20 suites, type checking, lint, formatting, and the production build.
 
 Jest covers score boundaries, nullable API fields, transport/GraphQL errors, URL filters, pagination, retry/focus behavior, details/provider links, server-rendered HTML, hydration, cancellation, and cache reuse. Live browser review is separate; there is no automated end-to-end suite, as agreed for this project.
 
@@ -129,3 +129,9 @@ Episodes appear in one horizontal rail with swipe/trackpad scrolling, keyboard a
 YouTube trailers use a click-to-load inline privacy-enhanced player. No iframe is present before user activation; closing removes it and restores focus. A prominent external provider button is always available because YouTube can restrict embedding or request sign-in. Help text explains that signing in through a separate window may not unlock the embed; the direct link opens the actual trailer. The player requests English controls with `hl=en`. The automated browser loaded the player but encountered YouTube's sign-in/bot check, so unrestricted video playback was not verified. Dailymotion remains an external-link fallback; its current player integration requires provider configuration beyond the supplied AniList metadata.
 
 Episode/trailer data loads through a separate cancellable query after title metadata resolves. AniList returns the entire streamingEpisodes array without pagination. All links are rendered in the horizontal rail, so very large source lists can increase DOM work even though images remain lazy. Thumbnails use validated HTTPS URLs directly with no referrer; the catalog's narrow image-proxy allowlist is unchanged. The YouTube iframe uses strict-origin-when-cross-origin to provide the referring origin required by YouTube.
+
+## Card focus and remote navigation
+
+Added subtle 3.5% catalog-card enlargement on mouse hover and keyboard focus, with a visible focus ring, stacking/shadow, and no layout shift. Reduced-motion users keep the ring without scaling or animation. Shared navigation handles standard Arrow keys across application controls using current screen geometry, including responsive card rows and horizontal episode links. Left/Right stay within the current row; Up/Down prefer the same column. Focused controls scroll into view, disabled/hidden controls are skipped, and boundaries retain focus. Initial arrow input enters the main controls without stealing focus on page load. Enter uses native links/buttons; Tab and search caret editing remain available. Pagination now focuses the new card’s actionable link, so Enter opens it immediately.
+
+Starting a trailer focuses Close rather than moving into YouTube’s cross-origin iframe, keeping the app’s arrow navigation available. The embedded player remains reachable by Tab; keys inside it are controlled by YouTube. This supports browser remotes emitting standard Arrow/Enter events, not a packaged TV-platform application. Physical TV hardware, platform-specific back keys, and on-screen keyboard integration still require device testing.

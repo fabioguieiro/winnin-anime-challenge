@@ -33,7 +33,7 @@ export function AnimeCatalog() {
   function focusResult(id?: number) {
     requestAnimationFrame(() => {
       if (id !== undefined)
-        document.getElementById(`anime-title-${id}`)?.focus();
+        document.getElementById(`anime-link-${id}`)?.focus();
       else resetRef.current?.focus();
     });
   }

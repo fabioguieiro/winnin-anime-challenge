@@ -184,7 +184,9 @@ it("keeps the same polite status region across result updates", async () => {
   expect(screen.getByRole("status")).toBe(status);
   expect(status).toHaveTextContent("2 anime loaded.");
   await waitFor(() =>
-    expect(screen.getByRole("heading", { name: "Second anime" })).toHaveFocus(),
+    expect(
+      screen.getByRole("link", { name: "View details for Second anime" }),
+    ).toHaveFocus(),
   );
 });
 

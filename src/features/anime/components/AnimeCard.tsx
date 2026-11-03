@@ -17,7 +17,7 @@ export function AnimeCard({
 }) {
   const [failedImage, setFailedImage] = useState<string | null>(null);
   return (
-    <article className="relative isolate min-h-[270px] min-w-0 overflow-hidden rounded-lg bg-neutral-800 text-white">
+    <article className="anime-card relative isolate min-h-[270px] min-w-0 overflow-hidden rounded-lg bg-neutral-800 text-white">
       {anime.image && failedImage !== anime.image ? (
         <Image
           src={anime.image}
@@ -58,6 +58,7 @@ export function AnimeCard({
         <ScoreBadge score={anime.score} />
       </div>
       <Link
+        id={`anime-link-${anime.id}`}
         href={detailsHref}
         prefetch={false}
         aria-label={`View details for ${anime.title}`}
