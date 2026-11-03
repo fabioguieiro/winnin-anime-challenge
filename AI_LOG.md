@@ -65,3 +65,11 @@ Aligned the desktop content gutters to the measured 1316px grid inside the 1366p
 Matched the measured 317×270 card ratio, reduced title weight to regular with 28px line height, tightened title-to-genre spacing, lightened genre pills and the image gradient, and inset score badges by 8px with rounded corners and light typography. Rebalanced the brand purple and amber by visual comparison; these are approximate rendered-color matches, not copied Figma tokens. Existing semantic score thresholds and readable score text colors are preserved. Skeletons use the same updated aspect ratio.
 
 The candidate's existing development server on port 3000 was reused for browser comparison. An attempted separate dev server exited because Next detected the existing server; no user-owned process was stopped.
+
+## Step 3 — Wordmark follow-up
+
+Browser comparison showed the Poppins wordmark was narrower than the selected Figma text layer (237×28). Applied 0.045em tracking and block layout to match that measured width/line box more closely without stretching the font. This is recorded as a separate follow-up commit instead of rewriting the typography commit.
+
+Validation before the wordmark follow-up: 20 Jest tests passed; lint, formatting, and the production build passed. At 1366px content width, browser measurements confirmed 317×270 cards, 21px row gaps, a 68px header, 38px search row, and 54px footer. Phone layout retained a single column without horizontal overflow. Final wordmark verification follows below.
+
+Final wordmark dimensions were 236.73×28px against the reference's 237×28px. Production build, standalone typecheck, lint, formatting, and whitespace checks passed. The production preview loaded 12 live AniList cards, all 12 cover images, and the local fonts. Saved a full-page review screenshot. Step 3 is complete with font identity and source color values still explicitly unverified; step 4 and the details page remain pending.

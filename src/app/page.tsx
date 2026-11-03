@@ -7,8 +7,8 @@ function Brand({ small = false }: { small?: boolean }) {
     <span
       className={
         small
-          ? "text-2xl leading-7 font-light"
-          : "text-[40px] leading-7 font-light"
+          ? "block text-2xl leading-7 font-light tracking-[0.045em]"
+          : "block text-[40px] leading-7 font-light tracking-[0.045em]"
       }
     >
       BUSC<span className="text-accent">ANIME</span>
