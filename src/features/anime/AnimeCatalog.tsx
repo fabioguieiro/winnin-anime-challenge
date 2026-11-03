@@ -57,6 +57,7 @@ export function AnimeCatalog() {
     }
     const result = await query.refetch();
     if (result.isSuccess) focusResult(result.data.pages[0]?.items[0]?.id);
+    else requestAnimationFrame(() => retryRef.current?.focus());
   }
 
   function updateFilters(next: Filters) {
@@ -136,7 +137,10 @@ export function AnimeCatalog() {
                 type="button"
                 className="mt-5 text-brand underline underline-offset-4"
                 ref={resetRef}
-                onClick={() => updateFilters({ search: "", format: "" })}
+                onClick={() => {
+                  document.getElementById("anime-search")?.focus();
+                  updateFilters({ search: "", format: "" });
+                }}
               >
                 Limpar filtros
               </button>

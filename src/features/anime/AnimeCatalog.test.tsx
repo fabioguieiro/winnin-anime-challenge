@@ -137,6 +137,7 @@ it("offers a reset for empty results", async () => {
   ).toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: "Limpar filtros" }));
   expect(mockPush).toHaveBeenCalledWith("/", { scroll: false });
+  expect(screen.getByRole("searchbox")).toHaveFocus();
 });
 
 it("shows rate-limit guidance and recovers on retry", async () => {
@@ -192,6 +193,19 @@ it("moves focus to recovery controls after a pagination failure", async () => {
   const { user } = setup();
   await screen.findByRole("heading", { name: "First anime" });
   await user.click(screen.getByRole("button", { name: "Ver mais" }));
+  await waitFor(() =>
+    expect(
+      screen.getByRole("button", { name: "Tentar novamente" }),
+    ).toHaveFocus(),
+  );
+});
+
+it("returns focus to retry when another initial request fails", async () => {
+  fetchMock.mockRejectedValue(new Error("offline"));
+  const { user } = setup();
+  const retry = await screen.findByRole("button", { name: "Tentar novamente" });
+  await user.click(retry);
+  await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
   await waitFor(() =>
     expect(
       screen.getByRole("button", { name: "Tentar novamente" }),
