@@ -58,3 +58,17 @@ it("rejects missing data", async () => {
   mockFetch.mockResolvedValue(new Response(JSON.stringify({ data: null })));
   await expect(requestGraphQL("query {}")).rejects.toThrow("no data");
 });
+
+it("retains AniList error status from an HTTP-success GraphQL response", async () => {
+  mockFetch.mockResolvedValue(
+    new Response(
+      JSON.stringify({
+        data: { Media: null },
+        errors: [{ message: "Not Found.", status: 404 }],
+      }),
+    ),
+  );
+  await expect(requestGraphQL("query {}")).rejects.toMatchObject({
+    status: 404,
+  });
+});

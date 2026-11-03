@@ -2,7 +2,7 @@ const ANILIST_ENDPOINT = "https://graphql.anilist.co";
 
 type GraphQLResponse<T> = {
   data?: T | null;
-  errors?: { message: string }[];
+  errors?: { message: string; status?: number }[];
 };
 
 export class GraphQLRequestError extends Error {
@@ -36,7 +36,10 @@ export async function requestGraphQL<T>(
 
   const result: GraphQLResponse<T> = await response.json();
   if (result.errors?.length) {
-    throw new Error(result.errors.map((error) => error.message).join("; "));
+    throw new GraphQLRequestError(
+      result.errors.map((error) => error.message).join("; "),
+      result.errors[0].status,
+    );
   }
   if (result.data == null) {
     throw new Error("AniList returned no data.");

@@ -55,3 +55,7 @@ The strict card ratio caused overlap at narrow desktop widths. Keep a 270px mini
 ## Step 4 — Contrast
 
 Darken the input border and placeholder to neutral-500 for legibility and control identification. Replace low-contrast amber focus outlines on white with a dark-purple outline separated by a white ring, which remains visible against selected purple and amber controls. Reference: https://www.w3.org/TR/WCAG22/ (contrast minimum, non-text contrast, focus visible, target size). The 44px touch size is an enhancement, not the 24px AA minimum. Full screen-reader and device testing remain outside this limited review.
+
+## Step 5 — Details data
+
+Fetch details by positive GraphQL Int ID with type ANIME and isAdult false, matching catalog scope. Preserve null metadata and partial dates instead of inventing values. Render normalized synopsis as escaped React text, retaining paragraph breaks; rich markup is deliberately discarded. Streaming-provider links come from active externalLinks of type STREAMING, deduplicated by URL. Preserve supplied HTTP(S) URLs because AniList still returns HTTP links for established services. Invalid schemes and credential-bearing links are omitted. No player or episode-video hosting is introduced.
