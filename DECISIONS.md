@@ -71,3 +71,7 @@ Use Next Link for full-card navigation with an accessible title-based name and a
 ## Step 6 — Request freshness and retention
 
 Treat query data as fresh for five minutes and retain inactive entries for fifteen minutes. A normal details visit or filter round trip reuses loaded catalog pages, while returning after freshness expires still refreshes pages sequentially to keep pagination consistent. This is an in-memory policy, not persistence across reloads; inactive caches are eventually collected and active long sessions can retain many pages. Keep manual error recovery, cancellation signals, and disabled focus refetch/automatic retries. Do not disable stale remount refresh or cap infinite-query pages, which would hide freshness or remove already loaded cards. References: https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults and https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries.
+
+## Step 6 — Font transfer size
+
+Serve full-glyph WOFF2 versions of the same three local Poppins fonts. Converted the existing official Google Fonts TTF files with fontTools 4.60.2 and Brotli 1.2.1 (`font.flavor = "woff2"; font.save(...)`), keeping the OFL license. This is compression, not subsetting: glyph order, Unicode character maps, and horizontal metrics were verified after round-trip decoding. No application dependency or remote font request is introduced.

@@ -117,3 +117,7 @@ Final step-5 validation: 54 tests passed across ten Jest suites. Production buil
 ## Step 6 — Request behavior
 
 Reproduced the one-minute freshness issue with a two-page catalog: returning after a simulated 90-second details visit started a background refetch. Extracted the production QueryClient factory for behavioral testing and extended freshness to five minutes with fifteen-minute inactive retention. The regression now expects two original page requests and zero additional return requests. A six-minute revisit still refreshes both pages in order; leaving a pending filter query aborts its signal. No polling, speculative details fetch, server proxy, or new dependency was added. This reduces requests during ordinary navigation; it does not eliminate refetching after expiry or provide reload persistence.
+
+## Step 6 — Font compression
+
+Converted all three existing Poppins TTF files to full-glyph WOFF2 using temporary fontTools/Brotli tooling outside the application. Total raw font assets decreased from 480,828 to 153,796 bytes (68.0%); these are file sizes, not a measured page-speed score. Verified equal glyph order, Unicode maps, and horizontal metrics after decoding each output. Updated next/font/local paths and retained the original OFL license.
