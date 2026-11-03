@@ -5,7 +5,12 @@ export type FuzzyDate = {
   month: number | null;
   day: number | null;
 } | null;
-export type StreamingProvider = { name: string; url: string };
+export type StreamingProvider = {
+  name: string;
+  url: string;
+  icon: string | null;
+  color: string | null;
+};
 export type AnimeDetailsData = Anime & {
   englishTitle: string | null;
   nativeTitle: string | null;

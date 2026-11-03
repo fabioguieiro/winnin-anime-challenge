@@ -26,7 +26,7 @@ export const ANIME_DETAILS_QUERY = `
       startDate { year month day }
       endDate { year month day }
       studios(isMain: true) { nodes { name } }
-      externalLinks { url site type isDisabled }
+      externalLinks { url site type isDisabled icon color }
     }
   }
 `;
@@ -59,6 +59,8 @@ type DetailsResponse = {
           site: string;
           type: string | null;
           isDisabled: boolean | null;
+          icon: string | null;
+          color: string | null;
         } | null)[]
       | null;
   } | null;
@@ -89,7 +91,13 @@ export async function fetchAnimeDetails(
     const url = safeExternalUrl(link.url);
     if (!url || seen.has(url)) continue;
     seen.add(url);
-    providers.push({ name: link.site || new URL(url).hostname, url });
+    const icon = safeExternalUrl(link.icon);
+    providers.push({
+      name: link.site || new URL(url).hostname,
+      url,
+      icon: icon?.startsWith("https://") ? icon : null,
+      color: /^#[0-9a-f]{6}$/i.test(link.color ?? "") ? link.color : null,
+    });
   }
   return {
     id: media.id,

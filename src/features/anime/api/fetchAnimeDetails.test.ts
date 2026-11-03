@@ -70,7 +70,14 @@ it("maps nullable details and only active, safe streaming links", async () => {
     genres: ["Action"],
     studios: ["Studio"],
     episodes: null,
-    providers: [{ name: "Provider", url: "https://example.com/watch" }],
+    providers: [
+      {
+        name: "Provider",
+        url: "https://example.com/watch",
+        icon: null,
+        color: null,
+      },
+    ],
   });
   expect(request).toHaveBeenCalledWith(ANIME_DETAILS_QUERY, { id: 1 }, signal);
 });
@@ -85,3 +92,43 @@ it("preserves rate-limit and network errors for recovery", async () => {
   request.mockRejectedValue(new GraphQLRequestError("Too many requests", 429));
   await expect(fetchAnimeDetails(1)).rejects.toMatchObject({ status: 429 });
 });
+
+it.each([
+  [
+    "https://images.test/logo.png",
+    "#1CE783",
+    "https://images.test/logo.png",
+    "#1CE783",
+  ],
+  ["http://images.test/logo.png", "red", null, null],
+  ["javascript:alert(1)", "url(https://example.com)", null, null],
+  ["https://user:password@images.test/logo.png", null, null, null],
+])(
+  "validates provider logo metadata (%s)",
+  async (icon, color, expectedIcon, expectedColor) => {
+    request.mockResolvedValue({
+      Media: {
+        id: 1,
+        title: null,
+        externalLinks: [
+          {
+            site: "Provider",
+            url: "https://example.com/watch",
+            type: "STREAMING",
+            isDisabled: false,
+            icon,
+            color,
+          },
+        ],
+      },
+    });
+    expect((await fetchAnimeDetails(1))?.providers).toEqual([
+      {
+        name: "Provider",
+        url: "https://example.com/watch",
+        icon: expectedIcon,
+        color: expectedColor,
+      },
+    ]);
+  },
+);

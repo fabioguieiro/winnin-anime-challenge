@@ -34,7 +34,7 @@ npm run format:check
 npm run build
 ```
 
-`npm run test:watch` runs Jest interactively; `npm run format` formats the project. Tests use mocked requests and do not depend on AniList availability. The latest interaction review passed 97 tests across 20 suites, type checking, lint, formatting, and the production build.
+`npm run test:watch` runs Jest interactively; `npm run format` formats the project. Tests use mocked requests and do not depend on AniList availability. The latest interaction review passed 102 tests across 20 suites, type checking, lint, formatting, and the production build.
 
 Jest covers score boundaries, nullable API fields, transport/GraphQL errors, URL filters, pagination, retry/focus behavior, details/provider links, server-rendered HTML, hydration, cancellation, and cache reuse. Live browser review is separate; there is no automated end-to-end suite, as agreed for this project.
 
@@ -122,7 +122,7 @@ Codex assisted with planning, implementation, tests, visual inspection, correcti
 
 ## Episode browsing and trailers
 
-Details follow banner/title/cover → synopsis → episodes → trailer → supporting information. Long synopses show three lines with an accessible expand/collapse control; the complete text stays available. Compact hero spacing leaves most of the first thumbnails visible at the checked 1366×768 desktop viewport, with title-length/device variation.
+Details follow banner/title/cover → synopsis alongside Information on desktop → trailer (when supplied) → episodes → Where to watch. Information stacks below the synopsis on smaller screens. Long synopses show three lines with an accessible expand/collapse control; the complete text stays available. The information row and trailer take priority over showing episodes in the initial viewport.
 
 Episodes appear in one horizontal rail with swipe/trackpad scrolling, keyboard access, and boundary-aware previous/next buttons. All supplied links remain available; thumbnails load lazily. Episode cards open the provider in a labeled new tab. Missing images retain a usable link with a preview fallback. Counts/numbers reflect source data; no seasons, watch progress, or missing episodes are invented.
 
@@ -135,3 +135,5 @@ Episode/trailer data loads through a separate cancellable query after title meta
 Added subtle 3.5% catalog-card enlargement on mouse hover and keyboard focus, with a visible focus ring, stacking/shadow, and no layout shift. Reduced-motion users keep the ring without scaling or animation. Shared navigation handles standard Arrow keys across application controls using current screen geometry, including responsive card rows and horizontal episode links. Left/Right stay within the current row; Up/Down prefer the same column. Focused controls scroll into view, disabled/hidden controls are skipped, and boundaries retain focus. Initial arrow input enters the main controls without stealing focus on page load. Enter uses native links/buttons; Tab and search caret editing remain available. Pagination now focuses the new card’s actionable link, so Enter opens it immediately.
 
 Starting a trailer focuses Close rather than moving into YouTube’s cross-origin iframe, keeping the app’s arrow navigation available. The embedded player remains reachable by Tab; keys inside it are controlled by YouTube. This supports browser remotes emitting standard Arrow/Enter events, not a packaged TV-platform application. Physical TV hardware, platform-specific back keys, and on-screen keyboard integration still require device testing.
+
+Viewing providers use AniList’s supplied logo icons on their supplied brand colors. The logo links retain accessible service names, new-tab labels, and remote navigation. Missing/broken icons show a readable service-name fallback. Icon URLs require HTTPS; brand colors require six-digit hex values. These are AniList-provided assets, not independently verified current brand guidelines.

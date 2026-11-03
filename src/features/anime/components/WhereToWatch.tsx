@@ -1,4 +1,5 @@
 import type { StreamingProvider } from "../model/details";
+import { ProviderLogo } from "./ProviderLogo";
 
 export function WhereToWatch({
   providers,
@@ -28,11 +29,11 @@ export function WhereToWatch({
                   href={provider.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-11 items-center gap-4 rounded border border-brand px-4 py-2 text-sm text-brand hover:bg-brand/10"
+                  aria-label={`${provider.name} (opens in a new tab)`}
+                  title={`${provider.name} (opens in a new tab)`}
+                  className="flex min-h-20 min-w-24 items-center justify-center rounded-xl border border-neutral-200 bg-neutral-50 p-3 transition-colors hover:border-brand hover:bg-brand/5"
                 >
-                  {provider.name}
-                  <span aria-hidden="true">↗</span>
-                  <span className="sr-only"> (opens in a new tab)</span>
+                  <ProviderLogo provider={provider} />
                 </a>
               </li>
             ))}
