@@ -6,7 +6,9 @@ function Brand({ small = false }: { small?: boolean }) {
   return (
     <span
       className={
-        small ? "text-2xl font-light" : "text-[40px] leading-none font-light"
+        small
+          ? "text-2xl leading-7 font-light"
+          : "text-[40px] leading-7 font-light"
       }
     >
       BUSC<span className="text-accent">ANIME</span>
@@ -30,16 +32,16 @@ export default function Home() {
       </header>
       <main
         id="catalog"
-        className="px-4 py-6 sm:px-6"
+        className="px-4 py-6 sm:px-[25px]"
         aria-label="Catálogo de animes"
       >
         <Suspense fallback={<CatalogSkeleton />}>
           <AnimeCatalog />
         </Suspense>
       </main>
-      <footer className="flex min-h-14 flex-col items-center justify-center bg-brand py-2 text-white">
+      <footer className="flex h-[54px] flex-col items-center justify-center bg-brand text-white">
         <Brand small />
-        <p className="text-[10px] font-light uppercase">
+        <p className="text-[10px] leading-[14px] font-light uppercase">
           Todos os direitos reservados
         </p>
       </footer>

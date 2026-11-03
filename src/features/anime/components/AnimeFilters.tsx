@@ -18,11 +18,11 @@ export function AnimeFilters({
     onChange({ ...filters, search });
   }
   return (
-    <div className="mx-auto mb-6 max-w-[1010px]">
+    <div className="mx-auto mb-6 max-w-[1012px]">
       <div
         role="group"
         aria-label="Filtrar por formato"
-        className="mb-6 flex flex-wrap justify-center gap-3 sm:gap-4"
+        className="mx-auto mb-6 flex max-w-[834px] flex-wrap justify-center gap-3 sm:gap-4 lg:flex-nowrap lg:gap-5"
       >
         {FORMATS.map(({ value, label }) => (
           <button
@@ -30,7 +30,7 @@ export function AnimeFilters({
             type="button"
             aria-pressed={filters.format === value}
             onClick={() => onChange({ ...filters, format: value })}
-            className={`min-h-9 min-w-16 rounded-sm border border-brand px-5 py-1.5 text-sm transition-colors hover:bg-brand/10 sm:min-h-8 ${filters.format === value ? "bg-brand text-white hover:bg-brand-dark" : "bg-white text-brand"}`}
+            className={`min-h-9 min-w-16 whitespace-nowrap rounded-sm border border-brand px-5 py-1.5 text-sm transition-colors hover:bg-brand/10 sm:h-8 sm:min-h-8 sm:py-0 ${filters.format === value ? "bg-brand text-white hover:bg-brand-dark" : "bg-white text-brand"}`}
           >
             {label}
           </button>
@@ -49,11 +49,11 @@ export function AnimeFilters({
           placeholder="Digite algo aqui..."
           autoComplete="off"
           maxLength={200}
-          className="min-w-0 flex-1 rounded-sm border border-neutral-300 bg-white px-3 py-2 text-base placeholder:text-neutral-400"
+          className="min-w-0 flex-1 rounded-sm border border-neutral-300 bg-white h-[38px] px-3 text-sm placeholder:text-neutral-400"
         />
         <button
           type="submit"
-          className="rounded-sm bg-brand px-6 py-2 text-sm text-white transition-colors hover:bg-brand-dark"
+          className="h-[38px] rounded-sm bg-brand px-6 text-sm text-white transition-colors hover:bg-brand-dark"
         >
           Buscar
         </button>

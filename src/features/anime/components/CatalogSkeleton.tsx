@@ -4,7 +4,7 @@ export function CatalogSkeleton() {
       <span className="sr-only">Carregando animes...</span>
       <div
         aria-hidden="true"
-        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        className="grid grid-cols-1 gap-x-4 gap-y-[21px] sm:grid-cols-2 lg:grid-cols-4"
       >
         {Array.from({ length: 12 }, (_, index) => (
           <div

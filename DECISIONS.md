@@ -35,3 +35,7 @@ Live API finding: omit unused search/format variables instead of sending null. T
 ## Step 3 — Typography
 
 Use self-hosted Poppins light/regular/medium via next/font/local as a visual match to the reference. Exact Figma font metadata was unavailable in the anonymous session; this choice remains explicitly provisional. Font files and their OFL license are included from https://github.com/google/fonts/tree/main/ofl/poppins.
+
+## Step 3 — Measured layout
+
+Selected Figma layers show a 1366×68 header, 834.05×32 format group, 1011.88×38 search group, 1316×852 card grid, and 317×270 cards. Use rounded whole-pixel dimensions for implementation. Desktop gutters are 25px, grid columns are separated by 16px, and rows by 21px. Preserve responsive control wrapping instead of enforcing the desktop frame on smaller screens.

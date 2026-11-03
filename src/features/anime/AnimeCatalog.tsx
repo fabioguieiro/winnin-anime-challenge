@@ -45,7 +45,7 @@ export function AnimeCatalog() {
             {items.length} animes carregados.
           </p>
           {items.length > 0 && (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-x-4 gap-y-[21px] sm:grid-cols-2 lg:grid-cols-4">
               {items.map((anime) => (
                 <AnimeCard key={anime.id} anime={anime} />
               ))}
@@ -97,9 +97,12 @@ export function AnimeCatalog() {
               type="button"
               disabled={query.isFetching}
               onClick={() => void query.fetchNextPage()}
-              className="mt-6 flex min-h-12 w-full items-center justify-center gap-6 rounded-lg bg-accent px-5 py-2 text-lg text-neutral-950 transition-colors hover:bg-amber-400 disabled:cursor-wait disabled:opacity-60"
+              className="mt-6 flex h-12 w-full items-center justify-center gap-6 rounded-lg bg-accent px-5 text-lg text-neutral-950 transition-colors hover:bg-amber-400 disabled:cursor-wait disabled:opacity-60"
             >
-              <span aria-hidden="true" className="text-3xl font-light">
+              <span
+                aria-hidden="true"
+                className="text-3xl leading-none font-light"
+              >
                 +
               </span>
               {query.isFetchingNextPage ? "Carregando..." : "Ver mais"}
