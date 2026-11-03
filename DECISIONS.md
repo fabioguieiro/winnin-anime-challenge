@@ -63,3 +63,7 @@ Fetch details by positive GraphQL Int ID with type ANIME and isAdult false, matc
 ## Step 5 — Details presentation
 
 Use a banner/cover layout extending the catalog's palette and typography; the supplied Figma only defines the catalog. Details remain client-fetched through React Query with a cache key per ID, consistent with existing remote-data ownership. Validate malformed IDs on the server. A valid-but-missing AniList ID is shown as unavailable after client fetch (not a server-generated HTTP 404). Route metadata is generic; per-title server-rendered SEO is deferred. No trailer, related titles, characters, or video player is added in this step.
+
+## Step 5 — Navigation
+
+Use Next Link for full-card navigation with an accessible title-based name and a focus ring drawn inside the clipped card. Disable speculative card-route prefetching; details data is requested on navigation and cached by ID. Carry only search/format parameters into detail and return URLs, using URLSearchParams encoding and validating format values. No arbitrary returnTo URL is followed. The global QueryClient remains mounted between routes, retaining catalog pages in memory.

@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { DetailsSkeleton } from "@/features/anime/components/DetailsSkeleton";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AnimeDetails } from "@/features/anime/AnimeDetails";
@@ -17,7 +19,9 @@ export default async function AnimeDetailsPage({
   return (
     <SiteShell>
       <main id="details" tabIndex={-1} aria-label="Detalhes do anime">
-        <AnimeDetails id={id} />
+        <Suspense fallback={<DetailsSkeleton />}>
+          <AnimeDetails id={id} />
+        </Suspense>
       </main>
     </SiteShell>
   );

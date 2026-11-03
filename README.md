@@ -1,6 +1,6 @@
 # Winnin Anime Challenge
 
-Project foundation for the [Winnin frontend challenge](https://github.com/winnin/desafio/blob/master/FRONTEND.md). First working version: live AniList catalog with format filters, submitted text search, genre tags, score badges, and load-more pagination.
+Project foundation for the [Winnin frontend challenge](https://github.com/winnin/desafio/blob/master/FRONTEND.md). Live AniList catalog with format filters, submitted text search, genre tags, score badges, load-more pagination, and dedicated anime details pages.
 
 ## Stack
 
@@ -50,3 +50,9 @@ See [DECISIONS.md](./DECISIONS.md) for rationale and deferred work and [AI_LOG.m
 ## Accessibility and responsive review
 
 Step 4 adds persistent polite result announcements, focus-preserving search/history updates, a working keyboard skip link, focus guidance for pagination/retry/reset, stronger search/focus contrast, and larger small-screen/coarse-pointer controls. Cards can grow to display full titles and keep genre tags clear of scores. Responsive browser checks cover narrow phone through desktop widths. This is a targeted review, not a full screen-reader/device audit or a WCAG conformance certification.
+
+## Anime details
+
+Open any catalog card to visit `/anime/[id]`. The details view includes cover/banner images, synopsis, score, genres, release information, studios, episode count, and viewing-provider links when AniList supplies them. Search and format travel with the detail URL and its return link; direct detail URLs work too. Descriptions remain in the source language. There is no embedded episode player. Trailers, characters, and related titles are deferred.
+
+Malformed IDs use the route's not-found page. Valid but unavailable IDs receive an unavailable state after the client-side API request. Detail data is cached by ID; metadata is generic rather than generated from a separate server request.

@@ -7,6 +7,7 @@ import { AnimeCard } from "./components/AnimeCard";
 import { CatalogSkeleton } from "./components/CatalogSkeleton";
 import { useAnimeQuery } from "./hooks/useAnimeQuery";
 import { parseFormat, type AnimeFilters as Filters } from "./model/anime";
+import { getDetailsHref } from "./model/navigation";
 import { GraphQLRequestError } from "@/shared/api/graphql";
 
 export function AnimeCatalog() {
@@ -99,7 +100,11 @@ export function AnimeCatalog() {
           {items.length > 0 && (
             <div className="grid grid-cols-1 gap-x-4 gap-y-[21px] sm:grid-cols-2 lg:grid-cols-4">
               {items.map((anime) => (
-                <AnimeCard key={anime.id} anime={anime} />
+                <AnimeCard
+                  key={anime.id}
+                  anime={anime}
+                  detailsHref={getDetailsHref(anime.id, filters)}
+                />
               ))}
             </div>
           )}

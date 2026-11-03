@@ -6,9 +6,15 @@ import { fetchAnimeDetails } from "./api/fetchAnimeDetails";
 import { detailsFixture } from "./test/detailsFixture";
 import { GraphQLRequestError } from "@/shared/api/graphql";
 
+let mockParams = new URLSearchParams();
+jest.mock("next/navigation", () => ({ useSearchParams: () => mockParams }));
+
 jest.mock("./api/fetchAnimeDetails", () => ({ fetchAnimeDetails: jest.fn() }));
 const fetchMock = jest.mocked(fetchAnimeDetails);
-beforeEach(() => fetchMock.mockReset());
+beforeEach(() => {
+  fetchMock.mockReset();
+  mockParams = new URLSearchParams();
+});
 function setup(id = 1) {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false, gcTime: Infinity } },
@@ -96,4 +102,29 @@ it("fetches independently when navigating to another title", async () => {
     await screen.findByRole("heading", { name: "Another Anime" }),
   ).toBeInTheDocument();
   expect(fetchMock).toHaveBeenLastCalledWith(2, expect.any(AbortSignal));
+});
+
+it("returns to the originating filters without accepting arbitrary return URLs", async () => {
+  mockParams = new URLSearchParams(
+    "search=Naruto&format=MOVIE&returnTo=https://example.org",
+  );
+  fetchMock.mockResolvedValue(detailsFixture);
+  setup();
+  await screen.findByRole("heading", { level: 1, name: "Example Anime" });
+  expect(
+    screen.getByRole("link", { name: "Voltar para os animes" }),
+  ).toHaveAttribute("href", "/?search=Naruto&format=MOVIE");
+});
+it("returns focus to retry after another failed details request", async () => {
+  fetchMock.mockRejectedValue(new Error("offline"));
+  const { user } = setup();
+  await user.click(
+    await screen.findByRole("button", { name: "Tentar novamente" }),
+  );
+  await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+  await waitFor(() =>
+    expect(
+      screen.getByRole("button", { name: "Tentar novamente" }),
+    ).toHaveFocus(),
+  );
 });

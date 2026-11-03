@@ -212,3 +212,12 @@ it("returns focus to retry when another initial request fails", async () => {
     ).toHaveFocus(),
   );
 });
+
+it("makes cards keyboard links carrying the applied catalog filters", async () => {
+  mockParams = new URLSearchParams("search=Naruto&format=MOVIE");
+  fetchMock.mockResolvedValue(first);
+  setup();
+  expect(
+    await screen.findByRole("link", { name: "Ver detalhes de First anime" }),
+  ).toHaveAttribute("href", "/anime/1?search=Naruto&format=MOVIE");
+});

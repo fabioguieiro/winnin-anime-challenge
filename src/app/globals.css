@@ -37,3 +37,9 @@ button:disabled {
     font-size: 16px;
   }
 }
+
+.anime-card-link:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: -6px;
+  box-shadow: inset 0 0 0 9px #4b199c;
+}

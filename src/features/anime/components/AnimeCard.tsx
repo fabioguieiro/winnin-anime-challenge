@@ -1,11 +1,18 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import type { Anime } from "../model/anime";
 import { ScoreBadge } from "./ScoreBadge";
 
-export function AnimeCard({ anime }: { anime: Anime }) {
+export function AnimeCard({
+  anime,
+  detailsHref = `/anime/${anime.id}`,
+}: {
+  anime: Anime;
+  detailsHref?: string;
+}) {
   const [failedImage, setFailedImage] = useState<string | null>(null);
   return (
     <article className="relative isolate min-h-[270px] min-w-0 overflow-hidden rounded-lg bg-neutral-800 text-white">
@@ -46,6 +53,12 @@ export function AnimeCard({ anime }: { anime: Anime }) {
       <div className="absolute right-2 bottom-2">
         <ScoreBadge score={anime.score} />
       </div>
+      <Link
+        href={detailsHref}
+        prefetch={false}
+        aria-label={`Ver detalhes de ${anime.title}`}
+        className="anime-card-link absolute inset-0 z-20 rounded-lg hover:bg-white/5"
+      />
     </article>
   );
 }

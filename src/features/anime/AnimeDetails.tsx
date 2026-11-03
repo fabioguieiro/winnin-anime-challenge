@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { GraphQLRequestError } from "@/shared/api/graphql";
 import { useAnimeDetails } from "./hooks/useAnimeDetails";
-import { FORMATS } from "./model/anime";
+import { getCatalogHref } from "./model/navigation";
+import { FORMATS, parseFormat } from "./model/anime";
 import { formatDate } from "./model/details";
 import { ScoreBadge } from "./components/ScoreBadge";
 import { DetailsSkeleton } from "./components/DetailsSkeleton";
@@ -46,6 +48,11 @@ function Artwork({ src, sizes }: { src: string | null; sizes: string }) {
 }
 
 export function AnimeDetails({ id }: { id: number }) {
+  const params = useSearchParams();
+  const backHref = getCatalogHref({
+    search: params.get("search") ?? "",
+    format: parseFormat(params.get("format")),
+  });
   const query = useAnimeDetails(id);
   const anime = query.data;
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -68,7 +75,7 @@ export function AnimeDetails({ id }: { id: number }) {
         className="mx-auto max-w-6xl px-4 py-5 sm:px-6"
       >
         <Link
-          href="/"
+          href={backHref}
           className="inline-flex min-h-11 items-center gap-2 text-sm text-brand underline-offset-4 hover:underline"
         >
           <span aria-hidden="true">←</span> Voltar para os animes
