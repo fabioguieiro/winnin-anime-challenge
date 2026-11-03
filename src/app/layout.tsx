@@ -1,7 +1,18 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import type { ReactNode } from "react";
 import { Providers } from "./providers";
 import "./globals.css";
+
+const poppins = localFont({
+  src: [
+    { path: "./fonts/Poppins-Light.ttf", weight: "300", style: "normal" },
+    { path: "./fonts/Poppins-Regular.ttf", weight: "400", style: "normal" },
+    { path: "./fonts/Poppins-Medium.ttf", weight: "500", style: "normal" },
+  ],
+  variable: "--font-poppins",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "BUSCANIME | Encontre seu próximo anime",
@@ -11,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className={poppins.variable}>
       <body className="min-h-screen antialiased">
         <Providers>{children}</Providers>
       </body>

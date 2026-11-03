@@ -31,3 +31,7 @@ Production dependency audit passed with zero known findings during setup. The fu
 - Responsive one/two/four-column layouts are an inferred extension of the supplied desktop frame, subject to further visual review. No end-to-end framework or new dependency was introduced.
 
 Live API finding: omit unused search/format variables instead of sending null. The actual AniList response differed for null variables during verification. A request-construction test now guards this behavior.
+
+## Step 3 — Typography
+
+Use self-hosted Poppins light/regular/medium via next/font/local as a visual match to the reference. Exact Figma font metadata was unavailable in the anonymous session; this choice remains explicitly provisional. Font files and their OFL license are included from https://github.com/google/fonts/tree/main/ofl/poppins.

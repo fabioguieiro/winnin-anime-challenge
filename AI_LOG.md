@@ -49,3 +49,9 @@ Final first-version verification:
 - No Playwright dependency or automated end-to-end suite added. Browser interaction was manual agent QA using the available computer-use tool.
 
 Final standalone typecheck, lint, formatting check, and whitespace diff check all passed. A desktop screenshot of the live first version was saved for review.
+
+## Step 3 — Typography refinement
+
+The candidate requested focused, atomic commits and authorized catalog visual refinement only. Re-inspected the actual Figma layer tree and selected frames at 50% zoom. Observed measurements include header 1366×68, filters 834.05×32, search 1011.88×38, cards grid 1316×852, and individual cards 317×270. Copy-as-CSS returned an empty clipboard in the anonymous session, so exact font metadata is still unverified.
+
+Replaced Arial with locally hosted Poppins (300/400/500), chosen as a closer visual match to the rounded reference lettering. Files and OFL license come from the official google/fonts repository. This is a visual approximation, not a verified Figma font identification. next/font/local avoids Google requests during builds and visits.
