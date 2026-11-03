@@ -11,6 +11,7 @@ import { FORMATS, parseFormat } from "./model/anime";
 import { formatDate } from "./model/details";
 import { ScoreBadge } from "./components/ScoreBadge";
 import { DetailsSkeleton } from "./components/DetailsSkeleton";
+import { Synopsis } from "./components/Synopsis";
 import { WatchMedia } from "./components/WatchMedia";
 import { WhereToWatch } from "./components/WhereToWatch";
 
@@ -83,7 +84,7 @@ export function AnimeDetails({ id }: { id: number }) {
     <>
       <nav
         aria-label="Navegação do anime"
-        className="mx-auto max-w-6xl px-4 py-5 sm:px-6"
+        className="mx-auto max-w-6xl px-4 sm:px-6"
       >
         <Link
           href={backHref}
@@ -130,7 +131,7 @@ export function AnimeDetails({ id }: { id: number }) {
       ) : (
         <article className="pb-12">
           <div
-            className={`relative bg-brand-dark ${anime.banner ? "h-52 sm:h-72" : "h-32 sm:h-44"}`}
+            className={`relative bg-brand-dark ${anime.banner ? "h-36" : "h-24 sm:h-28"}`}
           >
             {anime.banner && (
               <Artwork
@@ -142,18 +143,18 @@ export function AnimeDetails({ id }: { id: number }) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           </div>
           <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-            <div className="-mt-20 flex flex-col gap-6 sm:flex-row sm:items-end sm:gap-8">
-              <div className="relative aspect-[2/3] w-44 shrink-0 overflow-hidden rounded-lg bg-neutral-800 shadow-lg sm:w-52">
+            <div className="-mt-14 flex items-end gap-4 sm:gap-6">
+              <div className="relative aspect-[2/3] w-24 shrink-0 overflow-hidden rounded-lg bg-neutral-800 shadow-lg sm:w-28">
                 <Artwork
                   src={anime.image}
-                  sizes="(max-width:639px) 176px, 208px"
+                  sizes="(max-width:639px) 96px, 112px"
                 />
               </div>
-              <div className="min-w-0 flex-1 sm:pt-24">
+              <div className="min-w-0 flex-1 pt-14">
                 <h1
                   ref={headingRef}
                   tabIndex={-1}
-                  className="text-3xl leading-tight font-medium break-words sm:text-4xl"
+                  className="text-3xl leading-tight font-medium break-words sm:text-3xl"
                 >
                   {anime.title}
                 </h1>
@@ -167,7 +168,7 @@ export function AnimeDetails({ id }: { id: number }) {
                 ].map((title) => (
                   <p
                     key={title}
-                    className="mt-2 text-sm break-words text-neutral-600"
+                    className="mt-1 text-xs break-words text-neutral-600"
                   >
                     {title}
                   </p>
@@ -175,7 +176,7 @@ export function AnimeDetails({ id }: { id: number }) {
                 {anime.genres.length > 0 && (
                   <ul
                     aria-label="Gêneros"
-                    className="mt-4 flex flex-wrap gap-2"
+                    className="mt-2 flex flex-wrap gap-2"
                   >
                     {anime.genres.map((genre) => (
                       <li
@@ -187,30 +188,16 @@ export function AnimeDetails({ id }: { id: number }) {
                     ))}
                   </ul>
                 )}
-                <div className="mt-5 flex items-center gap-3">
+                <div className="mt-3 flex flex-wrap items-center gap-3">
                   <ScoreBadge score={anime.score} />
                   <span className="text-sm text-neutral-600">Nota média</span>
                 </div>
-                <a
-                  href="#watch-content"
-                  className="mt-5 inline-flex min-h-11 items-center gap-3 rounded-lg bg-accent px-5 py-3 text-sm font-medium text-neutral-950 hover:bg-amber-400"
-                >
-                  <span aria-hidden="true">▶</span> Explorar episódios e trailer
-                </a>
               </div>
             </div>
+            <Synopsis id={anime.id} text={anime.synopsis} key={anime.id} />
             <WatchMedia id={anime.id} title={anime.title} key={anime.id} />
             <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px]">
               <div className="min-w-0">
-                <section aria-labelledby="synopsis-heading">
-                  <h2 id="synopsis-heading" className="text-2xl font-medium">
-                    Sinopse
-                  </h2>
-                  <p className="mt-4 leading-8 whitespace-pre-line break-words text-neutral-700">
-                    {anime.synopsis ||
-                      "Sinopse não disponível para este título."}
-                  </p>
-                </section>
                 <WhereToWatch providers={anime.providers} id={anime.id} />
               </div>
               <section

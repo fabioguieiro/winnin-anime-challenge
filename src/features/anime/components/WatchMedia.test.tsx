@@ -65,33 +65,39 @@ it("shows loading, external thumbnail links and trailer without an embedded play
     "src",
     "https://images.test/1.jpg",
   );
-  expect(screen.getByRole("status")).toHaveTextContent("12 de 26");
+  expect(screen.getByRole("status")).toHaveTextContent(
+    "26 links de episódios disponíveis",
+  );
   expect(container.querySelector("iframe,video")).not.toBeInTheDocument();
 });
-it("reveals cached episodes in batches, focuses the new link, and resets the list for another title", async () => {
-  fetchMedia.mockResolvedValue(media);
-  const { user, changeId } = setup();
+it("exposes the full horizontal list and switches cleanly to another title", async () => {
+  fetchMedia
+    .mockResolvedValueOnce(media)
+    .mockResolvedValueOnce({
+      episodes: [
+        {
+          ...media.episodes[0],
+          title: "Other title episode",
+          url: "https://provider.test/other",
+        },
+      ],
+      trailer: null,
+    });
+  const { changeId } = setup();
   await screen.findByRole("link", { name: /Episode 1 - Journey —/ });
-  await user.click(
-    screen.getByRole("button", { name: "Mostrar mais episódios" }),
-  );
-  await waitFor(() =>
-    expect(
-      screen.getByRole("link", { name: /Episode 13 - Journey —/ }),
-    ).toHaveFocus(),
-  );
-  expect(screen.getByRole("status")).toHaveTextContent("24 de 26");
-  await user.click(
-    screen.getByRole("button", { name: "Mostrar mais episódios" }),
-  );
+  expect(
+    screen.getAllByRole("link", { name: /Episode .*assistir em Provider/ }),
+  ).toHaveLength(26);
   expect(
     screen.queryByRole("button", { name: "Mostrar mais episódios" }),
   ).not.toBeInTheDocument();
-  expect(fetchMedia).toHaveBeenCalledTimes(1);
   changeId(16498);
-  await waitFor(() =>
-    expect(screen.getByRole("status")).toHaveTextContent("12 de 26"),
-  );
+  expect(
+    await screen.findByRole("link", { name: /Other title episode/ }),
+  ).toBeInTheDocument();
+  expect(
+    screen.queryByRole("link", { name: /Episode 1 - Journey —/ }),
+  ).not.toBeInTheDocument();
   expect(fetchMedia).toHaveBeenLastCalledWith(16498, expect.any(AbortSignal));
 });
 it("handles absent episodes/trailer and failed image previews", async () => {
@@ -125,9 +131,7 @@ it("keeps media errors isolated and recovers with keyboard focus on explicit ret
     screen.getByRole("button", { name: "Tentar carregar episódios novamente" }),
   );
   await waitFor(() =>
-    expect(
-      screen.getByRole("heading", { name: "Explore e dê o play" }),
-    ).toHaveFocus(),
+    expect(screen.getByRole("heading", { name: "Episódios" })).toHaveFocus(),
   );
   expect(fetchMedia).toHaveBeenCalledTimes(2);
 });

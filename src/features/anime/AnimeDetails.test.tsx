@@ -44,6 +44,12 @@ it("renders the title, synopsis, score, and release metadata", async () => {
     await screen.findByRole("heading", { level: 1, name: "Example Anime" }),
   ).toBeInTheDocument();
   expect(screen.getByText("A story about a journey.")).toBeInTheDocument();
+  const synopsis = screen.getByRole("heading", { name: "Sinopse" });
+  const episodes = screen.getByRole("heading", { name: "Episódios", level: 2 });
+  expect(
+    synopsis.compareDocumentPosition(episodes) &
+      Node.DOCUMENT_POSITION_FOLLOWING,
+  ).toBeTruthy();
   expect(screen.getByLabelText("Nota média: 80%")).toBeInTheDocument();
   expect(screen.getByText("25")).toBeInTheDocument();
   expect(screen.getByText("24 min")).toBeInTheDocument();
