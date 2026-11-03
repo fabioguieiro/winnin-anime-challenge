@@ -1,261 +1,153 @@
-# AI usage log
+# AI Usage Log
 
-This is a chronological record: early scaffold descriptions and verification counts describe that stage, not the current application. See README.md and DECISIONS.md for the current implementation. Candidate review and interview readiness are not claimed by this log.
+[Ler este documento em português](#logs-de-uso-de-ia).
 
-## 2026-11-02 — Planning and project creation
+While developing this project, I used OpenAI's Codex tool, with the GPT-6.1 Sol model.
 
-Tool: Codex desktop (OpenAI), using documentation browsing and local development tools.
+## Project planning and creation
 
-Context: the candidate supplied the Winnin frontend challenge and requested stack and architecture proposals before project creation. Codex read the brief. Figma could not be inspected through the browser tool and AniList documentation returned HTTP 403.
+Based on Winnin's briefing document for the Frontend challenge, I considered which architecture and tools would make the most sense for the proposed challenge.
 
-Candidate decisions: selected Next.js, TypeScript, Tailwind, React Query, GraphQL, and Jest. Replaced the initial Vite/CSS Modules/Vitest proposal and explicitly excluded Playwright/end-to-end testing. Authorized project creation in Documents/repos.
+First, I chose to work with Next.js because, in addition to organizing the catalog and detail pages with the App Router, it allowed the first catalog page to be rendered on the server. We adopted this improvement after identifying performance issues in Lighthouse, and it would require additional configuration in a React application using only Vite.
 
-Generated work: official create-next-app scaffold, React Query provider, GraphQL request helper, Jest configuration and request tests, formatting configuration, and starter documentation. No final challenge UI has been implemented.
+I used TypeScript to make AniList's data contracts explicit and handle fields that might be missing, such as scores, images, and episode counts, more safely than with untyped JavaScript.
 
-Review/corrections: removed the generated marketing page and network-dependent Google fonts; retained a clear placeholder pending Figma review. Added explicit handling for GraphQL errors in successful HTTP responses and tested partial-data rejection.
+To help with styling, I chose Tailwind because of my familiarity with it and the flexibility it offers compared to frameworks that already have prebuilt components, such as Bootstrap.
 
-Verification results are recorded after running local checks. The candidate must review and understand the implementation before submission. This log does not claim candidate review has happened.
+TanStack Query centralized caching, pagination, and loading and error states, avoiding the need to implement these controls manually with useEffect. It also allowed the catalog to be hydrated with data obtained on the server and episodes and trailers to be loaded separately from the anime details.
 
-Repository instructions used for future work are included in `AGENTS.md`.
+Since AniList provides a GraphQL API, I made the queries with fetch, requesting the fields needed for each screen and avoiding adding a client such as Apollo, whose caching features would overlap with those we were already using in React Query.
 
-## Verification — initial foundation
+For testing, I chose Jest because I was already familiar with the tool, and React Testing Library to verify observable behaviors, such as search, error recovery, and keyboard navigation.
 
-- `npm test`: passed, 4 GraphQL transport tests.
-- `npm run typecheck`: passed.
-- `npm run lint`: passed.
-- `npm run format:check`: passed.
-- `npm run build`: passed; home page prerendered successfully.
-- Production server smoke check: HTTP 200 and expected placeholder content.
-- `npm audit --omit=dev`: zero known production dependency vulnerabilities at verification time. Full audit reports development-tool advisories (glob/minimatch/deepmerge dependency chains); retained current compatible tooling rather than accepting audit suggestions to downgrade Jest and ESLint to old major versions. Reassess before submission.
-- No live AniList integration or visual Figma verification claimed.
+Finally, I used Vercel because of its integration with Next.js, which simplified deploying the application with server-side rendering and image optimization, features that static-file-only hosting would not support directly.
 
-## 2026-11-02 — First working catalog
+## Implementing the first version
 
-The candidate authorized implementing the first version from the supplied Figma and AniList, leaving detailed refinement for a later pass. Codex used the Sites skill's local-only workflow in the existing Next.js repository; nothing was deployed.
+After defining the technologies and the initial project organization, I asked Codex to develop a first version of the application using Figma as the visual reference and the data provided by AniList. My intention at that point was to get the main flow working so I could then evaluate the result and guide the adjustments in more detail.
 
-Reference inspection: opened the actual Figma canvas in the browser, expanded the layer panel, and observed the desktop composition. The session remains anonymous and prompts for sign-up to inspect; exact font and dimension values were not claimed. Verified AniList's query documentation and sent a real GraphQL request to confirm pagination, cover images, titles, genres, and scores.
+Since I only had read access to Figma, without access to Dev Mode, the reference was viewed through the browser. This made it possible to observe the page composition and guide the implementation, but some typography, color, and spacing details had to be approximated and refined later.
 
-Generated: feature components, typed API response mapping, infinite-query hook, URL-driven filters, explicit search submission, responsive grid, next/image support, score badges, and loading/empty/error/retry behavior. Added Jest tests for boundaries, nullable data, filters, pagination, empty results, rate limiting, and pagination recovery.
+In this first stage, Codex implemented the catalog with anime images, titles, genres, and scores, as well as title search, format filters, and pagination through the load-more button. The GraphQL queries were separated from the interface components, keeping anime-specific logic organized within the catalog feature.
 
-Judgment/corrections: chose submitted search to follow Figma rather than the earlier debounce proposal. Used the written rule for the 80-point boundary despite the sample's green badge. Used live popularity-ranked data rather than hardcoded historical titles. Initial build exposed unsupported `exact` options in Testing Library test typings; removed those options and reran the build. First-run Jest passed all 20 tests; final validation is recorded below after browser review.
+Search was implemented through submission using the button or the Enter key, following the interaction shown in the layout, rather than making a query every time the field changed. This would affect the experience and performance, since multiple backend calls would be made, even if I implemented a debounce. The applied filters were also recorded in the URL, making it possible to share a search and recover its context when navigating through the browser history.
 
-Live browser verification exposed an AniList distinction: explicit null optional filters returned upcoming/unrated entries, while omitted variables returned the expected popular entries. Corrected the request builder to omit inactive filters and updated the regression test. This was detected by comparing the actual default query with and without null variables, rather than relying only on mocked tests.
+Loading, empty-result, and error states were also included, with the option to retry a failed query. Fields that might be missing from the API received specific handling so the interface would not depend on every anime having an image or score, for example.
 
-Final first-version verification:
+Codex created and ran the initial tests and performed browser checks. These checks identified a difference in the API's behavior when receiving optional filters with null values. The query was adjusted to omit filters that were not being used, and a test was updated to cover this case.
 
-- Jest: 20 tests passed across four suites after the filter-variable correction.
-- Production build: passed, including TypeScript checks.
-- Live browser: default popular catalog and images rendered; “Ver mais” increased the rendered card count from 12 to 24; submitted Naruto search returned matching entries; Movie combined with Naruto returned 11 film entries and no further-page control; browser Back restored the unfiltered search.
-- Responsive browser checks: one column at a 390px viewport and two at 768px, with document scroll width equal to client width (no horizontal overflow). Four-column desktop visually compared with the Figma composition.
-- Browser warning/error log was empty during the final live check. Exact typography and spacing still need detailed review; no pixel-perfect fidelity claim.
-- No Playwright dependency or automated end-to-end suite added. Browser interaction was manual agent QA using the available computer-use tool.
+## Visual refinement and accessibility
 
-Final standalone typecheck, lint, formatting check, and whitespace diff check all passed. A desktop screenshot of the live first version was saved for review.
+With the first version working, I asked Codex to refine the interface based on Figma. At this stage, the focus was to bring the catalog's presentation closer to the reference by adjusting typography, colors, spacing, and component proportions.
 
-## Step 3 — Typography refinement
+The initial font was replaced with Poppins, chosen for its visual similarity to the reference. Since it was not possible to confirm the font directly through Figma's properties, this choice was an approximation. The files were included in the project and loaded locally, avoiding reliance on a request to Google Fonts.
 
-The candidate requested focused, atomic commits and authorized catalog visual refinement only. Re-inspected the actual Figma layer tree and selected frames at 50% zoom. Observed measurements include header 1366×68, filters 834.05×32, search 1011.88×38, cards grid 1316×852, and individual cards 317×270. Copy-as-CSS returned an empty clipboard in the anonymous session, so exact font metadata is still unverified.
+The card sizes, page margins, spacing between elements, and presentation of titles, genres, and scores were also adjusted. During browser checks, I identified cases where the number of genres caused the content to overlap the score. The cards were changed to allow growth according to their content, while maintaining a minimum height and an area reserved for the score.
 
-Replaced Arial with locally hosted Poppins (300/400/500), chosen as a closer visual match to the rounded reference lettering. Files and OFL license come from the official google/fonts repository. This is a visual approximation, not a verified Figma font identification. next/font/local avoids Google requests during builds and visits.
+Beyond appearance, this stage included improvements for different screen sizes. The catalog was checked at phone, tablet, and desktop widths, and the search and filter controls were adjusted to make touch interaction easier on smaller screens.
 
-## Step 3 — Layout and controls
+With accessibility in mind, the search field's contrast and the visual indication of the focused element were improved. Behaviors such as losing focus in the field after a search and navigation after loading more results or retrying a failed request were also corrected.
 
-Aligned the desktop content gutters to the measured 1316px grid inside the 1366px frame (25px each), grid row gaps to 21px, filter row to 32px on desktop, search row to 38px, load-more control to 48px, and footer to 54px. Preserved wrapping controls on smaller screens. Updated skeleton grid gaps alongside loaded results. No request or filter behavior changed.
+Messages were included to communicate changes in the results to assistive technologies, such as loading, the number of available anime, and the absence of results.
 
-## Step 3 — Card and color refinement
+## Detail page and expanding the experience
 
-Matched the measured 317×270 card ratio, reduced title weight to regular with 28px line height, tightened title-to-genre spacing, lightened genre pills and the image gradient, and inset score badges by 8px with rounded corners and light typography. Rebalanced the brand purple and amber by visual comparison; these are approximate rendered-color matches, not copied Figma tokens. Existing semantic score thresholds and readable score text colors are preserved. Skeletons use the same updated aspect ratio.
+After making the catalog adjustments, I decided the system could have an anime details area in addition to the home page. This goes beyond the challenge's scope and is not included in Figma, but I believe it was a good addition to the system, which by the end of this stage felt like a complete system rather than just a list of cards. I checked that additional information was available in AniList to expand the system's functionality. The idea was to allow users to explore an anime beyond the summary information in its card.
 
-The candidate's existing development server on port 3000 was reused for browser comparison. An attempted separate dev server exited because Next detected the existing server; no user-owned process was stopped.
+The page was updated to display a banner, cover image, alternative titles, synopsis, and information such as studio, status, dates, episode count, and duration. Since there was no specific reference for this screen in Figma, I followed the catalog's visual identity and adjusted the component organization based on my evaluations of the deliveries.
 
-## Step 3 — Wordmark follow-up
+The cards received links to the detail page, preserving the selected search and format on the way back to the catalog. Loading, error, and title-not-found states were also handled, along with cases where the API did not provide certain information.
 
-Browser comparison showed the Poppins wordmark was narrower than the selected Figma text layer (237×28). Applied 0.045em tracking and block layout to match that measured width/line box more closely without stretching the font. This is recorded as a separate follow-up commit instead of rewriting the typography commit.
+While exploring the data, I realized we could create an experience closer to a streaming service. I then created a component that displays episodes with preview images and links to their respective providers, as well as a player with the anime's trailer, when provided by the API. This data represents the links supplied by AniList, without guaranteeing that the list is complete or that the content is available in every region.
 
-Validation before the wordmark follow-up: 20 Jest tests passed; lint, formatting, and the production build passed. At 1366px content width, browser measurements confirmed 317×270 cards, 21px row gaps, a 68px header, 38px search row, and 54px footer. Phone layout retained a single column without horizontal overflow. Final wordmark verification follows below.
+## Performance and deployment
 
-Final wordmark dimensions were 236.73×28px against the reference's 237×28px. Production build, standalone typecheck, lint, formatting, and whitespace checks passed. The production preview loaded 12 live AniList cards, all 12 cover images, and the local fonts. Saved a full-page review screenshot. Step 3 is complete with font identity and source color values still explicitly unverified; step 4 and the details page remain pending.
+After finishing development, I ran a Lighthouse evaluation and realized that performance still needed improvement. I shared the result with Codex and asked for an analysis of the possible causes and the improvements we could make.
 
-## Step 4 — Keyboard focus and announcements
+The initial evaluation returned a performance score of 44, but there were factors that limited the comparison, such as running in a development environment and a warning about interference from browser extensions. For this reason, this result served as a starting point for investigating the application, without treating all the reported issues as consequences of the code alone.
 
-Reviewed the running catalog with keyboard input and DOM/accessibility-tree inspection. Verified that the skip link left focus on the body and that submitting a changed search replaced the input and lost focus after navigation. Replaced the keyed input with an uncontrolled input synchronized through a ref on URL changes; made the skip-link destination focusable. Added a persistent polite result-status region, avoiding a second loading announcement from the skeleton. Loading another page focuses the first new title, and failed pagination focuses the retry control. Added Jest regressions for retained search focus, persistent status, pagination focus, and recovery focus.
+One improvement was to fetch the first catalog page's data on the server and use it to hydrate React Query. Previously, the browser needed to load the application before starting the anime query. With this change, the initial catalog was rendered with data obtained on the server, while React Query remained responsible for subsequent pages and search and filter interactions.
 
-## Step 4 — Responsive reflow and touch controls
+Adjustments were also made to image and font loading and cache configuration. The goal was to prioritize the initial content and reduce repeated queries when navigating between the catalog and the details, without preventing data updates after the configured freshness period.
 
-At a 1040px browser viewport (1025px content viewport), real AniList genre lists overlapped score badges in four cards. Replaced fixed-aspect card height with a 270px minimum and natural content growth, reserved bottom space for scores, and removed title clamping so full titles can reflow. Updated skeleton minimum height accordingly. Moved the missing-image caption into reserved bottom space. Mobile/coarse-pointer search and buttons now have at least 44px height; mobile/coarse-pointer search text uses 16px to avoid small-text zoom behavior. Desktop control sizes remain as measured in step 3. No new implementation-mirroring tests were added for CSS; browser geometry is used for validation.
+After these changes, I ran further checks with the production version. A mobile evaluation performed on the deployed application reached a performance score of 96, with an LCP of 2.7 seconds and no recorded layout shift. Satisfied with the improvement in the application's overall performance, I proceeded with deploying the application on Vercel.
 
-## Step 4 — Contrast and visible focus
+---
 
-Calculated contrast using sRGB relative luminance and reviewed the W3C WCAG 2.2 definitions. The old neutral-400 placeholder was approximately 2.52:1 on white and the amber focus ring approximately 1.76:1. Changed placeholder and search border to neutral-500 (approximately 4.74:1 on white), and use a dark-purple focus outline with a white separating ring. Included programmatically focused main/title elements in the focus styling. Score labels remain unchanged: their 24px regular/light text is large text, and the existing red/green backgrounds exceed the applicable 3:1 threshold. No formal WCAG conformance or full assistive-technology audit is claimed.
+# Logs de Uso de IA 
 
-## Step 4 — Recovery focus follow-up
+[Read this document in English](#ai-usage-log).
 
-Extended the focus review to repeated initial-request failures and empty-result reset. Restore focus to Retry after another failed attempt, and move focus to the existing search field when clearing filters removes the reset control. Added a repeated-failure regression and strengthened the existing reset test to assert focus. This is a separate follow-up commit rather than rewriting the original keyboard fix.
+Ao desenvolver esse projeto utilizei a ferramenta Codex, da Open AI, modelo GPT-6.1 Sol 
 
-Final step-4 verification: 24 tests passed across five Jest suites; production build, standalone typecheck, lint, formatting, and whitespace checks passed. Live browser checks confirmed skip-link focus on main, search focus retained after results update, and keyboard pagination focusing the first newly loaded heading while announcing the 24-item count. Reflow checked at 320, 640, 1040, and 1381px browser widths with no horizontal overflow or genre/score overlap. The production build also passed the original failing default-catalog cases at 320 and 1040px widths, with no browser warnings/errors. Saved a production screenshot showing the new visible keyboard focus ring and full titles. No end-to-end framework or new dependencies were added; the user's existing development server was left running. Step 4 is complete as a targeted review; full assistive-technology and physical-device testing have not been performed.
+## Planejamento e criaçao o projeto 
 
-## Step 5.1 — Details data contract
+Me baseando no documento de briefing da Winnin para o desafio de Frontend pensei na arquitetura e ferramentas que mais fariam sentido para o desafio proposto. 
 
-Verified live AniList title metadata and streaming-provider fields. Added a typed details query, nullable-data mapping, partial-date formatting, and plain-text synopsis conversion. Descriptions remain source-language text and are never injected as HTML. Active HTTP(S) streaming links are validated and deduplicated; credentials and non-web schemes are rejected. Preserve AniList's GraphQL error status so missing titles can be distinguished from rate limiting/network failures. Added focused mapping, ID/date, transport-status, synopsis, and URL tests. No details UI or catalog navigation yet.
+Primeiramente, escolhi trabalhar com o Next.js porque, além de organizar o catálogo e as páginas de detalhes com o App Router, ele permitiu renderizar a primeira página do catálogo no servidor, melhoria que adotamos após identificar problemas de desempenho no Lighthouse e que exigiria configuração adicional em uma aplicação React apenas com Vite.
 
-## Step 5.2 — Shared site shell
+Usei TypeScript para tornar explícitos os contratos dos dados do AniList e tratar campos que podem estar ausentes, como nota, imagem e quantidade de episódios, com mais segurança do que em JavaScript sem tipagem.
 
-Extracted the existing wordmark, header, skip link, and footer into SiteShell. The catalog retains its existing main landmark, styling, and heading. Other routes can use a home link in the header so the detail title remains the page's single h1. This refactor introduces no details route or catalog navigation yet.
+Para auxiliar o trabalho de estilização optei pelo Tailwind por familiaridade e tambem pela flexibilidade que ele apresenta em relação a framworks que já possuem seus componentes pré construidos, como o Bootstrap, por exemplo.
 
-## Step 5.3 — Details route and view
+O TanStack Query centralizou o cache, a paginação e os estados de carregamento e erro, evitando implementar esses controles manualmente com useEffect. Também permitiu hidratar o catálogo com os dados obtidos no servidor e carregar episódios e trailers separadamente dos detalhes do anime.
 
-Added /anime/[id] with server-side ID validation and a client-side React Query details view. Includes cover/banner with fallbacks, full title and alternate names, synopsis, score, genres, studios, dates, season, episode count, duration, loading, rate-limit/retry, and unavailable-title states. The design extends the existing purple/amber theme; no Figma details screen was supplied. Metadata remains a generic route title; missing valid IDs are detected by the client API request and shown as an unavailable state, while syntactically invalid IDs use Next's route not-found response. Added tests for populated/missing metadata, safe text rendering, missing titles, retry, and distinct title queries. Viewing-provider UI and card links are still pending.
+Como o AniList oferece uma API GraphQL, fiz as consultas com fetch, solicitando os campos necessários para cada tela e evitando adicionar um cliente como Apollo, cujas funcionalidades de cache se sobreporiam às que já utilizávamos no React Query.
 
-## Step 5.4 — Where to watch
+Nos testes, escolhi Jest por já ter familiaridade com a ferramenta, e React Testing Library para verificar comportamentos observáveis, como busca, recuperação de erros e navegação por teclado.
 
-Added a provider section using the validated active streaming links from the data layer. Links open in a labeled new tab with noopener/noreferrer, and a regional/subscription availability note. Missing providers receive an explicit message plus an AniList title reference. No player or episode-video request is made. Added tests for accessible external-link behavior and the no-provider state.
+Por fim, utilizei a Vercel pela integração com Next.js, que simplificou a publicação da aplicação com renderização no servidor e otimização de imagens, recursos que uma hospedagem apenas de arquivos estáticos não atenderia diretamente.
 
-## Step 5.5 — Card navigation and return context
+## Implementação da primeira versão
 
-Made each card a keyboard-accessible internal link with a visible inset focus indicator, preserving existing heading focus after pagination. Search/format are encoded into detail links and rebuilt into the return link from known parameters only; arbitrary return URLs are not accepted. Added a Suspense boundary for client search-parameter reads. Added tests for encoded URLs, filter context in card and return links, and repeated details-request recovery focus. Details loading focuses the resolved title without scrolling the viewport. README describes the new route and its limits.
+Após definir as tecnologias e a organização inicial do projeto, pedi ao Codex que desenvolvesse uma primeira versão da aplicação utilizando o Figma como referência visual e os dados disponibilizados pelo AniList. Minha intenção nesse momento era ter o fluxo principal funcionando para depois avaliar o resultado e orientar os ajustes com mais detalhe.
 
-Final step-5 validation: 54 tests passed across ten Jest suites. Production build, standalone typecheck, lint, formatting, and whitespace checks passed. Live keyboard navigation opened a Naruto movie from its filtered catalog; the return link restored the Naruto search, Movie selection, and 11 results. Verified direct /anime/16498 loads with both images and provider links, a valid missing ID shows the unavailable state, and /anime/not-an-id receives HTTP 404 with the custom page. Inspected phone hero/metadata/provider layout and checked 320/768/1280px browser widths without horizontal overflow. The production browser warning/error log was empty. Saved the completed details-page screenshot. No provider playback or regional availability claim was made; no end-to-end framework or new dependency was added. The existing user development server remains running.
+Como eu tinha apenas acesso de leitura ao Figma, sem acesso ao Dev Mode, a referência foi consultada pelo navegador. Isso permitiu observar a composição da página e orientar a implementação, mas alguns detalhes de tipografia, cores e espaçamentos precisaram ser aproximados e refinados posteriormente.
 
-## Step 6 — Request behavior
+Nessa primeira etapa, o Codex implementou o catálogo com imagens, títulos, gêneros e notas dos animes, além da busca por título, filtros por formato e paginação pelo botão de carregar mais. As consultas GraphQL foram separadas dos componentes de interface, mantendo a lógica específica dos animes organizada dentro da funcionalidade de catálogo.
 
-Reproduced the one-minute freshness issue with a two-page catalog: returning after a simulated 90-second details visit started a background refetch. Extracted the production QueryClient factory for behavioral testing and extended freshness to five minutes with fifteen-minute inactive retention. The regression now expects two original page requests and zero additional return requests. A six-minute revisit still refreshes both pages in order; leaving a pending filter query aborts its signal. No polling, speculative details fetch, server proxy, or new dependency was added. This reduces requests during ordinary navigation; it does not eliminate refetching after expiry or provide reload persistence.
+A busca foi implementada com envio pelo botão ou pela tecla Enter, seguindo a interação apresentada no layout, em vez de realizar uma consulta a cada alteração do campo, o que impactaria na experiencia e desempenho, já que seriam feitas várias chamadas ao backend, mesmo que implementasse um debounce. Os filtros aplicados também ficaram registrados na URL, permitindo compartilhar uma busca e recuperar o contexto ao navegar pelo histórico do navegador.
 
-## Step 6 — Font compression
+Também foram incluídos os estados de carregamento, ausência de resultados e erro, com a possibilidade de tentar novamente uma consulta que falhasse. Os campos que poderiam estar ausentes na API receberam tratamentos específicos para evitar que a interface dependesse de todos os animes terem imagem ou nota, por exemplo.
 
-Converted all three existing Poppins TTF files to full-glyph WOFF2 using temporary fontTools/Brotli tooling outside the application. Total raw font assets decreased from 480,828 to 153,796 bytes (68.0%); these are file sizes, not a measured page-speed score. Verified equal glyph order, Unicode maps, and horizontal metrics after decoding each output. Updated next/font/local paths and retained the original OFL license.
+O Codex criou e executou os testes iniciais e realizou verificações pelo navegador. Essas verificações identificaram uma diferença no comportamento da API ao receber filtros opcionais com valor nulo. A consulta foi ajustada para omitir os filtros que não estavam sendo utilizados, e um teste foi atualizado para cobrir esse caso.
 
-## Step 6 — Images and final validation
+## Refinamento visual e acessibilidade
 
-Browser inspection confirmed the first visible cover used lazy loading and the declared responsive widths omitted grid gutters/gaps. Corrected the sizes expression and made only the first cover and details banner eager/high-priority. Other images remain lazy, with existing fallbacks. Kept the UI design unchanged. Reviewed initial production script references: ten chunks per route, roughly 199 KB gzip including framework code (local compression estimate, not measured transfer or a speed score).
+Com a primeira versão funcionando, pedi ao Codex que refinasse a interface com base no Figma. Nessa etapa, o foco foi aproximar a apresentação do catálogo da referência, ajustando tipografia, cores, espaçamentos e proporções dos componentes.
 
-Final step-6 verification: 57 Jest tests passed across eleven suites; production build, standalone typecheck, lint, formatting, and whitespace checks passed. The cache return regression failed before the policy change and passed afterward; expiry refresh and cancellation also passed. Production browser checks confirmed WOFF2 preloads, all initial covers loaded, first-image/banner priority hints, and 24 catalog cards retained after a details round trip. Checked the phone layout at a 390px viewport without horizontal overflow; fonts reported loaded and the console warning/error log was empty. Saved a production screenshot. No Lighthouse benchmark, field Web Vitals, or total transfer measurement was performed. Step 6 is complete; final submission documentation remains step 7.
+A fonte inicial foi substituída pela Poppins, escolhida pela semelhança visual com a referência. Como não foi possível confirmar a fonte diretamente pelas propriedades do Figma, essa escolha foi uma aproximação. Os arquivos foram incluídos no projeto e carregados localmente, evitando depender de uma requisição ao Google Fonts.
 
-## Server-rendered catalog — Preparation
+Também foram ajustados o tamanho dos cards, as margens da página, os espaços entre os elementos e a apresentação dos títulos, gêneros e notas. Durante as verificações pelo navegador, identifiquei casos em que a quantidade de gêneros fazia o conteúdo se sobrepor à nota. Os cards passaram a permitir crescimento conforme o conteúdo, mantendo uma altura mínima e uma área reservada para a pontuação.
 
-Extracted a typed infinite-query options factory and shared URL-filter normalization before adding server prefetch. Added filter normalization cases for omitted, whitespace, repeated, and invalid values. This commit keeps existing request/render behavior and prepares the same query contract for both environments.
+Além da aparência, essa etapa incluiu melhorias para diferentes tamanhos de tela. O catálogo foi verificado em larguras de celular, tablet e desktop, e os controles de busca e filtros receberam ajustes para facilitar a interação por toque em telas menores.
 
-## Server-rendered catalog — Implementation and functional validation
+Me preocupando com acessibilidade, foram melhorados o contraste do campo de busca e a indicação visual do elemento em foco. Também foram corrigidos comportamentos como a perda de foco no campo após uma busca e a navegação após carregar mais resultados ou tentar novamente uma requisição que falhasse.
 
-Added request-scoped page-one prefetch, awaited URL filters in the async home route, and hydrated the existing infinite query before rendering cards. Added an eight-second server timeout and safe error serialization so server failures use the existing retry UI without an immediate client retry. The hydration wrapper preserves any browser pages already loaded. Kept details and later-page requests client-owned. Updated README and decisions to document server network requirements, latency/rate-limit tradeoffs, and the absence of a shared server cache.
+Foram incluídas mensagens para comunicar mudanças nos resultados às tecnologias assistivas, como carregamento, quantidade de animes disponíveis e ausência de resultados.
 
-All 69 tests passed across thirteen suites; production build, standalone typecheck, lint, formatting, and whitespace checks passed. New tests verify actual server-rendered card/title/image HTML, request isolation, safe 429 serialization, zero duplicate hydration fetch, next-page-only requests, filter separation, preserved browser pagination, and explicit error recovery. Raw production HTML contained 12 default cards and 11 Naruto/Movie cards before JavaScript execution. Live browser navigation loaded 24 cards, returned from details with all 24 preserved, submitted Naruto search, and applied Movie to show 11 results. A 390px viewport had no horizontal overflow and the warning/error log was empty.
+## Página de detalhes e ampliação da experiência
 
-A final navigation check found that server-driven filter changes retained old results while waiting, so added a React transition with a visible “Buscando...” button label and polite loading announcement. Added a focused regression ensuring the pending state preserves the editable, focused input. Rebuilt and reran all 69 tests plus type/lint/format checks. Live Enter submission showed the pending indicator, then four Bleach/Movie cards with input focus retained and no console warnings/errors. Saved the final browser screenshot.
+Após executar os ajustes no catálogo, decidi que o sistema poderia ter uma area de detalhes do anime, alem da home page, isso foge ao escopo do desafio e não consta no Figma, porém acredito que foi uma boa adição ao sistema, que ao fim dessa etapa tinha uma cara de sistema completo e não apenas uma listagem de cards. Verifiquei que haviam informações adicionais disponíveis no AniList para expandir as funcionalidades do sistema, a ideia era permitir que o usuário explorasse um anime além das informações resumidas no card.
 
-## Server-rendered catalog — Lighthouse verification
+A página passou a apresentar banner, capa, títulos alternativos, sinopse e informações como estúdio, status, datas, quantidade de episódios e duração. Como não havia uma referência específica dessa tela no Figma, segui a identidade visual do catálogo e ajustei a organização dos componentes conforme minhas avaliações das entregas.
 
-Used Lighthouse 13.6.0 with fresh headless Chrome profiles, performance-only mobile audits, default simulated throttling (150ms RTT, approximately 1.6Mbps, 4× CPU), and the production server on port 3100. The earlier client-rendered production baseline scored 84 with 4.3s LCP and 40ms TBT. Three initial SSR runs scored 89/90/90 with 3.7/3.6/3.6s LCP and 20–30ms TBT. After the navigation-feedback refinement, the final build scored 89 with 3.7s LCP, 30ms TBT, 0.7s FCP, and zero CLS. Every SSR audit confirmed initial-document image discovery, zero browser GraphQL requests, no runtime error, and no run warning. Reports are saved in the chat outputs rather than committed as large generated artifacts.
+Os cards receberam links para a página de detalhes, preservando a busca e o formato selecionados no caminho de volta ao catálogo. Também foram tratados os estados de carregamento, erro e título não encontrado, além dos casos em que a API não disponibilizava alguma informação.
 
-These are local lab results with the image-optimizer cache retained and live AniList latency; the baseline was a single earlier run. They are not a guaranteed deployed score or field Web Vitals measurement. The initial request waterfall is removed, but mobile LCP still has room for improvement. No further image/font changes were bundled into this SSR change.
+Ao explorar os dados, percebi que poderíamos criar uma experiência mais próxima de um serviço de streaming. Criei então um componente que exibe os episódios com imagens de prévia e links para os respectivos provedores, além de uma player com o trailer do anime, caso disponibilizado pela API. Esses dados representam os links informados pelo AniList, sem garantir que a lista esteja completa ou que o conteúdo esteja disponível em todas as regiões.
 
-## 2026-11-03 — Step 7: Submission documentation and review
+## Desempenho e publicação
 
-The candidate requested the planned final documentation/submission review. Re-read the current public challenge brief and checked the catalog, filter/score behavior, required documentation, included instruction file, and real incremental history against it. No end-to-end suite or deployment is mandatory in the brief; deployment is a bonus. Exact typography/color fidelity remains explicitly unverified.
+Finalizado o desenvolvimento, executei uma avaliação pelo Lighthouse e percebi que o desempenho ainda precisava melhorar. Compartilhei o resultado com o Codex e pedi uma análise das possíveis causas e das melhorias que poderíamos aplicar.
 
-Rewrote README.md as an evaluator-facing guide with development/production commands, network requirements, verification commands, requirement mapping, manual review flows, architecture, AI involvement, and known limitations. Reorganized DECISIONS.md around the current technology choices and tradeoffs instead of leaving outdated scaffold/“next work” instructions. Preserved this log's chronological account, including rejected/revised approaches, rather than inventing candidate review or rewriting history.
+A avaliação inicial apresentou uma nota de desempenho de 44, mas havia fatores que limitavam a comparação, como a execução em ambiente de desenvolvimento e o aviso de interferência de extensões do navegador. Por isso, esse resultado serviu como ponto de partida para investigar a aplicação, sem tratar todos os problemas apontados como consequências exclusivas do código.
 
-Final application checks passed: 69 Jest tests across 13 suites, standalone typecheck, lint, formatting, whitespace checks, and production build. Refreshed dependency audits: zero production findings; full audit reports 35 development-tool findings (32 moderate, 3 low). Recorded those findings and the decision not to apply suggested forced major downgrades. No new Lighthouse or device-testing claim is added; existing SSR measurements remain dated local evidence. No application behavior or dependency versions changed in this documentation step.
+Uma das melhorias foi buscar os dados da primeira página do catálogo no servidor e utilizá-los para hidratar o React Query. Antes disso, o navegador precisava carregar a aplicação para depois iniciar a consulta dos animes. Com a alteração, o catálogo inicial passou a ser renderizado com os dados obtidos no servidor, mantendo o React Query responsável pelas próximas páginas e pelas interações de busca e filtros.
 
-The candidate still needs to review and understand the code before submission and the technical interview. No deployment, remote repository publication, or candidate ownership/review action was performed on their behalf.
+Também foram feitos ajustes no carregamento de imagens e fontes e na configuração do cache. O objetivo foi priorizar o conteúdo inicial e reduzir consultas repetidas durante a navegação entre o catálogo e os detalhes, sem impedir a atualização dos dados após o período de validade configurado.
 
-## 2026-11-03 — Step 8: Deployment preparation
+Após essas alterações, executei novas verificações com a versão de produção. Uma avaliação mobile realizada na aplicação publicada atingiu 96 pontos de desempenho, com LCP de 2,7 segundos e sem deslocamento de layout registrado. Satisfeito com a melhora do desempenho geral da aplicação, prossegui com a plublicação da aplicação no Vercel.
 
-The candidate authorized optional deployment. Checked checkout/remote/link state, current Vercel documentation, available hosting tools, and authentication availability without reading or printing credentials. Selected native Vercel hosting to preserve the agreed Next.js server behavior. Vercel CLI 65.10.0 reported “Logged out”; requested local account authentication rather than credentials in chat.
 
-Prepared Node 22.x engine/lockfile metadata, .nvmrc, Next.js install/build configuration, CLI upload exclusions, and preview/production commands. The initial metadata edit found no engines object in the lockfile root; added it explicitly and completed the configuration. No application dependency versions or UI behavior changed. No cloud publication, project identity, live URL, or deployed smoke-test success is claimed while authentication is pending.
 
-Local verification passed: 69 tests across thirteen suites, typecheck, lint, formatting, production build, and whitespace checks. Vercel's no-upload `deploy --dry --format=json --yes` stopped with “No existing credentials found”; no cloud framework/build/deployment validation occurred. Publication remains pending local Vercel login. Runtime engine metadata is synchronized without changing resolved dependency versions.
 
-## 2026-11-03 — Step 8: Production deployment completed
-
-The candidate confirmed local Vercel authentication. Verified the authenticated workspace and existing projects, then created a separate winnin-anime-challenge project without modifying existing applications. Deployed the application from commit 055bfb0 using Vercel CLI 65.10.0. Vercel's first-deployment workflow automatically targeted production rather than a preview. The cloud npm ci / Next.js build completed and returned READY with the public alias https://winnin-anime-challenge.vercel.app. No credentials, project-link metadata, or account tokens were committed.
-
-Verified anonymous HTTP 200 access with 12 default server-rendered cards and 11 Naruto/Movie cards. The first optimized cover returned HTTP 200; details route loaded and malformed /anime/not-an-id returned HTTP 404. Live browser checks loaded 12→24 cards with all 24 covers, opened Shingeki no Kyojin details with metadata/provider links, returned with all 24 cards retained, submitted Naruto search and Movie filtering, and checked 390px reflow without horizontal overflow. The warning/error log was empty. Saved a deployed screenshot.
-
-Ran one clean-profile Lighthouse 13.6.0 mobile performance audit on the production alias: score 96, FCP 0.8s, LCP 2.7s, TBT 30ms, CLS 0, Speed Index 2.5s. No audit warning or runtime error; the first cover was discoverable in initial HTML and no browser GraphQL request occurred during initial load. This is a single lab result under live API/image-cache conditions, not a guaranteed score or field measurement. Saved HTML/JSON reports in the chat outputs. Prior local preparation passed all 69 tests, typecheck, lint, formatting, and production build; this continuation changes only documentation after the successful cloud build.
-
-Added the verified public URL and deployed validation to README/DECISIONS. Step 8 is complete. Candidate code review and remote Git repository publication remain separate; neither is claimed here. The public production alias is accessible without a Vercel account, while other deployment URL protection settings were left intact.
-
-## Streaming experience — Data contract
-
-The candidate requested episode thumbnails/provider redirects and exploration of additional media. Live checks found 69 One Piece episode links with no trailer, and 25 Attack on Titan links plus a YouTube trailer. Sample thumbnails returned HTTP 200. The trailer ID contained a trailing tab; normalized it and built canonical URLs. Added an isolated media query, safe mapping, deduplication, ordering, and focused tests. The first script attempt used a missing work directory and wrote no application files; corrected the path and reran.
-
-## Streaming experience — UI and local verification
-
-Added a streaming-style details shelf before the synopsis, a hero entry link, external episode thumbnail cards, supplied episode numbers/provider labels, batches of twelve, and a featured external trailer. Keep initial title metadata separate and preserve it during media loading/errors. Added image fallbacks, safe new-tab behavior, count announcements, focus on newly revealed episodes, retry focus recovery, and per-title list reset. No player, autoplay, video SDK, or invented progress/season data was added.
-
-All 84 Jest tests passed across sixteen suites, including new media mapping, trailer normalization, link safety, loading/empty/error recovery, image failure, batch expansion, and ID-switch behavior. Local production checks showed all twelve initial One Piece thumbnails loaded, 12→24 expansion focusing episode 74, and the Attack on Titan trailer thumbnail/link loaded. Reworked the trailer into a full featured card after visual review. Existing details tests mock the new media request to stay deterministic. Final production checks/deployment verification follow below.
-
-Final local verification: 84 tests, typecheck, lint, formatting, whitespace checks, and production build passed. The final featured trailer/episode section reflowed at a 390px viewport without horizontal overflow; trailer and provider thumbnails loaded, and the browser warning/error log was empty. No catalog query/layout changes were made.
-
-## Streaming experience — Production publication
-
-Committed the data layer as a790333 and the UI as 51899a5, then deployed the latter to the existing production project. Vercel returned READY and retained https://winnin-anime-challenge.vercel.app. Live One Piece verification showed twelve loaded thumbnails out of 69 supplied links; clicking episode 62 opened the supplied Crunchyroll destination in a separate tab. Expanding displayed 24 links and focused episode-link-21-12. Attack on Titan displayed the normalized YouTube trailer destination and thumbnail alongside episode cards. The production browser warning/error log was empty. Saved episode and trailer screenshots in chat outputs.
-
-No provider video playback, subscription access, or regional availability was tested or promised. No new Lighthouse score is claimed for this details-page addition; previously recorded catalog measurements remain historical. All 84 tests and required local checks passed before publication; the cloud production build also passed.
-
-## Details hierarchy — Candidate correction
-
-The candidate corrected the hierarchy and requested a horizontal episode list plus embedded trailers. Moved synopsis ahead of episodes, reduced banner/identity spacing, added synopsis expand/collapse, and moved trailers after episodes. Replaced the grid/show-more interaction with one horizontal rail using native scrolling and accessible boundary-aware arrows. Tests cover section order, synopsis expansion/focus, rail boundaries, and title switching. The first desktop measurement showed only a narrow thumbnail strip at 1366×768; tightened spacing and moved supporting provider copy below the rail before final verification.
-
-## Inline trailers and final layout verification
-
-Added a fixed-origin privacy-enhanced YouTube iframe loaded only after explicit play, with fullscreen, a descriptive frame title, required referring-origin policy, an always-visible provider fallback, and Close/unmount/focus restoration. Dailymotion remains an external-link fallback. Followed official YouTube embed/referrer documentation; no third-party player SDK or automatic initial video load was added.
-
-All 90 tests across nineteen suites passed, plus typecheck, lint, and production build. Tests verify safe embed URLs, no initial iframe, explicit activation, close/unmount/focus recovery, unsupported-provider fallback, section order, synopsis expansion, rail boundaries, and title changes. Browser measurements at 1366×768 placed the first One Piece thumbnail at y=637.5 with its bottom at y=790.5, so roughly 130px was visible in the initial viewport. Synopsis preceded episodes; no document overflow. The horizontal arrow scrolled the rail, synopsis expanded to full text and collapsed, and 390px/320px widths had no horizontal document overflow.
-
-The inline player loaded Attack on Titan's video title inside the page, but YouTube displayed “Sign in to confirm you’re not a bot” in the automated browser. Did not attempt to bypass it and do not claim successful video playback. Closing removed the iframe and restored the play-button focus. Production publication/verification follows below.
-
-## Compact-details loading follow-up
-
-Noticed that the loading skeleton still reserved the old tall banner/heading layout after the hierarchy change. Updated its banner, cover overlap, synopsis reservation, and horizontal placeholders to reflect the compact details view. Kept the existing accessible loading status. This is a separate CSS/layout follow-up rather than rewriting the earlier commits.
-
-## Details hierarchy — Production verification
-
-Deployed source commit dfa63f4 to the existing Vercel production alias; deployment dpl_3LQNaKRGR3AgQZ3vaTDcS3w85Xxx returned READY. Public One Piece verification at 1366×768 showed banner/identity, synopsis, then the horizontal episode rail, with thumbnails partly visible initially and no document overflow. The next arrow moved the rail. Saved a viewport screenshot in chat outputs. Public Attack on Titan had zero initial iframes; Play created the privacy-enhanced YouTube iframe in the page. YouTube again requested sign-in/bot confirmation, so unrestricted playback remains unverified. Close removed the frame and restored focus to Play. Reset the viewport override. All 90 tests and required checks had passed after the final skeleton change; the cloud build also passed.
-
-## English interface
-
-The candidate noticed mixed Portuguese and English throughout the app. Audited catalog, details, invalid-ID pages, shared shell, metadata, accessibility labels, loading/error/empty states, and nullable-data fallbacks. Replaced application-owned Portuguese copy with English, declared the document language as English, and formatted complete/partial dates with English month names in UTC. Preserved original anime/provider names and source descriptions. Updated behavioral test queries to English. The initial run found one leftover Portuguese test assertion for pagination recovery; corrected it before the final checks.
-
-## YouTube verification fallback
-
-The candidate reproduced YouTube’s sign-in/bot check in a normal browser and reported that signing in through the popup did not unlock the embed. This is a provider-controlled verification screen; the exact browser/session cause is not diagnosed. Keep the supported privacy-enhanced embed and required referrer policy. Promote the direct trailer link to a visible button and explain that separate-window sign-in may not unlock embedded playback. Do not claim this resolves YouTube’s verification. Request the player interface in English with the documented `hl=en` parameter. No authentication workarounds, cookie changes, or account access were attempted. References: https://support.google.com/youtube/answer/171780?hl=en and https://developers.google.com/youtube/player_parameters#hl.
-
-## English and trailer fallback — Production verification
-
-All 90 tests across nineteen suites, typecheck, lint, formatting, whitespace checks, and the production build passed. Committed English UI as 6fbdaa3 and trailer fallback as 402fb11; deployment dpl_2CYjYnrNYXesXQ2UQqbDaDYHFvTN returned READY at the existing public alias. Verified English catalog/search/load-more labels and metadata, details headings/status/season/dates, document lang=en, and malformed-ID page. The trailer had no initial iframe; activation created an hl=en privacy-enhanced embed and exposed the direct trailer URL plus verification guidance. Close removed the frame and restored focus. No claim that YouTube verification is fixed; account/playback restrictions remain provider-controlled. Details had no document overflow at desktop or 390px width. Saved screenshots in chat outputs and reset viewport overrides.
-
-## Card focus and remote navigation
-
-Added subtle 3.5% catalog-card enlargement on mouse hover and keyboard focus, with a visible focus ring, stacking/shadow, and no layout shift. Reduced-motion users keep the ring without scaling or animation. Shared navigation handles standard Arrow keys across application controls using current screen geometry, including responsive card rows and horizontal episode links. Left/Right stay within the current row; Up/Down prefer the same column. Focused controls scroll into view, disabled/hidden controls are skipped, and boundaries retain focus. Initial arrow input enters the main controls without stealing focus on page load. Enter uses native links/buttons; Tab and search caret editing remain available. Pagination now focuses the new card’s actionable link, so Enter opens it immediately.
-
-Starting a trailer focuses Close rather than moving into YouTube’s cross-origin iframe, keeping the app’s arrow navigation available. The embedded player remains reachable by Tab; keys inside it are controlled by YouTube. This supports browser remotes emitting standard Arrow/Enter events, not a packaged TV-platform application. Physical TV hardware, platform-specific back keys, and on-screen keyboard integration still require device testing.
-
-Local browser verification found that center-distance weighting could skip the wide search input when moving down from a narrow format button. Reduced perpendicular weighting for overlapping controls, so the nearer search row wins. Added a regression test before rebuilding.
-
-Final local checks: 97 tests across twenty suites, typecheck, lint, formatting, whitespace checks, and production build passed. Browser checks verified initial arrow entry, format-to-search movement, search-to-card movement, left/right/up/down card navigation, Enter opening One Punch Man, arrow navigation from the details heading to synopsis controls, return navigation, focused-card enlargement/ring, and no horizontal overflow. Pagination to 36 cards focused the first new card’s link after rendering; 390px single-column Down moved from the first card to the second without overflow. Stopped the owned production preview on port 3100. Physical TV hardware and unrestricted third-party video playback remain unverified.
-
-## Remote navigation — Production verification
-
-Deployed ed3f817; Vercel deployment dpl_6WRcV7Ww7zNG36v6qtXKSYCu1dg9 returned READY at the existing public alias. Public browser verification showed initial arrows entering filters, Down reaching search and cards, Right moving to an adjacent card, and Enter opening Jujutsu Kaisen at /anime/113415. Starting its trailer focused Close; ArrowDown moved to another in-site control, and Enter on Close removed the player. Returned to the catalog and saved a focused-card screenshot; computed scale settled at 1.035 with no document overflow. Reset viewport overrides. All 97 tests and required checks passed locally; the cloud build passed. Physical TV/remote validation remains pending.
-
-## Details layout and provider logos
-
-The candidate requested Information beside the synopsis, trailer before the episode list, and platform logos in Where to watch. Moved Information into a responsive synopsis row, reordered media headings/content, and updated matching loading placeholders. Used live AniList metadata for provider logos/colors (verified on Fullmetal Alchemist: Brotherhood, ID 5114), validated HTTPS icons and hex colors, and retained named accessible links with text fallbacks for missing/failed icons. Documentation lookup returned 403; the actual AniList GraphQL response confirmed the fields. Added tests for logo metadata validation, failure/absent fallback behavior, and trailer-before-episodes order. All 102 tests, typecheck, and lint passed; final build and browser verification follow.
-
-Final local checks passed: 102 tests across twenty suites, typecheck, lint, formatting, whitespace checks, and production build. Production-preview browser verification on ID 5114 showed Synopsis and Information in adjacent desktop columns, Trailer before Episodes, all five provider logo images loaded, and ArrowRight moving from Hulu to Crunchyroll. At 390px, Information followed Synopsis in one column with no horizontal document overflow. Stopped the owned preview on port 3100. Production publication follows.
-
-## Details layout and logos — Production verification
-
-Committed the layout as c67a61f and logo support as 5088eee. Deployment dpl_DQHxMXa8CaX5tvmJUtCJpcHSmfxx returned READY at the existing production alias. Public ID 5114 showed Synopsis/Information in adjacent desktop columns and Trailer before Episodes. All five provider logos loaded, with no horizontal document overflow; ArrowRight moved between named logo links. Saved layout and logo screenshots in chat outputs and reset viewport overrides. The synopsis screenshot uses its existing expand control. All 102 tests and required local checks passed before deployment; the cloud build passed as well.
-
-## Information aligned to title
-
-The candidate requested Information begin beside the title immediately below the banner, freeing initial desktop space for a trailer preview. Moved title/cover and synopsis into the left column of the existing responsive grid, aligned the Information panel to the grid top, and reduced metadata row spacing slightly. Updated the loading skeleton to the same hierarchy and compact panel height. Mobile retains title → synopsis → Information → trailer → episodes. Browser viewport measurements and required checks follow.
-
-The first 1366×768 preview aligned Information/title at y=256 but exposed only a thin trailer strip (card y=741). Tightened the panel padding/rows further and rebuilt. Final measurements: Information/title both y=256, trailer card y=701, thumbnail y=714, leaving 54px of imagery in the initial 768px-high viewport. At 390px Information follows the synopsis, with no horizontal document overflow. All 102 tests across twenty suites, typecheck, lint, formatting, whitespace checks, and production build passed after the final spacing change. Stopped the owned production preview.
-
-## Title-aligned information — Production verification
-
-Deployed d44f53d; Vercel deployment dpl_A58RprG4asrRjY4EiUoC1fBSsJ1J returned READY. Verified the public Attack on Titan page at a confirmed 1366×768 viewport and scrollY=0: title and Information top both y=256; trailer image begins at y=714. Saved the initial-view screenshot in chat outputs and reset the viewport override. The first screenshot attempt used the newly opened tab’s default 720px viewport and a shifted scroll position; corrected the viewport/scroll and replaced it with the verified capture. All 102 tests and required local checks passed, as did the cloud build.
