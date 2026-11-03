@@ -9,6 +9,7 @@ import { FORMATS } from "./model/anime";
 import { formatDate } from "./model/details";
 import { ScoreBadge } from "./components/ScoreBadge";
 import { DetailsSkeleton } from "./components/DetailsSkeleton";
+import { WhereToWatch } from "./components/WhereToWatch";
 
 const statuses: Record<string, string> = {
   FINISHED: "Finalizado",
@@ -184,6 +185,7 @@ export function AnimeDetails({ id }: { id: number }) {
                       "Sinopse não disponível para este título."}
                   </p>
                 </section>
+                <WhereToWatch providers={anime.providers} id={anime.id} />
               </div>
               <section
                 aria-labelledby="information-heading"
