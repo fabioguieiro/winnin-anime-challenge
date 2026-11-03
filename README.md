@@ -89,7 +89,28 @@ Details remain client-fetched with generic metadata. Malformed IDs receive HTTP 
 
 At the 2026-11-03 submission review, `npm audit --omit=dev` reported zero advisories. The full audit reported 35 development-tool findings (32 moderate, 3 low), including transitive Jest/ESLint chains. Suggested forced major downgrades were not applied. See the dependency tradeoff in [DECISIONS.md](./DECISIONS.md).
 
-Deployment is an optional next step. This is a Node-backed Next.js application rather than a static export. No deployment URL is claimed.
+### Deployment with Vercel
+
+Deployment is prepared for Vercel's Next.js preset, preserving server rendering and image optimization. Node is pinned to 22.x in package metadata and `.nvmrc` selects Node 22 locally. `vercel.json` declares `npm ci` / `npm run build`; `.vercelignore` excludes local output, dependencies, environment files, and checkout/account metadata. No API secret is required.
+
+Authenticate and create a preview from this repository:
+
+```sh
+npx vercel@65.10.0 login
+npx vercel@65.10.0 deploy
+```
+
+Choose the intended account/project when prompted. The checkout link lives in ignored `.vercel/` metadata; credentials/account state are not committed. A Git remote is not required for CLI deployment, but repository publication remains a separate challenge deliverable.
+
+After verifying the preview, publish production:
+
+```sh
+npx vercel@65.10.0 deploy --prod
+```
+
+Verify default/filtered catalogs, images, load-more, details, return navigation, and malformed-ID 404. Confirm the production URL is accessible to the hiring reviewer without an account. Measure Lighthouse on the deployment; local results do not establish hosting performance. No static export or custom output-directory override is used.
+
+Preparation is complete; publication and the live URL remain pending account authentication. No successful cloud deployment is claimed.
 
 ## AI involvement
 

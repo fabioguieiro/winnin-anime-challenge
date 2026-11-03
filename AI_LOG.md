@@ -157,3 +157,11 @@ Rewrote README.md as an evaluator-facing guide with development/production comma
 Final application checks passed: 69 Jest tests across 13 suites, standalone typecheck, lint, formatting, whitespace checks, and production build. Refreshed dependency audits: zero production findings; full audit reports 35 development-tool findings (32 moderate, 3 low). Recorded those findings and the decision not to apply suggested forced major downgrades. No new Lighthouse or device-testing claim is added; existing SSR measurements remain dated local evidence. No application behavior or dependency versions changed in this documentation step.
 
 The candidate still needs to review and understand the code before submission and the technical interview. No deployment, remote repository publication, or candidate ownership/review action was performed on their behalf.
+
+## 2026-11-03 — Step 8: Deployment preparation
+
+The candidate authorized optional deployment. Checked checkout/remote/link state, current Vercel documentation, available hosting tools, and authentication availability without reading or printing credentials. Selected native Vercel hosting to preserve the agreed Next.js server behavior. Vercel CLI 65.10.0 reported “Logged out”; requested local account authentication rather than credentials in chat.
+
+Prepared Node 22.x engine/lockfile metadata, .nvmrc, Next.js install/build configuration, CLI upload exclusions, and preview/production commands. The initial metadata edit found no engines object in the lockfile root; added it explicitly and completed the configuration. No application dependency versions or UI behavior changed. No cloud publication, project identity, live URL, or deployed smoke-test success is claimed while authentication is pending.
+
+Local verification passed: 69 tests across thirteen suites, typecheck, lint, formatting, production build, and whitespace checks. Vercel's no-upload `deploy --dry --format=json --yes` stopped with “No existing credentials found”; no cloud framework/build/deployment validation occurred. Publication remains pending local Vercel login. Runtime engine metadata is synchronized without changing resolved dependency versions.

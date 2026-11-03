@@ -82,3 +82,7 @@ Production Lighthouse 13.6.0 mobile runs after SSR scored 89–90 (final run: 89
 4. Resolve development-tool advisories through compatible updates and add CI checks for the documented verification commands.
 5. Add generated GraphQL types/runtime validation if query/schema scope grows; introduce shared server caching/rate-limit protection if deployment traffic justifies it.
 6. Publish a Node-backed Next.js deployment as the optional delivery bonus after configuration review.
+
+## Deployment preparation
+
+Use native Vercel Next.js hosting for the optional deployment step, preserving request-time rendering and image optimization. Pin Node to the locally verified 22.x major rather than an open-ended >=22 range. Declare the Next.js preset and reproducible install/build commands; avoid static export or framework migration. CLI upload exclusions keep local output/environment/account metadata outside source uploads. Account/project links remain ignored; Git-based publication is separate from direct CLI hosting. Vercel CLI 65.10.0 reported this machine is logged out: authentication and deployed smoke checks remain required. No temporary unclaimed deployment was created.
