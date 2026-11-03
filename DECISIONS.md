@@ -18,3 +18,16 @@ Inspect Figma, confirm card fields and pagination, implement the anime feature, 
 ## Dependency audit
 
 Production dependency audit passed with zero known findings during setup. The full audit flags development-only dependency chains in Jest/ESLint (glob, minimatch, deepmerge). Suggested automatic major-version downgrades were not applied. Review compatible upstream fixes before submission; do not treat the full audit as clean.
+
+## First catalog implementation — 2026-11-02
+
+- Followed the visible Figma desktop composition: purple brand bars, format controls, explicit search button, four-column image cards with genre tags and scores, and full-width amber load-more button. Exact font/spacing remain provisional; the anonymous Figma session shows a sign-up requirement for inspection. System sans-serif remains temporary.
+- Search uses explicit form submission, replacing the initial debounce proposal to match the visible “Buscar” control. Search and format are stored in URL parameters through Next navigation. Each combination owns a separate React Query infinite-query cache, starting at page one.
+- Twelve items per API page match the reference's first grid. “Ver mais” appends pages using hasNextPage, and duplicate IDs are removed during display to tolerate changing upstream rankings. Popularity descending with ID descending is the chosen default ordering; the reference's historical titles are not hardcoded. Adult entries are excluded.
+- Cover images use next/image with a narrow AniList hostname/path allowlist, lazy loading, responsive sizes, and an image-error fallback. No detail route or unrelated card interaction is added.
+- All available genres are displayed. Romaji titles are preferred to match the design, falling back to English/native and then an explicit unavailable label. Missing scores display a dash and accessible unavailable label rather than zero.
+- Written score rules take priority over the sample's green 80% badge: 80 is yellow. Badge shades and dark text on amber favor readability over exact screenshot colors.
+- Added skeletons, empty-state reset, keyboard focus indicators, status announcements, and retry controls. Failed pagination retains existing cards. No automatic retry loop; HTTP 429 receives specific guidance.
+- Responsive one/two/four-column layouts are an inferred extension of the supplied desktop frame, subject to further visual review. No end-to-end framework or new dependency was introduced.
+
+Live API finding: omit unused search/format variables instead of sending null. The actual AniList response differed for null variables during verification. A request-construction test now guards this behavior.

@@ -26,3 +26,26 @@ Repository instructions used for future work are included in `AGENTS.md`.
 - Production server smoke check: HTTP 200 and expected placeholder content.
 - `npm audit --omit=dev`: zero known production dependency vulnerabilities at verification time. Full audit reports development-tool advisories (glob/minimatch/deepmerge dependency chains); retained current compatible tooling rather than accepting audit suggestions to downgrade Jest and ESLint to old major versions. Reassess before submission.
 - No live AniList integration or visual Figma verification claimed.
+
+## 2026-11-02 — First working catalog
+
+The candidate authorized implementing the first version from the supplied Figma and AniList, leaving detailed refinement for a later pass. Codex used the Sites skill's local-only workflow in the existing Next.js repository; nothing was deployed.
+
+Reference inspection: opened the actual Figma canvas in the browser, expanded the layer panel, and observed the desktop composition. The session remains anonymous and prompts for sign-up to inspect; exact font and dimension values were not claimed. Verified AniList's query documentation and sent a real GraphQL request to confirm pagination, cover images, titles, genres, and scores.
+
+Generated: feature components, typed API response mapping, infinite-query hook, URL-driven filters, explicit search submission, responsive grid, next/image support, score badges, and loading/empty/error/retry behavior. Added Jest tests for boundaries, nullable data, filters, pagination, empty results, rate limiting, and pagination recovery.
+
+Judgment/corrections: chose submitted search to follow Figma rather than the earlier debounce proposal. Used the written rule for the 80-point boundary despite the sample's green badge. Used live popularity-ranked data rather than hardcoded historical titles. Initial build exposed unsupported `exact` options in Testing Library test typings; removed those options and reran the build. First-run Jest passed all 20 tests; final validation is recorded below after browser review.
+
+Live browser verification exposed an AniList distinction: explicit null optional filters returned upcoming/unrated entries, while omitted variables returned the expected popular entries. Corrected the request builder to omit inactive filters and updated the regression test. This was detected by comparing the actual default query with and without null variables, rather than relying only on mocked tests.
+
+Final first-version verification:
+
+- Jest: 20 tests passed across four suites after the filter-variable correction.
+- Production build: passed, including TypeScript checks.
+- Live browser: default popular catalog and images rendered; “Ver mais” increased the rendered card count from 12 to 24; submitted Naruto search returned matching entries; Movie combined with Naruto returned 11 film entries and no further-page control; browser Back restored the unfiltered search.
+- Responsive browser checks: one column at a 390px viewport and two at 768px, with document scroll width equal to client width (no horizontal overflow). Four-column desktop visually compared with the Figma composition.
+- Browser warning/error log was empty during the final live check. Exact typography and spacing still need detailed review; no pixel-perfect fidelity claim.
+- No Playwright dependency or automated end-to-end suite added. Browser interaction was manual agent QA using the available computer-use tool.
+
+Final standalone typecheck, lint, formatting check, and whitespace diff check all passed. A desktop screenshot of the live first version was saved for review.

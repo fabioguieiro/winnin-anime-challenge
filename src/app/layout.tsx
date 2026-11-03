@@ -4,13 +4,14 @@ import { Providers } from "./providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Winnin Anime Challenge",
-  description: "An anime catalog powered by AniList.",
+  title: "BUSCANIME | Encontre seu próximo anime",
+  description:
+    "Explore animes, busque por título e filtre por formato com dados do AniList.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body className="min-h-screen antialiased">
         <Providers>{children}</Providers>
       </body>

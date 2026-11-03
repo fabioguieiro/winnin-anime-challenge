@@ -2,10 +2,27 @@
 
 @theme {
   --font-sans: Arial, Helvetica, sans-serif;
+  --color-brand: #5724b7;
+  --color-brand-dark: #40178e;
+  --color-accent: #ffb52e;
+  --color-score-low: #dc3654;
+  --color-score-medium: #ffb52e;
+  --color-score-high: #128b73;
 }
 
 body {
-  background: #fafafa;
+  background: #fff;
   color: #171717;
   font-family: var(--font-sans);
+}
+
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+}
+:where(button, input, a):focus-visible {
+  outline: 3px solid #ffb52e;
+  outline-offset: 3px;
 }

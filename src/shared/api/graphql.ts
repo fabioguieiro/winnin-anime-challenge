@@ -5,6 +5,16 @@ type GraphQLResponse<T> = {
   errors?: { message: string }[];
 };
 
+export class GraphQLRequestError extends Error {
+  constructor(
+    message: string,
+    public readonly status?: number,
+  ) {
+    super(message);
+    this.name = "GraphQLRequestError";
+  }
+}
+
 export async function requestGraphQL<T>(
   query: string,
   variables: Record<string, unknown> = {},
@@ -18,7 +28,10 @@ export async function requestGraphQL<T>(
   });
 
   if (!response.ok) {
-    throw new Error(`AniList request failed (${response.status}).`);
+    throw new GraphQLRequestError(
+      `AniList request failed (${response.status}).`,
+      response.status,
+    );
   }
 
   const result: GraphQLResponse<T> = await response.json();
