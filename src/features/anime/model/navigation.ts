@@ -5,6 +5,7 @@ function catalogQuery(filters: AnimeFilters) {
   const search = filters.search.trim();
   if (search) params.set("search", search);
   if (filters.format) params.set("format", filters.format);
+  if (filters.sort !== "popularity") params.set("sort", filters.sort);
   const query = params.toString();
   return query ? `?${query}` : "";
 }

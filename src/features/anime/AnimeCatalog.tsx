@@ -17,6 +17,7 @@ export function AnimeCatalog() {
   const filters = parseAnimeFilters({
     search: params.get("search"),
     format: params.get("format"),
+    sort: params.get("sort"),
   });
   const query = useAnimeQuery(filters);
   const items = [
@@ -66,8 +67,13 @@ export function AnimeCatalog() {
     const nextParams = new URLSearchParams(params.toString());
     if (next.search) nextParams.set("search", next.search);
     else nextParams.delete("search");
+
     if (next.format) nextParams.set("format", next.format);
     else nextParams.delete("format");
+
+    if (next.sort !== "popularity") nextParams.set("sort", next.sort);
+    else nextParams.delete("sort");
+
     const suffix = nextParams.toString();
     startTransition(() => {
       router.push(suffix ? `/?${suffix}` : "/", { scroll: false });
@@ -154,7 +160,7 @@ export function AnimeCatalog() {
                 ref={resetRef}
                 onClick={() => {
                   document.getElementById("anime-search")?.focus();
-                  updateFilters({ search: "", format: "" });
+                  updateFilters({ search: "", format: "", sort: "popularity" });
                 }}
               >
                 Clear filters

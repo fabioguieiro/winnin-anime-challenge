@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { GraphQLRequestError } from "@/shared/api/graphql";
 import { useAnimeDetails } from "./hooks/useAnimeDetails";
 import { getCatalogHref } from "./model/navigation";
-import { FORMATS, parseFormat } from "./model/anime";
+import { FORMATS, parseAnimeFilters } from "./model/anime";
 import { formatDate } from "./model/details";
 import { ScoreBadge } from "./components/ScoreBadge";
 import { DetailsSkeleton } from "./components/DetailsSkeleton";
@@ -61,10 +61,13 @@ function Artwork({
 
 export function AnimeDetails({ id }: { id: number }) {
   const params = useSearchParams();
-  const backHref = getCatalogHref({
-    search: params.get("search") ?? "",
-    format: parseFormat(params.get("format")),
-  });
+  const backHref = getCatalogHref(
+    parseAnimeFilters({
+      search: params.get("search"),
+      format: params.get("format"),
+      sort: params.get("sort"),
+    }),
+  );
   const query = useAnimeDetails(id);
   const anime = query.data;
   const headingRef = useRef<HTMLHeadingElement>(null);

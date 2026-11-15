@@ -85,7 +85,7 @@ it("announces loading, appends results, and hides pagination at the end", async 
     screen.queryByRole("button", { name: "Load more" }),
   ).not.toBeInTheDocument();
   expect(fetchMock).toHaveBeenLastCalledWith(
-    { search: "", format: "" },
+    { search: "", format: "", sort: "popularity" },
     2,
     expect.any(AbortSignal),
   );
@@ -105,7 +105,7 @@ it("submits a trimmed search, preserves it with the format, and restarts paginat
   refresh();
   await waitFor(() =>
     expect(fetchMock).toHaveBeenLastCalledWith(
-      { search: "Naruto", format: "" },
+      { search: "Naruto", format: "", sort: "popularity" },
       1,
       expect.any(AbortSignal),
     ),
@@ -118,7 +118,7 @@ it("submits a trimmed search, preserves it with the format, and restarts paginat
   refresh();
   await waitFor(() =>
     expect(fetchMock).toHaveBeenLastCalledWith(
-      { search: "Naruto", format: "MOVIE" },
+      { search: "Naruto", format: "MOVIE", sort: "popularity" },
       1,
       expect.any(AbortSignal),
     ),
@@ -220,4 +220,62 @@ it("makes cards keyboard links carrying the applied catalog filters", async () =
   expect(
     await screen.findByRole("link", { name: "View details for First anime" }),
   ).toHaveAttribute("href", "/anime/1?search=Naruto&format=MOVIE");
+});
+
+it("changes sorting from page one, preserves filters and paginates with the new order", async () => {
+  mockParams = new URLSearchParams("search=Naruto&format=TV");
+  fetchMock.mockImplementation(async (_filters, page) =>
+    page === 1 ? first : second,
+  );
+  const { user, refresh } = setup();
+  await screen.findByRole("heading", { name: "First anime" });
+  await user.click(screen.getByRole("button", { name: "Load more" }));
+  await screen.findByRole("heading", { name: "Second anime" });
+  await user.selectOptions(
+    screen.getByRole("combobox", { name: "Sort by" }),
+    "score",
+  );
+  expect(mockPush).toHaveBeenLastCalledWith(
+    "/?search=Naruto&format=TV&sort=score",
+    { scroll: false },
+  );
+  mockParams = new URLSearchParams("search=Naruto&format=TV&sort=score");
+  refresh();
+  await waitFor(() =>
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      { search: "Naruto", format: "TV", sort: "score" },
+      1,
+      expect.any(AbortSignal),
+    ),
+  );
+  await screen.findByRole("heading", { name: "First anime" });
+  expect(
+    screen.queryByRole("heading", { name: "Second anime" }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.getByRole("link", { name: "View details for First anime" }),
+  ).toHaveAttribute("href", "/anime/1?search=Naruto&format=TV&sort=score");
+  await user.click(screen.getByRole("button", { name: "Load more" }));
+  await screen.findByRole("heading", { name: "Second anime" });
+  expect(fetchMock).toHaveBeenLastCalledWith(
+    { search: "Naruto", format: "TV", sort: "score" },
+    2,
+    expect.any(AbortSignal),
+  );
+  await user.selectOptions(
+    screen.getByRole("combobox", { name: "Sort by" }),
+    "popularity",
+  );
+  expect(mockPush).toHaveBeenLastCalledWith("/?search=Naruto&format=TV", {
+    scroll: false,
+  });
+});
+
+it("clears score sorting together with search and format for empty results", async () => {
+  mockParams = new URLSearchParams("search=Missing&format=TV&sort=score");
+  fetchMock.mockResolvedValue({ page: 1, hasNextPage: false, items: [] });
+  const { user } = setup();
+  await screen.findByRole("heading", { name: "No anime found" });
+  await user.click(screen.getByRole("button", { name: "Clear filters" }));
+  expect(mockPush).toHaveBeenLastCalledWith("/", { scroll: false });
 });

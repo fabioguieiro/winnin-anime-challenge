@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useRef, type FormEvent } from "react";
-import { FORMATS, type AnimeFilters as Filters } from "../model/anime";
+import {
+  FORMATS,
+  SORT_OPTIONS,
+  parseSort,
+  type AnimeFilters as Filters,
+} from "../model/anime";
 
 export function AnimeFilters({
   filters,
@@ -68,6 +73,29 @@ export function AnimeFilters({
           {pending ? "Searching..." : "Search"}
         </button>
       </form>
+      <div className="mt-4 flex items-center justify-end gap-2">
+        <label htmlFor="anime-sort" className="text-sm">
+          Sort by
+        </label>
+
+        <select
+          id="anime-sort"
+          value={filters.sort}
+          onChange={(event) =>
+            onChange({
+              ...filters,
+              sort: parseSort(event.target.value),
+            })
+          }
+          className="min-h-11 rounded-sm border border-neutral-500 bg-white px-3 text-sm"
+        >
+          {SORT_OPTIONS.map(({ value, label }) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }

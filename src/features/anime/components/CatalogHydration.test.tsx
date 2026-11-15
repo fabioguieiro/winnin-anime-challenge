@@ -12,14 +12,14 @@ import { fetchAnime } from "../api/fetchAnime";
 import { AnimeCatalog } from "../AnimeCatalog";
 import { CatalogHydration } from "./CatalogHydration";
 
-let mockParams = new URLSearchParams("search=Naruto&format=MOVIE");
+let mockParams = new URLSearchParams("search=Naruto&format=MOVIE&sort=score");
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: jest.fn() }),
   useSearchParams: () => mockParams,
 }));
 jest.mock("../api/fetchAnime", () => ({ fetchAnime: jest.fn() }));
 const fetchPage = jest.mocked(fetchAnime);
-const filters = { search: "Naruto", format: "MOVIE" } as const;
+const filters = { search: "Naruto", format: "MOVIE", sort: "score" } as const;
 const first = {
   page: 1,
   hasNextPage: true,
@@ -38,7 +38,7 @@ let client: ReturnType<typeof createQueryClient>;
 
 beforeEach(() => {
   client = createQueryClient();
-  mockParams = new URLSearchParams("search=Naruto&format=MOVIE");
+  mockParams = new URLSearchParams("search=Naruto&format=MOVIE&sort=score");
   fetchPage.mockReset();
 });
 afterEach(() => client.clear());
@@ -114,7 +114,7 @@ it("uses a separate query for changed URL filters", async () => {
     await screen.findByRole("heading", { name: "Bleach result" }),
   ).toBeInTheDocument();
   expect(fetchPage).toHaveBeenCalledWith(
-    { search: "Bleach", format: "TV" },
+    { search: "Bleach", format: "TV", sort: "popularity" },
     1,
     expect.any(AbortSignal),
   );

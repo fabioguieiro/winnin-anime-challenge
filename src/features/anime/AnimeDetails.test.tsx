@@ -117,14 +117,14 @@ it("fetches independently when navigating to another title", async () => {
 
 it("returns to the originating filters without accepting arbitrary return URLs", async () => {
   mockParams = new URLSearchParams(
-    "search=Naruto&format=MOVIE&returnTo=https://example.org",
+    "search=Naruto&format=MOVIE&sort=score&returnTo=https://example.org",
   );
   fetchMock.mockResolvedValue(detailsFixture);
   setup();
   await screen.findByRole("heading", { level: 1, name: "Example Anime" });
   expect(
     screen.getByRole("link", { name: "Back to anime catalog" }),
-  ).toHaveAttribute("href", "/?search=Naruto&format=MOVIE");
+  ).toHaveAttribute("href", "/?search=Naruto&format=MOVIE&sort=score");
 });
 it("returns focus to retry after another failed details request", async () => {
   fetchMock.mockRejectedValue(new Error("offline"));

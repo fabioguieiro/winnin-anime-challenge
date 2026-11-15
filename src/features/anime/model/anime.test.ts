@@ -19,19 +19,29 @@ it("accepts known formats and falls back for invalid URL values", () => {
 });
 
 it.each([
-  [{}, { search: "", format: "" }],
+  [{}, { search: "", format: "", sort: "popularity" }],
   [
-    { search: "  Naruto  ", format: "MOVIE" },
-    { search: "Naruto", format: "MOVIE" },
+    { search: "  Naruto  ", format: "MOVIE", sort: "popularity" },
+    { search: "Naruto", format: "MOVIE", sort: "popularity" },
   ],
   [
     { search: ["  Naruto ", "Bleach"], format: ["TV", "MOVIE"] },
-    { search: "Naruto", format: "TV" },
+    { search: "Naruto", format: "TV", sort: "popularity" },
   ],
   [
-    { search: null, format: "unknown" },
-    { search: "", format: "" },
+    { search: null, format: "unknown", sort: "popularity" },
+    { search: "", format: "", sort: "popularity" },
   ],
 ])("normalizes catalog URL parameters %j", (params, expected) => {
   expect(parseAnimeFilters(params)).toEqual(expected);
+});
+
+it.each([
+  [{ sort: "score" }, "score"],
+  [{ sort: "popularity" }, "popularity"],
+  [{ sort: "invalid" }, "popularity"],
+  [{ sort: null }, "popularity"],
+  [{ sort: ["score", "popularity"] }, "score"],
+])("normalizes sorting from URL parameters %j", (params, expected) => {
+  expect(parseAnimeFilters(params).sort).toBe(expected);
 });

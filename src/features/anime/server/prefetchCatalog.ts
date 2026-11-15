@@ -10,15 +10,19 @@ import type { AnimeFilters } from "../model/anime";
 export async function prefetchCatalog(filters: AnimeFilters) {
   const client = createQueryClient();
   try {
-    await client.prefetchInfiniteQuery({
-      ...animeQueryOptions(filters),
-      queryFn: ({ pageParam, signal }) =>
-        fetchAnime(
-          filters,
-          pageParam,
-          AbortSignal.any([signal, AbortSignal.timeout(8_000)]),
-        ),
-    });
+    await client
+      .infiniteQuery({
+        ...animeQueryOptions(filters),
+        queryFn: ({ pageParam, signal }) =>
+          fetchAnime(
+            filters,
+            pageParam,
+            AbortSignal.any([signal, AbortSignal.timeout(8_000)]),
+          ),
+      })
+      .catch(() => {
+        // Keep the failed query in the cache so its error can be hydrated.
+      });
     const state = dehydrate(client, { shouldDehydrateQuery: () => true });
     return {
       ...state,

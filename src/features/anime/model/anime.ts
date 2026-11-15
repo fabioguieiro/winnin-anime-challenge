@@ -1,3 +1,9 @@
+export const SORT_OPTIONS = [
+  { value: "popularity", label: "Popularity" },
+  { value: "score", label: "Highest Score" },
+] as const;
+export type AnimeSort = (typeof SORT_OPTIONS)[number]["value"];
+
 export const FORMATS = [
   { value: "", label: "All Formats" },
   { value: "TV", label: "TV Show" },
@@ -10,7 +16,11 @@ export const FORMATS = [
 ] as const;
 
 export type AnimeFormat = (typeof FORMATS)[number]["value"];
-export type AnimeFilters = { search: string; format: AnimeFormat };
+export type AnimeFilters = {
+  search: string;
+  format: AnimeFormat;
+  sort: AnimeSort;
+};
 export type Anime = {
   id: number;
   title: string;
@@ -33,9 +43,16 @@ export function getScoreTone(score: number | null) {
 
 type SearchParamValue = string | string[] | null | undefined;
 
+export function parseSort(value: string | null): AnimeSort {
+  return (
+    SORT_OPTIONS.find((option) => option.value === value)?.value ?? "popularity"
+  );
+}
+
 export function parseAnimeFilters(params: {
   search?: SearchParamValue;
   format?: SearchParamValue;
+  sort?: SearchParamValue;
 }): AnimeFilters {
   const search = Array.isArray(params.search)
     ? params.search[0]
@@ -43,5 +60,10 @@ export function parseAnimeFilters(params: {
   const format = Array.isArray(params.format)
     ? params.format[0]
     : params.format;
-  return { search: (search ?? "").trim(), format: parseFormat(format ?? null) };
+  const sort = Array.isArray(params.sort) ? params.sort[0] : params.sort;
+  return {
+    search: (search ?? "").trim(),
+    format: parseFormat(format ?? null),
+    sort: parseSort(sort ?? null),
+  };
 }

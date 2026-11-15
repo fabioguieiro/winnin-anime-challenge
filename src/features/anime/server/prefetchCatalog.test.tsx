@@ -15,7 +15,11 @@ jest.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams("search=Naruto&format=MOVIE"),
 }));
 const fetchPage = jest.mocked(fetchAnime);
-const filters = { search: "Naruto", format: "MOVIE" } as const;
+const filters = {
+  search: "Naruto",
+  format: "MOVIE",
+  sort: "popularity",
+} as const;
 
 it("includes the filtered first-page title and cover in server-rendered HTML", async () => {
   fetchPage.mockResolvedValue({
@@ -68,12 +72,16 @@ it("serializes rate limits without leaking internal errors or retrying on the se
 it("isolates prefetched data between requests with different filters", async () => {
   fetchPage.mockResolvedValue({ page: 1, hasNextPage: false, items: [] });
   const first = await prefetchCatalog(filters);
-  const second = await prefetchCatalog({ search: "Bleach", format: "TV" });
+  const second = await prefetchCatalog({
+    search: "Bleach",
+    format: "TV",
+    sort: "popularity",
+  });
   expect(first.queries).toHaveLength(1);
   expect(second.queries).toHaveLength(1);
   expect(first.queries[0].queryKey).toEqual(["anime", filters]);
   expect(second.queries[0].queryKey).toEqual([
     "anime",
-    { search: "Bleach", format: "TV" },
+    { search: "Bleach", format: "TV", sort: "popularity" },
   ]);
 });

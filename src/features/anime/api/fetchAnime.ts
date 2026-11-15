@@ -2,11 +2,11 @@ import { requestGraphQL } from "@/shared/api/graphql";
 import type { AnimeFilters, AnimePage } from "../model/anime";
 
 export const ANIME_QUERY = `
-  query AnimeCatalog($page: Int!, $search: String, $format: MediaFormat) {
+  query AnimeCatalog($page: Int!, $search: String, $format: MediaFormat, $sort: [MediaSort!]!) {
     Page(page: $page, perPage: 12) {
       pageInfo { currentPage hasNextPage }
       media(type: ANIME, isAdult: false, search: $search, format: $format,
-            sort: [POPULARITY_DESC, ID_DESC]) {
+            sort: $sort) {
         id
         title { romaji english native }
         coverImage { extraLarge }
@@ -50,6 +50,10 @@ export async function fetchAnime(
       page,
       ...(filters.search ? { search: filters.search } : {}),
       ...(filters.format ? { format: filters.format } : {}),
+      sort:
+        filters.sort === "score"
+          ? ["SCORE_DESC", "ID_DESC"]
+          : ["POPULARITY_DESC", "ID_DESC"],
     },
     signal,
   );

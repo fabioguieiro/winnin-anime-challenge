@@ -7,7 +7,7 @@ import { useAnimeQuery } from "./useAnimeQuery";
 
 jest.mock("../api/fetchAnime", () => ({ fetchAnime: jest.fn() }));
 const fetchPage = jest.mocked(fetchAnime);
-const filters = { search: "", format: "" } as const;
+const filters = { search: "", format: "", sort: "popularity" } as const;
 let client: ReturnType<typeof createQueryClient>;
 
 beforeEach(() => {
